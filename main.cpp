@@ -1,13 +1,18 @@
 #include <iostream>
+
 #include <entt/entt.hpp>
 #include <sol/sol.hpp>
 #include <raylib.h>
 
+#include <roen/log/Logger.hpp>
+
 int main()
 {
+    roen::log::Logger::Init();
+
     sol::state lua;
     std::string str {"razdwatrzy"};
-    lua.set_function("print", [&str]{ std::cout << str << std::endl; });
+    lua.set_function("print", [&str]{ APP_INFO("{0}", str); });
     lua.script("print()");
     InitWindow(640, 480, str.c_str());
 
@@ -22,6 +27,5 @@ int main()
         BeginDrawing();
         EndDrawing();
     }
-
     return 0;
 }
