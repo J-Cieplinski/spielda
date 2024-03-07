@@ -1,0 +1,11 @@
+{
+  "name": "spielda",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "raylib",
+    "entt",
+    "spdlog",
+    "lua",
+    "sol2"
+  ]
+}
