@@ -20,9 +20,9 @@ find_package(Lua REQUIRED)
 find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 
-add_subdirectory(src)
-
 add_executable(${PROJECT_NAME})
+
+add_subdirectory(src)
 
 target_sources(${PROJECT_NAME}
     PRIVATE

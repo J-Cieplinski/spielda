@@ -8,6 +8,11 @@ find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
+target_sources(${PROJECT_NAME}
+    PUBLIC
+    ${INCLUDE_DIR}/roen/interfaces/IScene.hpp
+)
+
 add_subdirectory(log)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
