@@ -4,6 +4,7 @@
 #include <sol/sol.hpp>
 #include <raylib.h>
 
+#include <game/Game.hpp>
 #include <roen/log/Logger.hpp>
 
 int main()
@@ -19,6 +20,8 @@ int main()
     entt::registry reg;
     auto ent = reg.create();
     std::cout << "Hello, World!" << std::endl;
+    spielda::Game game;
+    game.run();
 
     bool shouldClose {false};
     while(!shouldClose)

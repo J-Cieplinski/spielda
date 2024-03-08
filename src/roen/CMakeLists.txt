@@ -10,6 +10,7 @@ find_package(spdlog CONFIG REQUIRED)
 
 target_sources(${PROJECT_NAME}
     PUBLIC
+    ${INCLUDE_DIR}/roen/interfaces/IGame.hpp
     ${INCLUDE_DIR}/roen/interfaces/IScene.hpp
 )
 
