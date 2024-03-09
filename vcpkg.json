@@ -6,6 +6,7 @@
     "entt",
     "spdlog",
     "lua",
-    "sol2"
+    "sol2",
+    "nlohmann-json"
   ]
 }

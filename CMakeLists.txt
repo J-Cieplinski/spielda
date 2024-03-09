@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 3.27)
 
+#To force usage of vcpkg cmake toolchain
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/dependencies/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 project(spielda)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_compile_definitions(IS_DEBUG)
+#To enable/disable spdlog logging
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    add_compile_definitions(IS_DEBUG)
+endif ()
 
+#To force windows to create .lib files
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     set(BUILD_SHARED_LIBS TRUE)
