@@ -1,14 +1,14 @@
 #include <game/scenes/GameScene.hpp>
 
 #include <roen/log/Logger.hpp>
+#include <roen/manager/GameSceneManager.hpp>
 
-namespace spielda
+namespace spielda::scenes
 {
 
-GameScene::GameScene(Game& game)
-    : IScene(game)
+GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
+    : IScene(gameSceneManager)
 {
-    APP_INFO("Entered GameScene");
 }
 
 void GameScene::handleInput()
@@ -26,4 +26,14 @@ void GameScene::update()
 
 }
 
-} // spielda
+void GameScene::obscured()
+{
+
+}
+
+void GameScene::revealed()
+{
+    APP_INFO("Entered GameScene");
+}
+
+} // spielda::scenes

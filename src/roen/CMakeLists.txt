@@ -10,11 +10,12 @@ find_package(spdlog CONFIG REQUIRED)
 
 target_sources(${PROJECT_NAME}
     PUBLIC
-    ${INCLUDE_DIR}/roen/interfaces/IGame.hpp
+    ${INCLUDE_DIR}/roen//Utils.hpp
     ${INCLUDE_DIR}/roen/interfaces/IScene.hpp
 )
 
 add_subdirectory(log)
+add_subdirectory(manager)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     EnTT::EnTT

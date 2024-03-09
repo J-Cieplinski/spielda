@@ -1,17 +1,19 @@
 #ifndef SPIELDA_GAME_GAME_HPP
 #define SPIELDA_GAME_GAME_HPP
 
-#include <roen/interfaces/IGame.hpp>
+#include <roen/manager/GameSceneManager.hpp>
 
 namespace spielda
 {
 
-class Game final : public roen::interfaces::IGame
+class Game final
 {
 public:
     Game();
-    void run() override;
-    void changeScene(roen::SceneType scene) override;
+    void run();
+private:
+    roen::manager::GameSceneManager gameSceneManager_;
+    bool isRunning_;
 };
 
 } // spielda

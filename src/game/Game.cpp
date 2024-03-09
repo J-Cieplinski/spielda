@@ -1,27 +1,24 @@
 #include <game/Game.hpp>
 
-#include <game/scenes/GameScene.hpp>
-
-#include <memory>
+#include <game/scenes/MenuScene.hpp>
 
 namespace spielda
 {
 
 Game::Game()
+    : isRunning_{true}
 {
-    currentScene_ = std::make_unique<GameScene>(*this);
+    gameSceneManager_.push(std::make_unique<scenes::MenuScene>(gameSceneManager_));
 }
 
 void Game::run()
 {
-    currentScene_->handleInput();
-    currentScene_->update();
-    currentScene_->render();
-}
-
-void Game::changeScene(roen::SceneType scene)
-{
-
+    while(isRunning_)
+    {
+        gameSceneManager_.getCurrentScene()->handleInput();
+        gameSceneManager_.getCurrentScene()->update();
+        gameSceneManager_.getCurrentScene()->render();
+    }
 }
 
 } // spielda
