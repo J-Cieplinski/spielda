@@ -1,0 +1,18 @@
+#ifndef SPIELDA_GAME_COMPONENTS_TRANSFORM_HPP
+#define SPIELDA_GAME_COMPONENTS_TRANSFORM_HPP
+
+#include <raylib.h>
+
+namespace spielda::components
+{
+
+struct Transform
+{
+    Vector2 position;
+    Vector2 scale;
+    float rotation;
+};
+
+} // spielda::components
+
+#endif //SPIELDA_GAME_COMPONENTS_TRANSFORM_HPP

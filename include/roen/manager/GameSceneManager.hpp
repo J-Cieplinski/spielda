@@ -14,7 +14,7 @@ class GameSceneManager
 public:
     void push(std::unique_ptr<interfaces::IScene> scene);
     void pop();
-    const std::unique_ptr<interfaces::IScene>& getCurrentScene();
+    [[nodiscard]] const std::unique_ptr<interfaces::IScene>& getCurrentScene();
 private:
     std::stack<std::unique_ptr<interfaces::IScene>> scenes_;
 };

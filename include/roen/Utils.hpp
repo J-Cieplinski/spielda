@@ -1,14 +1,16 @@
 #ifndef ROEN_UTILS_HPP
 #define ROEN_UTILS_HPP
 
+#include <cstdint>
+#include <string>
+
 namespace roen
 {
 
-enum SceneType
+constexpr std::uint32_t hashString(const std::string& str)
 {
-    GAME,
-    MENU
-};
+    return str.size();
+}
 
 } // roen
 

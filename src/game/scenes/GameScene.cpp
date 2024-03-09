@@ -1,5 +1,7 @@
 #include <game/scenes/GameScene.hpp>
 
+#include <game/systems/Render.hpp>
+
 #include <roen/log/Logger.hpp>
 #include <roen/manager/GameSceneManager.hpp>
 
