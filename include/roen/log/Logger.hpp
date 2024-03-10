@@ -1,8 +1,24 @@
 #ifndef ROEN_LOG_LOGGER_HPP
 #define ROEN_LOG_LOGGER_HPP
 
+/*
+ * Workaround for raylib symbol clash with Windows symbols imported in spdlog
+ */
+#if defined(_WIN32)
+#define NOGDI             // All GDI defines and routines
+#define NOUSER            // All USER defines and routines
+#endif
+
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+
+#if defined(_WIN32)           // raylib uses these names as function parameters
+#undef near
+#undef far
+#endif
+/*
+ * End of Workaround
+ */
 
 #include <memory>
 
