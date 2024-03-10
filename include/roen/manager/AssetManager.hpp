@@ -22,9 +22,9 @@ public:
 
     void loadAsset(const std::string& id, const std::string& path);
     void freeAssets();
-    [[nodiscard]] AssetType getAsset(std::uint32_t id) const;
+    [[nodiscard]] AssetType getAsset(std::uint64_t id) const;
 private:
-    std::map<std::uint32_t, AssetType> assets_;
+    std::map<std::uint64_t, AssetType> assets_;
 };
 
 } // roen::manager
@@ -71,7 +71,7 @@ AssetManager<AssetType>::loadAsset(const std::string &id, const std::string &pat
 
 template<typename AssetType>
 requires std::is_base_of_v<interfaces::IAsset, AssetType>AssetType
-AssetManager<AssetType>::getAsset(std::uint32_t id) const
+AssetManager<AssetType>::getAsset(std::uint64_t id) const
 {
     try
     {

@@ -14,7 +14,7 @@ struct Sprite
     Rectangle srcRect;
     std::uint32_t layer;
     std::uint32_t zIndexInLayer;
-    std::uint32_t guid;
+    std::uint64_t guid;
     bool isFixed;
 };
 
