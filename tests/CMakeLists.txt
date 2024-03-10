@@ -17,7 +17,8 @@ target_link_libraries(${PROJECT_NAME}
     GTest::gtest_main
     GTest::gmock
     GTest::gmock_main
-    utils_ut)
+    utils_ut
+    manager_ut)
 
 add_subdirectory(ut)
 

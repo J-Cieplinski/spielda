@@ -7,11 +7,6 @@ project(spielda)
 
 set(CMAKE_CXX_STANDARD 20)
 
-#To enable/disable spdlog logging
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    add_compile_definitions(IS_DEBUG)
-endif ()
-
 #To force windows to create .lib files
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
@@ -26,6 +21,11 @@ find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME})
+
+#To enable/disable spdlog logging
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC IS_DEBUG)
+endif ()
 
 add_subdirectory(src)
 add_subdirectory(tests)
