@@ -17,9 +17,9 @@ target_link_libraries(${PROJECT_NAME}
     GTest::gtest_main
     GTest::gmock
     GTest::gmock_main
-    roen)
+    utils_ut)
 
-add_test(test ${PROJECT_NAME})
+add_subdirectory(ut)
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD

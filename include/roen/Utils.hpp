@@ -7,20 +7,20 @@
 namespace roen
 {
 
-constexpr std::uint32_t pow(std::int32_t base, std::uint32_t power)
+constexpr std::int32_t pow(std::int32_t base, std::uint32_t exponent)
 {
-    if(power == 0)
+    if(exponent == 0)
     {
         return 1;
     }
-    if(power % 2 == 0)
+    if(exponent % 2 == 0)
     {
-        std::uint32_t curr = pow(base, power / 2);
+        std::uint32_t curr = pow(base, exponent / 2);
         return curr * curr;
     }
     else
     {
-        return base * pow(base, power - 1);
+        return base * pow(base, exponent - 1);
     }
 }
 
