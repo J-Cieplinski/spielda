@@ -28,6 +28,7 @@ find_package(sol2 CONFIG REQUIRED)
 add_executable(${PROJECT_NAME})
 
 add_subdirectory(src)
+add_subdirectory(tests)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
