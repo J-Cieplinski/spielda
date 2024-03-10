@@ -7,4 +7,6 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
 )
 
+add_subdirectory(asset)
 add_subdirectory(scenes)
+add_subdirectory(systems)

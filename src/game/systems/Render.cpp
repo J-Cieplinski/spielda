@@ -1,9 +1,9 @@
 #include <game/systems/Render.hpp>
 
+#include <game/Typedefs.hpp>
+
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
-
-#include <roen/manager/AssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -19,7 +19,7 @@ Render::Render(const entt::registry& entityManager, const Camera2D& camera)
 void Render::update()
 {
     const auto entities = entityManager_.view<components::Sprite, components::Transform>();
-    const auto& textureManager = entityManager_.ctx().get<roen::manager::AssetManager<Texture2D>>();
+    const auto& textureManager = entityManager_.ctx().get<TextureManager>();
 
     for(const auto& [_, sprite, transform] : entities.each())
     {
