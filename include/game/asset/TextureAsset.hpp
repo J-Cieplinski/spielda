@@ -13,7 +13,7 @@ class TextureAsset final : public roen::interfaces::Asset<Texture2D>
 public:
     ~TextureAsset();
 
-    void loadAsset(const std::string& path) override;
+    bool loadAsset(const std::string& path) override;
     [[nodiscard]] Texture2D get() const override;
 private:
     Texture2D texture_;

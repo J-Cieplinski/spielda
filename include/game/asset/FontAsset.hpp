@@ -13,7 +13,7 @@ class FontAsset final : public roen::interfaces::Asset<Font>
 public:
     ~FontAsset();
 
-    void loadAsset(const std::string& path) override;
+    bool loadAsset(const std::string& path) override;
     [[nodiscard]] Font get() const override;
 private:
     Font font_;

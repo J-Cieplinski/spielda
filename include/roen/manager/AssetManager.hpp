@@ -46,32 +46,32 @@ requires std::is_base_of_v<interfaces::IAsset, AssetType> AssetManager<AssetType
 }
 
 template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>void AssetManager<AssetType>::freeAssets()
+requires std::is_base_of_v<interfaces::IAsset, AssetType>
+void AssetManager<AssetType>::freeAssets()
 {
     assets_.clear();
 }
 
 template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>void
-AssetManager<AssetType>::loadAsset(const std::string &id, const std::string &path)
+requires std::is_base_of_v<interfaces::IAsset, AssetType>
+void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string &path)
 {
     AssetType asset;
-    try
+
+    if(!asset.loadAsset(path))
     {
-        asset.loadAsset(path);
-    }
-    catch (std::runtime_error& e)
-    {
-        SDK_CRITICAL("{0} with id: {1}", e.what(), id);
-        throw e;
+        std::stringstream ss;
+        ss << "Failed to open font with path: " << path << " and id: " << id;
+        SDK_CRITICAL(ss.str());
+        throw std::runtime_error(ss.str());
     }
 
     assets_[hashString(id)] = asset;
 }
 
 template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>AssetType
-AssetManager<AssetType>::getAsset(std::uint64_t id) const
+requires std::is_base_of_v<interfaces::IAsset, AssetType>
+AssetType AssetManager<AssetType>::getAsset(std::uint64_t id) const
 {
     try
     {

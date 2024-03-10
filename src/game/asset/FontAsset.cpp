@@ -14,15 +14,13 @@ FontAsset::~FontAsset()
     UnloadFont(font_);
 }
 
-void FontAsset::loadAsset(const std::string &path)
+bool FontAsset::loadAsset(const std::string &path)
 {
     SDK_INFO("Loading font: {0}", path);
 
     font_ = LoadFont(path.c_str());
-    if (font_.texture.id <= 0)
-    {
-        throw std::runtime_error("Failed to open font with path: " + path);
-    }
+
+    return font_.texture.id != 0;
 }
 
 Font FontAsset::get() const

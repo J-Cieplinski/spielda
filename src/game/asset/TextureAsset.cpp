@@ -14,15 +14,12 @@ TextureAsset::~TextureAsset()
     UnloadTexture(texture_);
 }
 
-void TextureAsset::loadAsset(const std::string &path)
+bool TextureAsset::loadAsset(const std::string &path)
 {
     SDK_INFO("Loading texture image: {0}", path);
 
     texture_ = LoadTexture(path.c_str());
-    if (texture_.id <= 0)
-    {
-        throw std::runtime_error("Failed to open texture with path: " + path);
-    }
+    return texture_.id != 0;
 }
 
 Texture2D TextureAsset::get() const

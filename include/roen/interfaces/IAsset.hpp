@@ -9,7 +9,7 @@ namespace roen::interfaces
 class IAsset
 {
 public:
-    virtual void loadAsset(const std::string& path) = 0;
+    virtual bool loadAsset(const std::string& path) = 0;
 };
 
 template <typename AssetType>
