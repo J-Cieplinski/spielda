@@ -15,6 +15,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/roen/interfaces/IScene.hpp
 )
 
+add_subdirectory(container)
 add_subdirectory(log)
 add_subdirectory(manager)
 
