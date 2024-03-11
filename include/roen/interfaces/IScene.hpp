@@ -9,8 +9,6 @@ class GameSceneManager;
 namespace roen::interfaces
 {
 
-class IGame;
-
 class IScene
 {
 public:
