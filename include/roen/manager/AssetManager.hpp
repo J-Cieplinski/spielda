@@ -56,6 +56,11 @@ template<typename AssetType>
 requires std::is_base_of_v<interfaces::IAsset, AssetType>
 void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string &path)
 {
+    if(assets_.find(hashString(id)) != assets_.end())
+    {
+        return;
+    }
+
     AssetType asset;
 
     if(!asset.loadAsset(path))

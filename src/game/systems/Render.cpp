@@ -11,7 +11,7 @@ namespace spielda::system
 {
 
 Render::Render(const entt::registry& entityManager, const Camera2D& camera)
-    : entityManager_{entityManager}
+    : ISystem{entityManager}
     , camera_{camera}
 {
 }

@@ -11,31 +11,37 @@
 namespace roen::container
 {
 
+namespace
+{
+template <typename T>
+concept DerivedFromISystem = std::is_base_of<interfaces::ISystem, T>::value;
+}
+
 class SystemsContainer
 {
 using SystemsMap = std::unordered_map<std::type_index, std::shared_ptr<interfaces::ISystem>>;
 using SystemsIterator = SystemsMap::iterator;
 using SystemsConstIterator = SystemsMap::const_iterator;
 public:
-    template<typename SystemType, typename ...Args>
+    template<DerivedFromISystem SystemType, typename ...Args>
     void add(Args&& ...args);
 
-    template<typename SystemType>
+    template<DerivedFromISystem SystemType>
     void remove();
 
-    template<typename SystemType>
-    bool hasSystem() const;
+    template<DerivedFromISystem SystemType>
+    [[nodiscard]] bool hasSystem() const;
 
-    template<typename SystemType>
+    template<DerivedFromISystem SystemType>
     SystemType& get() const;
 
-    SystemsIterator begin();
-    SystemsConstIterator begin() const;
-    SystemsConstIterator cbegin() const;
+    [[nodiscard]] SystemsIterator begin();
+    [[nodiscard]] SystemsConstIterator begin() const;
+    [[nodiscard]] SystemsConstIterator cbegin() const;
 
-    SystemsIterator end();
-    SystemsConstIterator end() const;
-    SystemsConstIterator cend() const;
+    [[nodiscard]] SystemsIterator end();
+    [[nodiscard]] SystemsConstIterator end() const;
+    [[nodiscard]] SystemsConstIterator cend() const;
 private:
     SystemsMap systems_;
 };
@@ -49,7 +55,7 @@ private:
 namespace roen::container
 {
 
-template<typename SystemType, typename... Args>
+template<DerivedFromISystem SystemType, typename... Args>
 void SystemsContainer::add(Args&&... args)
 {
     auto newSystem = std::make_shared<SystemType>(std::forward<Args>(args)...);
@@ -59,7 +65,7 @@ void SystemsContainer::add(Args&&... args)
     systems_.insert({ key, std::move(newSystem) });
 }
 
-template<typename SystemType>
+template<DerivedFromISystem SystemType>
 void SystemsContainer::remove()
 {
     const auto key = std::type_index(typeid(SystemType));
@@ -69,14 +75,14 @@ void SystemsContainer::remove()
     }
 }
 
-template<typename SystemType>
+template<DerivedFromISystem SystemType>
 bool SystemsContainer::hasSystem() const
 {
     const auto key = std::type_index(typeid(SystemType));
     return systems_.contains(key);
 }
 
-template<typename SystemType>
+template<DerivedFromISystem SystemType>
 SystemType& SystemsContainer::get() const
 {
     const auto key = std::type_index(typeid(SystemType));

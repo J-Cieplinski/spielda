@@ -18,7 +18,7 @@ public:
 
     virtual ~ISystem() = default;
 
-private:
+protected:
     const entt::registry& entityManager_;
 };
 
