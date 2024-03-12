@@ -24,7 +24,7 @@ public:
     void freeAssets();
     [[nodiscard]] AssetType getAsset(std::uint64_t id) const;
 private:
-    std::map<std::uint64_t, AssetType> assets_;
+    inline static std::map<std::uint64_t, AssetType> assets_;
 };
 
 } // roen::manager

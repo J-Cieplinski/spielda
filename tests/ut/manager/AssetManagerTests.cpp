@@ -14,6 +14,7 @@ const std::string DUMMY_PATH {"DUMMY_PATH"};
 const std::string DUMMY_ID {"DUMMY_ID"};
 const std::string DUMMY_PATH_2 {"DUMMY_PATH_2"};
 const std::string DUMMY_ID_2 {"DUMMY_ID_2"};
+const std::string DUMMY {"DUMMY"};
 constexpr std::uint64_t DUMMY_HASH{123};
 
 constexpr std::uint32_t VAL_FALSE{0};
@@ -47,6 +48,21 @@ public:
     }
 private:
     int asset_{val};
+};
+
+class FloatStubAsset : public Asset<float>
+{
+public:
+    bool loadAsset(const std::string& path) override
+    {
+        return asset_;
+    }
+    [[nodiscard]] float get() const override
+    {
+        return asset_;
+    }
+private:
+    float asset_{5.0f};
 };
 
 } // interfaces
@@ -91,6 +107,28 @@ TEST_F(AssetManagerTests, getAsset_ShouldReturnCorrectAsset)
     EXPECT_NO_THROW(sut.loadAsset(DUMMY_ID_2, DUMMY_PATH_2));
     EXPECT_EQ(sut.getAsset(roen::hashString(DUMMY_ID)), VAL_1);
     EXPECT_EQ(sut.getAsset(roen::hashString(DUMMY_ID_2)), VAL_2);
+}
+
+TEST_F(AssetManagerTests, AssetContainerIsTheSameForAllInstancesOfManager)
+{
+    auto sut = AssetManager<interfaces::StubAsset<VAL_1>>();
+    EXPECT_NO_THROW(sut.loadAsset(DUMMY_ID, DUMMY_PATH));
+
+    auto sutOne = AssetManager<interfaces::StubAsset<VAL_1>>();
+
+    EXPECT_EQ(sut.getAsset(roen::hashString(DUMMY_ID)), VAL_1);
+    EXPECT_EQ(sutOne.getAsset(roen::hashString(DUMMY_ID)), VAL_1);
+}
+
+TEST_F(AssetManagerTests, AssetContainerIsTheDifferentForDifferentTypesOfManager)
+{
+    auto sut = AssetManager<interfaces::StubAsset<VAL_1>>();
+    EXPECT_NO_THROW(sut.loadAsset(DUMMY_ID, DUMMY_PATH));
+
+    auto sutOne = AssetManager<interfaces::FloatStubAsset>();
+
+    EXPECT_EQ(sut.getAsset(roen::hashString(DUMMY_ID)), VAL_1);
+    EXPECT_THROW(sutOne.getAsset(roen::hashString(DUMMY_ID)), std::out_of_range);
 }
 
 } // manager
