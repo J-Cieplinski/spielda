@@ -2,8 +2,9 @@
 
 #include <game/CoreConfig.hpp>
 #include <game/Typedefs.hpp>
-#include <game/components/Transform.hpp>
+#include <game/components/BoxCollider.hpp>
 #include <game/components/Sprite.hpp>
+#include <game/components/Transform.hpp>
 #include <game/systems/Render.hpp>
 
 #include <roen/log/Logger.hpp>
@@ -72,37 +73,48 @@ void GameScene::revealed()
     tson::Tileson tileson;
     auto map = tileson.parse("assets/maps/dungeon.tmj");
 
-    auto tileSize = map->getTileSize();
+    auto tileSize = Vector2(map->getTileSize().x, map->getTileSize().y);
+    std::regex reg("(\\.\\.)");
 
     if(map->getStatus() == tson::ParseStatus::OK)
     {
-        auto backgroundLayer = map->getLayer("Tile Layer 1");
-        auto layerOrder = backgroundLayer->getId();
-        for(auto& [pos, tile] : backgroundLayer->getTileObjects())
+        for(const auto& layer : map->getLayers())
         {
-            auto tileset = tile.getTile()->getTileset();
-            auto tileEntity = entityManager_.create();
-            auto tilePosition = tile.getPosition();
-            auto drawingRect = tile.getDrawingRect();
-            auto imagePath = tileset->getFullImagePath();
+            auto layerOrder = layer.getId();
+            auto layerClass = layer.getClassType();
 
-            std::regex reg("(\\.\\.)");
-            auto correctImagePath = std::regex_replace(imagePath.string(), reg, "assets");
-            auto& manager = entityManager_.ctx().get<TextureManager>();
-            manager.loadAsset("dungeon", correctImagePath);
-            auto tileFlip = tile.getTile()->hasFlipFlags(tson::TileFlipFlags::Diagonally);
-            float rotation = tileFlip ? 90.f : 0.f;
-            auto positionVector = Vector2(tilePosition.x + tileSize.x / 2.f, tilePosition.y + tileSize.y / 2);
+            for (auto &[pos, tile]: layer.getTileData()) {
+                auto tileset = tile->getTileset();
+                auto tileEntity = entityManager_.create();
+                auto tilePosition = tile->getPosition(pos);
+                auto drawingRect = tile->getDrawingRect();
+                auto imagePath = tileset->getFullImagePath();
 
+                auto correctImagePath = std::regex_replace(imagePath.string(), reg, "assets");
+                auto &manager = entityManager_.ctx().get<TextureManager>();
+                manager.loadAsset("dungeon", correctImagePath);
+                auto tileFlip = tile->hasFlipFlags(tson::TileFlipFlags::Diagonally);
+                float rotation = tileFlip ? 90.f : 0.f;
+                auto position = Vector2(tilePosition.x, tilePosition.y);
+                auto rotationOffset = Vector2Scale(tileSize, 0.5f);
 
-            entityManager_.emplace<components::Transform>(tileEntity, positionVector, Vector2{1.f, 1.f}, rotation);
-            entityManager_.emplace<components::Sprite>(tileEntity,
-                                                       Vector2{static_cast<float>(tileSize.x), static_cast<float>(tileSize.y)},
-                                                       Rectangle{static_cast<float>(drawingRect.x), static_cast<float>(drawingRect.y), static_cast<float>(drawingRect.width), static_cast<float>(drawingRect.height)},
-                                                       static_cast<std::uint32_t>(layerOrder),
-                                                       static_cast<std::uint32_t>(layerOrder),
-                                                       roen::hashString("dungeon"),
-                                                       false);
+                entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), Vector2{1.f, 1.f}, rotation);
+                entityManager_.emplace<components::Sprite>(tileEntity,
+                                                           Vector2{static_cast<float>(tileSize.x),
+                                                                   static_cast<float>(tileSize.y)},
+                                                           Rectangle{static_cast<float>(drawingRect.x),
+                                                                     static_cast<float>(drawingRect.y),
+                                                                     static_cast<float>(drawingRect.width),
+                                                                     static_cast<float>(drawingRect.height)},
+                                                           static_cast<std::uint32_t>(layerOrder),
+                                                           static_cast<std::uint32_t>(layerOrder),
+                                                           roen::hashString("dungeon"),
+                                                           false);
+                if(layerClass == "COLLIDABLE")
+                {
+                    entityManager_.emplace<components::BoxCollider>(tileEntity, position, tileSize, false);
+                }
+            }
         }
     }
 }
