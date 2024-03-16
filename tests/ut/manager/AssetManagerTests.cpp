@@ -46,6 +46,10 @@ public:
     {
         return asset_;
     }
+    void freeAsset() override
+    {
+
+    }
 private:
     int asset_{val};
 };
@@ -60,6 +64,10 @@ public:
     [[nodiscard]] float get() const override
     {
         return asset_;
+    }
+    void freeAsset() override
+    {
+
     }
 private:
     float asset_{5.0f};

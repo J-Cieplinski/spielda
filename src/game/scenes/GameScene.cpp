@@ -2,17 +2,20 @@
 
 #include <game/CoreConfig.hpp>
 #include <game/Typedefs.hpp>
+
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
+
+#include <game/systems/CollisionRender.hpp>
 #include <game/systems/Render.hpp>
 
+#include <roen/Utils.hpp>
 #include <roen/log/Logger.hpp>
 #include <roen/manager/GameSceneManager.hpp>
-#include <roen/Utils.hpp>
 
-#include <tileson/tileson.hpp>
 #include <raymath.h>
+#include <tileson/tileson.hpp>
 
 #include <regex>
 
@@ -25,6 +28,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
 {
     renderTexture_ = LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT);
     systems_.add<system::Render>(entityManager_, camera_);
+    systems_.add<system::CollisionRender>(entityManager_, camera_);
     entityManager_.ctx().emplace<TextureManager>();
 }
 
@@ -41,6 +45,7 @@ void GameScene::render()
     ClearBackground(RAYWHITE);
 
     systems_.get<system::Render>().update();
+    systems_.get<system::CollisionRender>().update();
 
     EndTextureMode();
 
