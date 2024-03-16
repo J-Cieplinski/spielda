@@ -2,6 +2,5 @@
 .vs/
 .idea/
 build/
-dependencies/*
 cmake-build-*
 CMakeSettings.json

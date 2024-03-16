@@ -14,6 +14,7 @@ if(WIN32)
 endif()
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 
 find_package(Lua REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
@@ -35,7 +36,7 @@ target_sources(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE
     roen)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${INCLUDE_DIR})
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD

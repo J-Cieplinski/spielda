@@ -35,7 +35,7 @@ void Render::update()
             BeginMode2D(camera_);
         }
 
-        DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, {0, 0}, transform.rotation, WHITE);
+        DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, {8, 8}, transform.rotation, WHITE);
 
         if(!sprite.isFixed)
         {
