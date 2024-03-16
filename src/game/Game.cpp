@@ -2,12 +2,19 @@
 
 #include <game/scenes/MenuScene.hpp>
 
+#include <raylib.h>
+
 namespace spielda
 {
 
-Game::Game()
+Game::Game(std::uint32_t windowWith, std::uint32_t windowHeight, const std::string& windowTitle)
     : isRunning_{true}
 {
+    roen::log::Logger::Init();
+
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(windowWith, windowHeight, windowTitle.c_str());
+
     gameSceneManager_.push(std::make_unique<scenes::MenuScene>(gameSceneManager_));
 }
 
@@ -15,6 +22,7 @@ void Game::run()
 {
     while(isRunning_)
     {
+        isRunning_ = !WindowShouldClose();
         gameSceneManager_.getCurrentScene()->handleInput();
         gameSceneManager_.getCurrentScene()->update();
         gameSceneManager_.getCurrentScene()->render();

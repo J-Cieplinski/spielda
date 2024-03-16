@@ -3,13 +3,16 @@
 
 #include <roen/manager/GameSceneManager.hpp>
 
+#include <cstdint>
+#include <string>
+
 namespace spielda
 {
 
 class Game final
 {
 public:
-    Game();
+    Game(std::uint32_t windowWith = 1920, std::uint32_t windowHeight = 1080, const std::string& windowTitle = "Spielda");
     void run();
 private:
     roen::manager::GameSceneManager gameSceneManager_;

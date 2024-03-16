@@ -3,7 +3,8 @@
 
 #include <roen/interfaces/IScene.hpp>
 
-#include <memory>
+#include <entt/entity/registry.hpp>
+#include <raylib.h>
 
 namespace spielda::scenes
 {
@@ -18,6 +19,10 @@ public:
     void update() override;
     void obscured() override;
     void revealed() override;
+private:
+    RenderTexture renderTexture_;
+    Camera2D camera_;
+    entt::registry entityManager_;
 };
 
 } // spielda::scenes

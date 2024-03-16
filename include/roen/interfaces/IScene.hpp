@@ -1,6 +1,8 @@
 #ifndef ROEN_INTERFACES_ISCENE_HPP
 #define ROEN_INTERFACES_ISCENE_HPP
 
+#include <roen/container/SystemsContainer.hpp>
+
 namespace roen::manager
 {
 class GameSceneManager;
@@ -27,6 +29,7 @@ public:
 
 protected:
     manager::GameSceneManager& gameSceneManager_;
+    container::SystemsContainer systems_;
 };
 
 } // roen::interfaces

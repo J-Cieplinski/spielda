@@ -26,7 +26,7 @@ void MenuScene::render()
 
 void MenuScene::update()
 {
-
+    gameSceneManager_.push(std::make_unique<GameScene>(gameSceneManager_));
 }
 
 void MenuScene::obscured()
@@ -37,8 +37,6 @@ void MenuScene::obscured()
 void MenuScene::revealed()
 {
     APP_INFO("Entered MenuScene");
-
-    gameSceneManager_.push(std::make_unique<GameScene>(gameSceneManager_));
 }
 
 } // spielda::scenes

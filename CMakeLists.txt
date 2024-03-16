@@ -15,9 +15,7 @@ endif()
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-find_package(EnTT CONFIG REQUIRED)
 find_package(Lua REQUIRED)
-find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME})
