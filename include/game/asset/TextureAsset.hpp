@@ -15,6 +15,7 @@ public:
 
     bool loadAsset(const std::string& path) override;
     [[nodiscard]] Texture2D get() const override;
+    void freeAsset() override;
 private:
     Texture2D texture_;
 };

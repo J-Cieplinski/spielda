@@ -9,9 +9,6 @@ namespace spielda::asset
 
 FontAsset::~FontAsset()
 {
-    SDK_INFO("Freeing font raylib texture id: {0}", font_.texture.id);
-
-    UnloadFont(font_);
 }
 
 bool FontAsset::loadAsset(const std::string &path)
@@ -26,6 +23,13 @@ bool FontAsset::loadAsset(const std::string &path)
 Font FontAsset::get() const
 {
     return font_;
+}
+
+void FontAsset::freeAsset()
+{
+    SDK_INFO("Freeing font raylib texture id: {0}", font_.texture.id);
+
+    UnloadFont(font_);
 }
 
 } // spielda::asset

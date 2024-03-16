@@ -10,6 +10,7 @@ class IAsset
 {
 public:
     virtual bool loadAsset(const std::string& path) = 0;
+    virtual void freeAsset() = 0;
 };
 
 template <typename AssetType>

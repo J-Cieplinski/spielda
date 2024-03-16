@@ -22,7 +22,7 @@ public:
 
     void loadAsset(const std::string& id, const std::string& path);
     void freeAssets();
-    [[nodiscard]] AssetType getAsset(std::uint64_t id) const;
+    [[nodiscard]] AssetType& getAsset(std::uint64_t id) const;
 private:
     inline static std::map<std::uint64_t, AssetType> assets_;
 };
@@ -49,6 +49,10 @@ template<typename AssetType>
 requires std::is_base_of_v<interfaces::IAsset, AssetType>
 void AssetManager<AssetType>::freeAssets()
 {
+    for(auto& [guid, asset] : assets_)
+    {
+        asset.freeAsset();
+    }
     assets_.clear();
 }
 
@@ -66,7 +70,7 @@ void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string
     if(!asset.loadAsset(path))
     {
         std::stringstream ss;
-        ss << "Failed to open font with path: " << path << " and id: " << id;
+        ss << "Failed to open asset with path: " << path << " and id: " << id;
         SDK_CRITICAL(ss.str());
         throw std::runtime_error(ss.str());
     }
@@ -76,7 +80,7 @@ void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string
 
 template<typename AssetType>
 requires std::is_base_of_v<interfaces::IAsset, AssetType>
-AssetType AssetManager<AssetType>::getAsset(std::uint64_t id) const
+AssetType& AssetManager<AssetType>::getAsset(std::uint64_t id) const
 {
     try
     {

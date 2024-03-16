@@ -15,6 +15,7 @@ public:
 
     bool loadAsset(const std::string& path) override;
     [[nodiscard]] Font get() const override;
+    void freeAsset() override;
 private:
     Font font_;
 };
