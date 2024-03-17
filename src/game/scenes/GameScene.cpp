@@ -122,6 +122,10 @@ void GameScene::revealed()
             }
         }
     }
+
+    entityManager_.sort<components::Sprite>([](const components::Sprite& lhs, const components::Sprite& rhs) {
+        return lhs.layer < rhs.layer;
+    });
 }
 
 } // spielda::scenes

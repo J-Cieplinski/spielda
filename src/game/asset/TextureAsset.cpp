@@ -7,10 +7,6 @@
 namespace spielda::asset
 {
 
-TextureAsset::~TextureAsset()
-{
-}
-
 bool TextureAsset::loadAsset(const std::string &path)
 {
     SDK_INFO("Loading texture image: {0}", path);
@@ -24,10 +20,12 @@ Texture2D TextureAsset::get() const
     return texture_;
 }
 
-} // spielda::asset
-void spielda::asset::TextureAsset::freeAsset()
+void TextureAsset::freeAsset()
 {
     SDK_INFO("Freeing texture raylib id: {0}", texture_.id);
 
     UnloadTexture(texture_);
 }
+
+} // spielda::asset
+

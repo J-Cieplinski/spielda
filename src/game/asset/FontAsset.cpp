@@ -7,10 +7,6 @@
 namespace spielda::asset
 {
 
-FontAsset::~FontAsset()
-{
-}
-
 bool FontAsset::loadAsset(const std::string &path)
 {
     SDK_INFO("Loading font: {0}", path);
