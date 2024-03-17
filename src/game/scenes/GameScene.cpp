@@ -98,12 +98,30 @@ void GameScene::revealed()
                 auto correctImagePath = std::regex_replace(imagePath.string(), reg, "assets");
                 auto &manager = entityManager_.ctx().get<TextureManager>();
                 manager.loadAsset("dungeon", correctImagePath);
-                auto tileFlip = tile->hasFlipFlags(tson::TileFlipFlags::Diagonally);
-                float rotation = tileFlip ? 90.f : 0.f;
+                auto flippedDiagonally = tile->hasFlipFlags(tson::TileFlipFlags::Diagonally);
+                auto flippedHorizontally = tile->hasFlipFlags(tson::TileFlipFlags::Horizontally);
+                auto flippedVertically = tile->hasFlipFlags(tson::TileFlipFlags::Vertically);
+                float rotation{0.f};
+
                 auto position = Vector2(tilePosition.x, tilePosition.y);
                 auto rotationOffset = Vector2Scale(tileSize, 0.5f);
 
-                entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), Vector2{1.f, 1.f}, rotation);
+                if(flippedDiagonally)
+                {
+                    rotation = 90.f;
+                    flippedHorizontally = flippedVertically;
+                    flippedVertically = !tile->hasFlipFlags(tson::TileFlipFlags::Horizontally);
+                    if(flippedVertically && flippedHorizontally)
+                    {
+                        rotation = 270.f;
+                    }
+                }
+
+                //auto scale = Vector2(flippedHorizontally ? -1.f : 1.f, flippedVertically ? -1.f : 1.f);
+                auto scale = Vector2(1,1);
+
+
+                entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
                 entityManager_.emplace<components::Sprite>(tileEntity,
                                                            Vector2{static_cast<float>(tileSize.x),
                                                                    static_cast<float>(tileSize.y)},
