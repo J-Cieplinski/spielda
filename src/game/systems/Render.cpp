@@ -18,7 +18,9 @@ Render::Render(const entt::registry& entityManager, const Camera2D& camera)
 
 void Render::update()
 {
-    const auto entities = entityManager_.view<components::Sprite, components::Transform>();
+    auto entities = entityManager_.view<components::Sprite, components::Transform>();
+    entities.use<components::Sprite>();
+
     const auto& textureManager = entityManager_.ctx().get<TextureManager>();
 
     for(const auto& [_, sprite, transform] : entities.each())
