@@ -89,11 +89,10 @@ void GameScene::revealed()
             auto layerClass = layer.getClassType();
 
             for (auto &[pos, tile]: layer.getTileData()) {
-                auto tileset = tile->getTileset();
                 auto tileEntity = entityManager_.create();
                 auto tilePosition = tile->getPosition(pos);
                 auto drawingRect = tile->getDrawingRect();
-                auto imagePath = tileset->getFullImagePath();
+                auto imagePath = tile->getTileset()->getFullImagePath();
 
                 auto correctImagePath = std::regex_replace(imagePath.string(), reg, "assets");
                 auto &manager = entityManager_.ctx().get<TextureManager>();
@@ -115,16 +114,16 @@ void GameScene::revealed()
                     {
                         rotation = 270.f;
                     }
+                } else if(flippedVertically && flippedHorizontally)
+                {
+                    rotation = 180.f;
                 }
 
-                //auto scale = Vector2(flippedHorizontally ? -1.f : 1.f, flippedVertically ? -1.f : 1.f);
-                auto scale = Vector2(1,1);
-
+                auto scale = Vector2(1.f,1.f);
 
                 entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
                 entityManager_.emplace<components::Sprite>(tileEntity,
-                                                           Vector2{static_cast<float>(tileSize.x),
-                                                                   static_cast<float>(tileSize.y)},
+                                                           tileSize,
                                                            Rectangle{static_cast<float>(drawingRect.x),
                                                                      static_cast<float>(drawingRect.y),
                                                                      static_cast<float>(drawingRect.width),
