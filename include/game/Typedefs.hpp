@@ -7,7 +7,9 @@
 
 namespace spielda
 {
-    using TextureManager = roen::manager::AssetManager<asset::TextureAsset>;
+
+using TextureManager = roen::manager::AssetManager<asset::TextureAsset>;
+
 } // spielda
 
 #endif //SPIELDA_GAME_TYPEDEFS_HPP

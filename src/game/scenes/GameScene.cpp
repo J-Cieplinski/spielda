@@ -1,6 +1,7 @@
 #include <game/scenes/GameScene.hpp>
 
 #include <game/CoreConfig.hpp>
+#include <game/MapLoader.hpp>
 #include <game/Typedefs.hpp>
 
 #include <game/components/BoxCollider.hpp>
@@ -13,11 +14,6 @@
 #include <roen/Utils.hpp>
 #include <roen/log/Logger.hpp>
 #include <roen/manager/GameSceneManager.hpp>
-
-#include <raymath.h>
-#include <tileson/tileson.hpp>
-
-#include <regex>
 
 namespace spielda::scenes
 {
@@ -75,74 +71,10 @@ void GameScene::revealed()
 {
     APP_INFO("Entered GameScene");
 
-    tson::Tileson tileson;
-    auto map = tileson.parse("assets/maps/dungeon.tmj");
-
-    auto tileSize = Vector2(map->getTileSize().x, map->getTileSize().y);
-    std::regex reg("(\\.\\.)");
-
-    if(map->getStatus() == tson::ParseStatus::OK)
-    {
-        for(const auto& layer : map->getLayers())
-        {
-            auto layerOrder = layer.getId();
-            auto layerClass = layer.getClassType();
-
-            for (auto &[pos, tile]: layer.getTileData()) {
-                auto tileEntity = entityManager_.create();
-                auto tilePosition = tile->getPosition(pos);
-                auto drawingRect = tile->getDrawingRect();
-                auto imagePath = tile->getTileset()->getFullImagePath();
-
-                auto correctImagePath = std::regex_replace(imagePath.string(), reg, "assets");
-                auto &manager = entityManager_.ctx().get<TextureManager>();
-                manager.loadAsset("dungeon", correctImagePath);
-                auto flippedDiagonally = tile->hasFlipFlags(tson::TileFlipFlags::Diagonally);
-                auto flippedHorizontally = tile->hasFlipFlags(tson::TileFlipFlags::Horizontally);
-                auto flippedVertically = tile->hasFlipFlags(tson::TileFlipFlags::Vertically);
-                float rotation{0.f};
-
-                auto position = Vector2(tilePosition.x, tilePosition.y);
-                auto rotationOffset = Vector2Scale(tileSize, 0.5f);
-
-                if(flippedDiagonally)
-                {
-                    rotation = 90.f;
-                    flippedHorizontally = flippedVertically;
-                    flippedVertically = !tile->hasFlipFlags(tson::TileFlipFlags::Horizontally);
-                    if(flippedVertically && flippedHorizontally)
-                    {
-                        rotation = 270.f;
-                    }
-                } else if(flippedVertically && flippedHorizontally)
-                {
-                    rotation = 180.f;
-                }
-
-                auto scale = Vector2(1.f,1.f);
-
-                entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
-                entityManager_.emplace<components::Sprite>(tileEntity,
-                                                           tileSize,
-                                                           Rectangle{static_cast<float>(drawingRect.x),
-                                                                     static_cast<float>(drawingRect.y),
-                                                                     static_cast<float>(drawingRect.width),
-                                                                     static_cast<float>(drawingRect.height)},
-                                                           static_cast<std::uint32_t>(layerOrder),
-                                                           static_cast<std::uint32_t>(layerOrder),
-                                                           roen::hashString("dungeon"),
-                                                           false);
-                if(layerClass == "COLLIDABLE")
-                {
-                    entityManager_.emplace<components::BoxCollider>(tileEntity, position, tileSize, false);
-                }
-            }
-        }
-    }
+    MapLoader::loadMap(entityManager_, "assets/maps/dungeon.tmj", "dungeon");
 
     entityManager_.sort<components::Sprite>([](const components::Sprite& lhs, const components::Sprite& rhs) {
-        return lhs.layer < rhs.layer;
-    });
+        return lhs.layer < rhs.layer;});
 }
 
 } // spielda::scenes
