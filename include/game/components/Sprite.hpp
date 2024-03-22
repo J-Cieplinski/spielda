@@ -11,6 +11,7 @@ namespace spielda::components
 struct Sprite
 {
     Vector2 size;
+    Vector2 origin;
     Rectangle srcRect;
     std::uint32_t layer;
     std::uint32_t zIndexInLayer;

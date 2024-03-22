@@ -52,6 +52,7 @@ void MapLoader::loadMap(entt::registry& entityManager, const std::string &path, 
                 entityManager.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
                 entityManager.emplace<components::Sprite>(tileEntity,
                                                            tileSize,
+                                                           rotationOffset,
                                                            Rectangle{static_cast<float>(drawingRect.x),
                                                                      static_cast<float>(drawingRect.y),
                                                                      static_cast<float>(drawingRect.width),

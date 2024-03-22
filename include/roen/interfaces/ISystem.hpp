@@ -9,7 +9,7 @@ namespace roen::interfaces
 class ISystem
 {
 public:
-    explicit ISystem(const entt::registry& entityManager)
+    explicit ISystem(entt::registry& entityManager)
         : entityManager_{entityManager}
     {
     }
@@ -19,7 +19,7 @@ public:
     virtual ~ISystem() = default;
 
 protected:
-    const entt::registry& entityManager_;
+    entt::registry& entityManager_;
 };
 
 } // roen::interfaces

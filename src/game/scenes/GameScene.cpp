@@ -5,11 +5,14 @@
 #include <game/Typedefs.hpp>
 
 #include <game/components/BoxCollider.hpp>
+#include <game/components/Dirty.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
 
 #include <game/systems/CollisionRender.hpp>
 #include <game/systems/Render.hpp>
+
+#include <entt/entt.hpp>
 
 #include <roen/Utils.hpp>
 #include <roen/log/Logger.hpp>
@@ -26,6 +29,10 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     entityManager_.ctx().emplace<TextureManager>();
+
+    entityManager_.on_construct<components::Sprite>().connect<[&](entt::registry& reg, entt::entity e){
+        reg.emplace<components::Dirty>(e);
+    }>();
 }
 
 void GameScene::handleInput()
@@ -73,8 +80,28 @@ void GameScene::revealed()
 
     MapLoader::loadMap(entityManager_, "assets/maps/dungeon.tmj", "dungeon");
 
-    entityManager_.sort<components::Sprite>([](const components::Sprite& lhs, const components::Sprite& rhs) {
-        return lhs.layer < rhs.layer;});
+    loadHero();
+}
+
+void GameScene::loadHero()
+{
+    auto hero = entityManager_.create();
+    constexpr Rectangle srcRect {
+            .x = 0.f,
+            .y = 112.f,
+            .width = 16.f,
+            .height = 16.f
+    };
+    constexpr std::uint32_t layer = 5;
+    constexpr std::uint32_t layerOrder = 1;
+    constexpr Vector2 position {
+            .x = 24,
+            .y = 24
+    };
+
+    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<components::Transform>(hero, position, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::BoxCollider>(hero, position, Vector2{16, 16}, false);
 }
 
 } // spielda::scenes

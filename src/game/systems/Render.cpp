@@ -2,6 +2,7 @@
 
 #include <game/Typedefs.hpp>
 
+#include <game/components/Dirty.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
 
@@ -10,7 +11,7 @@
 namespace spielda::system
 {
 
-Render::Render(const entt::registry& entityManager, const Camera2D& camera)
+Render::Render(entt::registry& entityManager, const Camera2D& camera)
     : ISystem{entityManager}
     , camera_{camera}
 {
@@ -18,6 +19,8 @@ Render::Render(const entt::registry& entityManager, const Camera2D& camera)
 
 void Render::update()
 {
+    checkForDirtyAndSort();
+
     auto entities = entityManager_.view<components::Sprite, components::Transform>();
     entities.use<components::Sprite>();
 
@@ -37,12 +40,24 @@ void Render::update()
             BeginMode2D(camera_);
         }
 
-        DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, {8, 8}, transform.rotation, WHITE);
+        DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
 
         if(!sprite.isFixed)
         {
             EndMode2D();
         }
+    }
+}
+
+void Render::checkForDirtyAndSort()
+{
+    if(!entityManager_.view<components::Dirty>().empty())
+    {
+        entityManager_.sort<components::Sprite>([](const components::Sprite& lhs, const components::Sprite& rhs) {
+            return lhs.layer < rhs.layer;
+        });
+
+        entityManager_.clear<components::Dirty>();
     }
 }
 

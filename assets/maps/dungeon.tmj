@@ -23,6 +23,12 @@
          "id":1,
          "name":"BACKGROUND",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"renderOrder",
+                 "type":"int",
+                 "value":0
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":10,
@@ -50,6 +56,12 @@
          "id":2,
          "name":"COLLIDABLE",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"renderOrder",
+                 "type":"int",
+                 "value":1
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":10,

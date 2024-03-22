@@ -11,7 +11,7 @@ namespace spielda::system
 class CollisionRender final : public roen::interfaces::ISystem
 {
 public:
-    explicit CollisionRender(const entt::registry& entityManager, const Camera2D& camera);
+    explicit CollisionRender(entt::registry& entityManager, const Camera2D& camera);
     void update() override;
 private:
     const Camera2D& camera_;

@@ -13,9 +13,10 @@ namespace spielda::system
 class Render final : public roen::interfaces::ISystem
 {
 public:
-    explicit Render(const entt::registry& entityManager, const Camera2D& camera);
+    explicit Render(entt::registry& entityManager, const Camera2D& camera);
     void update() override;
 private:
+    void checkForDirtyAndSort();
     const Camera2D& camera_;
 };
 

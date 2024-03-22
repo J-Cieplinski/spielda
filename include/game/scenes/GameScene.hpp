@@ -20,6 +20,8 @@ public:
     void obscured() override;
     void revealed() override;
 private:
+    void loadHero();
+
     RenderTexture renderTexture_;
     Camera2D camera_;
     entt::registry entityManager_;
