@@ -15,6 +15,15 @@
 namespace spielda
 {
 
+struct LayerTypes
+{
+    inline static std::string BACKGROUND {"BACKGROUND"};
+    inline static std::string TRIGGERS {"TRIGGERS"};
+    inline static std::string COLLIDABLE {"COLLIDABLE"};
+};
+
+const std::string renderOrder{"renderOrder"};
+
 void MapLoader::loadMap(entt::registry& entityManager, const std::string &path, const std::string& assetId)
 {
     APP_INFO("Loading map: \"{0}\" with path: \"{1}\"", assetId, path);
@@ -31,9 +40,15 @@ void MapLoader::loadMap(entt::registry& entityManager, const std::string &path, 
 
     if(map->getStatus() == tson::ParseStatus::OK)
     {
-        for(const auto& layer : map->getLayers())
+        for(auto& layer : map->getLayers())
         {
-            auto layerOrder = layer.getId();
+            auto layerOrderProp = layer.getProp(renderOrder);
+            int layerOrder{-1};
+
+            if(layerOrderProp)
+            {
+                layerOrder = std::any_cast<int>(layerOrderProp->getValue());
+            }
             auto layerClass = layer.getClassType();
 
             for (auto& [pos, tile]: layer.getTileData()) {
@@ -50,19 +65,20 @@ void MapLoader::loadMap(entt::registry& entityManager, const std::string &path, 
                 auto rotation = getTileRotation(tile);
 
                 entityManager.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
-                entityManager.emplace<components::Sprite>(tileEntity,
-                                                           tileSize,
-                                                           rotationOffset,
-                                                           Rectangle{static_cast<float>(drawingRect.x),
-                                                                     static_cast<float>(drawingRect.y),
-                                                                     static_cast<float>(drawingRect.width),
-                                                                     static_cast<float>(drawingRect.height)},
-                                                           static_cast<std::uint32_t>(layerOrder),
-                                                           static_cast<std::uint32_t>(layerOrder),
-                                                           roen::hashString(assetId),
-                                                           false);
 
-                if(layerClass == "COLLIDABLE" || layerClass == "TRIGGERS")
+                entityManager.emplace<components::Sprite>(tileEntity,
+                                                            tileSize,
+                                                            rotationOffset,
+                                                            Rectangle{static_cast<float>(drawingRect.x),
+                                                                        static_cast<float>(drawingRect.y),
+                                                                        static_cast<float>(drawingRect.width),
+                                                                        static_cast<float>(drawingRect.height)},
+                                                            static_cast<std::uint32_t>(layerOrder),
+                                                            static_cast<std::uint32_t>(layerOrder),
+                                                            roen::hashString(assetId),
+                                                            false);
+
+                if(layerClass == LayerTypes::COLLIDABLE || layerClass == LayerTypes::TRIGGERS)
                 {
                     entityManager.emplace<components::BoxCollider>(tileEntity, position, tileSize, false);
                 }
