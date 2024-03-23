@@ -21,7 +21,11 @@ public:
     void revealed() override;
 private:
     void loadHero();
+    void updateDeltaTime();
+    void initSystems();
 
+    double timeLastFrame_;
+    double deltaTime_;
     RenderTexture renderTexture_;
     Camera2D camera_;
     entt::registry entityManager_;

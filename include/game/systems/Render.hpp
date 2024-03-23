@@ -14,7 +14,7 @@ class Render final : public roen::interfaces::ISystem
 {
 public:
     explicit Render(entt::registry& entityManager, const Camera2D& camera);
-    void update() override;
+    void update();
 private:
     void checkForDirtyAndSort();
     const Camera2D& camera_;

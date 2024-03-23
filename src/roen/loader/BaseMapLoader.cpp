@@ -8,7 +8,8 @@ namespace roen::loader
 {
 
 BaseMapLoader::BaseMapLoader(entt::registry& entityManager)
-    : entityManager_(entityManager)
+    : entityManager_{entityManager}
+    , mapSize_{0.f, 0.f}
 {
 }
 
@@ -18,6 +19,7 @@ void BaseMapLoader::loadMap(entt::registry& entityManager, const std::string &pa
 
     tson::Tileson tileson;
     auto map = tileson.parse(path);
+    mapSize_ = {map->getSize().x, map->getSize().y};
 
     auto tileSize = map->getTileSize();
 
@@ -81,6 +83,11 @@ float BaseMapLoader::getTileRotation(tson::Tile *tile)
     }
 
     return 0.f;
+}
+
+const std::pair<float, float>& BaseMapLoader::getMapSize() const
+{
+    return mapSize_;
 }
 
 } // roen::loader

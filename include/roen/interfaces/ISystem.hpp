@@ -14,10 +14,7 @@ public:
     {
     }
 
-    virtual void update() = 0;
-
     virtual ~ISystem() = default;
-
 protected:
     entt::registry& entityManager_;
 };

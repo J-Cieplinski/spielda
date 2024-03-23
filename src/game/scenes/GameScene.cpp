@@ -6,10 +6,13 @@
 
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Dirty.hpp>
+#include <game/components/Player.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
 
 #include <game/systems/CollisionRender.hpp>
+#include <game/systems/Movement.hpp>
+#include <game/systems/Keyboard.hpp>
 #include <game/systems/Render.hpp>
 
 #include <entt/entt.hpp>
@@ -23,11 +26,13 @@ namespace spielda::scenes
 
 GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     : IScene(gameSceneManager)
+    , deltaTime_{0}
+    , timeLastFrame_{GetTime()}
+    , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f}
 {
-    renderTexture_ = LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT);
-    systems_.add<system::Render>(entityManager_, camera_);
-    systems_.add<system::CollisionRender>(entityManager_, camera_);
+    initSystems();
+
     entityManager_.ctx().emplace<TextureManager>();
 
     entityManager_.on_construct<components::Sprite>().connect<[&](entt::registry& reg, entt::entity e){
@@ -66,7 +71,9 @@ void GameScene::render()
 
 void GameScene::update()
 {
-
+    updateDeltaTime();
+    systems_.get<system::Keyboard>().update();
+    systems_.get<system::Movement>().update(deltaTime_);
 }
 
 void GameScene::obscured()
@@ -80,6 +87,7 @@ void GameScene::revealed()
 
     auto mapLoader = MapLoader(entityManager_);
     mapLoader.loadMap(entityManager_, "assets/maps/dungeon.tmj", "dungeon");
+    auto mapSize = mapLoader.getMapSize();
 
     loadHero();
 }
@@ -103,6 +111,33 @@ void GameScene::loadHero()
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::Transform>(hero, position, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::BoxCollider>(hero, position, Vector2{16, 16}, false);
+    entityManager_.emplace<components::Player>(hero);
+}
+
+void GameScene::updateDeltaTime()
+{
+    deltaTime_ = 0;
+
+    auto currentTime = GetTime();
+    auto updateDrawTime = currentTime - timeLastFrame_;
+    auto targetFrametime = 1.f / 144;
+    auto timeToWait = targetFrametime - updateDrawTime;
+    if (timeToWait > 0)
+    {
+        WaitTime(timeToWait);
+        currentTime = GetTime();
+    }
+
+    deltaTime_ = currentTime - timeLastFrame_;
+    timeLastFrame_ = currentTime;
+}
+
+void GameScene::initSystems()
+{
+    systems_.add<system::CollisionRender>(entityManager_, camera_);
+    systems_.add<system::Keyboard>(entityManager_);
+    systems_.add<system::Movement>(entityManager_);
+    systems_.add<system::Render>(entityManager_, camera_);
 }
 
 } // spielda::scenes
