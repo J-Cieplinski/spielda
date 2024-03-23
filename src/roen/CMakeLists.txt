@@ -16,6 +16,7 @@ target_sources(${PROJECT_NAME}
 )
 
 add_subdirectory(container)
+add_subdirectory(loader)
 add_subdirectory(log)
 add_subdirectory(manager)
 
@@ -27,4 +28,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     sol2
     spdlog::spdlog)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR} ${DEPENDENCIES_DIR} ${LUA_INCLUDE_DIR})

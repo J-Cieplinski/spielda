@@ -1,19 +1,19 @@
 #ifndef SPIELDA_MAPLOADER_HPP
 #define SPIELDA_MAPLOADER_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include <tileson/tileson.hpp>
+#include <roen/loader/BaseMapLoader.hpp>
 
 namespace spielda
 {
 
-class MapLoader
+class MapLoader : public roen::loader::BaseMapLoader
 {
 public:
-    static void loadMap(entt::registry& entityManager, const std::string &path, const std::string& assetId);
+    explicit MapLoader(entt::registry& entityManager);
 private:
-    static float getTileRotation(tson::Tile* tile);
+    void addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSize, float rotation, tson::Rect drawingRect, int layerOrder,
+                        const std::string& layerClass, const std::string& assetId) override;
+    roen::manager::IAssetManager& getTextureManager() override;
 };
 
 } // spielda

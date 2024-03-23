@@ -13,15 +13,23 @@
 namespace roen::manager
 {
 
+class IAssetManager
+{
+public:
+    virtual ~IAssetManager() = default;
+    virtual void loadAsset(const std::string& id, const std::string& path) = 0;
+    virtual void freeAssets() = 0;
+};
+
 template<typename AssetType>
 requires std::is_base_of_v<interfaces::IAsset, AssetType>
-class AssetManager
+class AssetManager : public IAssetManager
 {
 public:
     ~AssetManager();
 
-    void loadAsset(const std::string& id, const std::string& path);
-    void freeAssets();
+    void loadAsset(const std::string& id, const std::string& path) override;
+    void freeAssets() override;
     [[nodiscard]] AssetType& getAsset(std::uint64_t id) const;
 private:
     inline static std::map<std::uint64_t, AssetType> assets_;
