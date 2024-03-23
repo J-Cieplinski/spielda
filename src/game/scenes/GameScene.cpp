@@ -105,7 +105,7 @@ void GameScene::loadHero()
     constexpr std::uint32_t layerOrder = 1;
     constexpr Vector2 position {
             .x = 24,
-            .y = 24
+            .y = 32
     };
 
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
