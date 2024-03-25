@@ -32,6 +32,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     , timeLastFrame_{GetTime()}
     , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f}
+    , debugRender_{true}
 {
     initSystems();
 
@@ -40,6 +41,8 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     entityManager_.on_construct<components::Sprite>().connect<[&](entt::registry& reg, entt::entity e){
         reg.emplace<components::Dirty>(e);
     }>();
+
+    eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
 }
 
 void GameScene::handleInput()
@@ -55,7 +58,10 @@ void GameScene::render()
     ClearBackground(RAYWHITE);
 
     systems_.get<system::Render>().update();
-    systems_.get<system::CollisionRender>().update();
+    if(debugRender_)
+    {
+        systems_.get<system::CollisionRender>().update();
+    }
 
     EndTextureMode();
 
@@ -140,9 +146,14 @@ void GameScene::initSystems()
 {
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
-    systems_.add<system::Keyboard>(entityManager_);
+    systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);
+}
+
+void GameScene::switchDebug(const events::DebugSwitch& event)
+{
+    debugRender_ = event.switchRender ? !debugRender_ : debugRender_;
 }
 
 } // spielda::scenes

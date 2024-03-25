@@ -3,6 +3,8 @@
 
 #include <roen/interfaces/IScene.hpp>
 
+#include <game/events/DebugSwitch.hpp>
+
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>
 #include <raylib.h>
@@ -24,6 +26,7 @@ private:
     void loadHero();
     void updateDeltaTime();
     void initSystems();
+    void switchDebug(const events::DebugSwitch& event);
 
     double timeLastFrame_;
     double deltaTime_;
@@ -31,6 +34,7 @@ private:
     Camera2D camera_;
     entt::registry entityManager_;
     entt::dispatcher eventDisptacher_;
+    bool debugRender_;
 };
 
 } // spielda::scenes

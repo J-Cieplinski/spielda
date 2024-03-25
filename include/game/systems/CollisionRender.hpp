@@ -12,7 +12,7 @@ class CollisionRender final : public roen::interfaces::ISystem
 {
 public:
     explicit CollisionRender(entt::registry& entityManager, const Camera2D& camera);
-    void update() ;
+    void update();
 private:
     const Camera2D& camera_;
 };

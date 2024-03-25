@@ -5,6 +5,8 @@
 #include <game/components/RigidBody.hpp>
 #include <game/components/Transform.hpp>
 
+#include <game/events/DebugSwitch.hpp>
+
 #include <roen/Utils.hpp>
 
 #include <entt/entt.hpp>
@@ -13,8 +15,9 @@
 namespace spielda::system
 {
 
-Keyboard::Keyboard(entt::registry &entityManager)
+Keyboard::Keyboard(entt::registry &entityManager, entt::dispatcher& eventDispatcher)
     : ISystem(entityManager)
+    , eventDispatcher_(eventDispatcher)
 {
 }
 
@@ -41,6 +44,11 @@ void Keyboard::update()
 
         entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
         entityManager_.emplace<components::Transform>(debugEnt, position, Vector2{1, 1}, 0.f);
+    }
+
+    if(IsKeyReleased(KEY_F1))
+    {
+        eventDispatcher_.trigger(events::DebugSwitch{.switchRender = true});
     }
 
     playerRigidBody.velocity.x = 0;
