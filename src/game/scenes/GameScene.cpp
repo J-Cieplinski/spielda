@@ -138,7 +138,7 @@ void GameScene::updateDeltaTime()
 
 void GameScene::initSystems()
 {
-    systems_.add<system::Collision>(entityManager_);
+    systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::Keyboard>(entityManager_);
     systems_.add<system::Movement>(entityManager_);

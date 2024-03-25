@@ -4,6 +4,7 @@
 #include <roen/interfaces/IScene.hpp>
 
 #include <entt/entity/registry.hpp>
+#include <entt/signal/dispatcher.hpp>
 #include <raylib.h>
 
 namespace spielda::scenes
@@ -29,6 +30,7 @@ private:
     RenderTexture renderTexture_;
     Camera2D camera_;
     entt::registry entityManager_;
+    entt::dispatcher eventDisptacher_;
 };
 
 } // spielda::scenes

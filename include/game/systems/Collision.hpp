@@ -3,14 +3,18 @@
 
 #include <roen/interfaces/ISystem.hpp>
 
+#include <entt/signal/dispatcher.hpp>
+
 namespace spielda::system
 {
 
 class Collision final : public roen::interfaces::ISystem
 {
 public:
-    explicit Collision(entt::registry& entityManager);
+    explicit Collision(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
     void update();
+private:
+    entt::dispatcher& eventDispatcher_;
 };
 
 } // spielda::system

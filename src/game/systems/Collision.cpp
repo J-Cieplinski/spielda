@@ -1,6 +1,7 @@
 #include <game/systems/Collision.hpp>
 
 #include <game/components/BoxCollider.hpp>
+#include <game/events/Collision.hpp>
 
 #include <roen/log/Logger.hpp>
 
@@ -9,10 +10,10 @@
 namespace spielda::system
 {
 
-Collision::Collision(entt::registry& entityManager)
+Collision::Collision(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
     : ISystem(entityManager)
+    , eventDispatcher_(eventDispatcher)
 {
-
 }
 
 void Collision::update()
@@ -46,6 +47,7 @@ void Collision::update()
                 APP_TRACE("Entity {0} collided with Entity {1}", static_cast<std::uint32_t>(*entityIt), static_cast<std::uint32_t>(*it2));
                 entityOneCollider.isColliding = true;
                 entityTwoCollider.isColliding = true;
+                eventDispatcher_.trigger(events::Collision{*entityIt, *it2});
             }
         }
     }
