@@ -10,6 +10,8 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/components/Transform.hpp
     ${INCLUDE_DIR}/game/components/tags/Enemy.hpp
     ${INCLUDE_DIR}/game/components/tags/Friend.hpp
+    ${INCLUDE_DIR}/game/events/Collision.hpp
+    ${INCLUDE_DIR}/game/events/DebugSwitch.hpp
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/MapLoader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
