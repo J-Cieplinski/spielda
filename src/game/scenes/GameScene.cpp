@@ -7,9 +7,11 @@
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Dirty.hpp>
 #include <game/components/Player.hpp>
+#include <game/components/RigidBody.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
 
+#include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
 #include <game/systems/Movement.hpp>
 #include <game/systems/Keyboard.hpp>
@@ -74,6 +76,7 @@ void GameScene::update()
     updateDeltaTime();
     systems_.get<system::Keyboard>().update();
     systems_.get<system::Movement>().update(deltaTime_);
+    systems_.get<system::Collision>().update();
 }
 
 void GameScene::obscured()
@@ -110,7 +113,8 @@ void GameScene::loadHero()
 
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::Transform>(hero, position, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::BoxCollider>(hero, position, Vector2{16, 16}, false);
+    entityManager_.emplace<components::BoxCollider>(hero, position, Vector2{14, 14}, false);
+    entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
 }
 
@@ -134,6 +138,7 @@ void GameScene::updateDeltaTime()
 
 void GameScene::initSystems()
 {
+    systems_.add<system::Collision>(entityManager_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::Keyboard>(entityManager_);
     systems_.add<system::Movement>(entityManager_);

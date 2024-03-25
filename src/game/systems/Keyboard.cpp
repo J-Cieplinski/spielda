@@ -2,6 +2,7 @@
 
 #include <game/components/Player.hpp>
 #include <game/components/Sprite.hpp>
+#include <game/components/RigidBody.hpp>
 #include <game/components/Transform.hpp>
 
 #include <roen/Utils.hpp>
@@ -20,6 +21,7 @@ Keyboard::Keyboard(entt::registry &entityManager)
 void Keyboard::update()
 {
     auto playerEntity = entityManager_.view<components::Player>().front();
+    auto& playerRigidBody = entityManager_.get<components::RigidBody>(playerEntity);
 
     if(IsKeyReleased(KEY_D))
     {
@@ -39,6 +41,26 @@ void Keyboard::update()
 
         entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
         entityManager_.emplace<components::Transform>(debugEnt, position, Vector2{1, 1}, 0.f);
+    }
+
+    playerRigidBody.velocity.x = 0;
+    playerRigidBody.velocity.y = 0;
+
+    if(IsKeyDown(KEY_UP))
+    {
+        playerRigidBody.velocity.y = -30;
+    }
+    else if(IsKeyDown(KEY_DOWN))
+    {
+        playerRigidBody.velocity.y = 30;
+    }
+    else if(IsKeyDown(KEY_LEFT))
+    {
+        playerRigidBody.velocity.x = -30;
+    }
+    else if(IsKeyDown(KEY_RIGHT))
+    {
+        playerRigidBody.velocity.x = 30;
     }
 }
 

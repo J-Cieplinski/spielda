@@ -13,21 +13,17 @@ namespace interfaces
 class SystemMock final : public ISystem
 {
 public:
-    explicit SystemMock(const entt::registry& entityManager) : ISystem(entityManager) {};
-
-    MOCK_METHOD(void, update, (), (override));
+    explicit SystemMock(entt::registry& entityManager) : ISystem(entityManager) {};
 };
 
 class SystemStub final : public ISystem
 {
 public:
-    explicit SystemStub(const entt::registry& entityManager, int id = 0)
+    explicit SystemStub(entt::registry& entityManager, int id = 0)
         : ISystem(entityManager)
         , systemId(id)
     {
     };
-
-    void update() override {};
 
     int systemId;
 };
