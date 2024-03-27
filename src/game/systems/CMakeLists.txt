@@ -6,6 +6,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/systems/Keyboard.hpp
     ${INCLUDE_DIR}/game/systems/Movement.hpp
     ${INCLUDE_DIR}/game/systems/Render.hpp
+    ${INCLUDE_DIR}/game/systems/SpriteDirection.hpp
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
@@ -13,4 +14,5 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/Keyboard.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteDirection.cpp
 )

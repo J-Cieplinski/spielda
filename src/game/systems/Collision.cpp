@@ -51,7 +51,7 @@ void Collision::update()
         }
     }
 
-    eventDispatcher_.update();
+    eventDispatcher_.update<events::Collision>();
 }
 
 } // spielda::system

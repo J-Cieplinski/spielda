@@ -17,6 +17,7 @@
 #include <game/systems/Movement.hpp>
 #include <game/systems/Keyboard.hpp>
 #include <game/systems/Render.hpp>
+#include <game/systems/SpriteDirection.hpp>
 
 #include <entt/entt.hpp>
 
@@ -83,6 +84,7 @@ void GameScene::update()
     updateDeltaTime();
     systems_.get<system::Keyboard>().update();
     systems_.get<system::Movement>().update(deltaTime_);
+    systems_.get<system::SpriteDirection>().update();
     systems_.get<system::Collision>().update();
 }
 
@@ -155,6 +157,7 @@ void GameScene::initSystems()
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);
+    systems_.add<system::SpriteDirection>(entityManager_);
 }
 
 void GameScene::switchDebug(const events::DebugSwitch& event)
