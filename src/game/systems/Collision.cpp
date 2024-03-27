@@ -19,38 +19,39 @@ Collision::Collision(entt::registry& entityManager, entt::dispatcher& eventDispa
 void Collision::update()
 {
     const auto& view = entityManager_.view<components::BoxCollider>();
-    view.each([](components::BoxCollider& collider){collider.isColliding = false;});
+    view.each([](components::BoxCollider& collider) { collider.isColliding = false; });
 
     for (auto entityIt = view.begin(); entityIt < view.end(); ++entityIt)
     {
-        for (auto it2 = entityIt + 1; it2 < view.end(); ++it2)
-        {
-            auto& entityOneCollider = view.get<components::BoxCollider>(*entityIt);
-            auto& entityTwoCollider = view.get<components::BoxCollider>(*it2);
+        for (auto it2 = entityIt + 1; it2 < view.end(); ++it2) {
+            auto &entityOneCollider = view.get<components::BoxCollider>(*entityIt);
+            auto &entityTwoCollider = view.get<components::BoxCollider>(*it2);
 
-            Rectangle entityOneBox {
-                .x = entityOneCollider.position.x,
-                .y = entityOneCollider.position.y,
-                .width = entityOneCollider.size.x,
-                .height = entityOneCollider.size.y
+            Rectangle entityOneBox{
+                    .x = entityOneCollider.position.x,
+                    .y = entityOneCollider.position.y,
+                    .width = entityOneCollider.size.x,
+                    .height = entityOneCollider.size.y
             };
 
-            Rectangle entityTwoBox {
-                .x = entityTwoCollider.position.x,
-                .y = entityTwoCollider.position.y,
-                .width = entityTwoCollider.size.x,
-                .height = entityTwoCollider.size.y
+            Rectangle entityTwoBox{
+                    .x = entityTwoCollider.position.x,
+                    .y = entityTwoCollider.position.y,
+                    .width = entityTwoCollider.size.x,
+                    .height = entityTwoCollider.size.y
             };
 
-            if (CheckCollisionRecs(entityOneBox, entityTwoBox))
-            {
-                APP_TRACE("Entity {0} collided with Entity {1}", static_cast<std::uint32_t>(*entityIt), static_cast<std::uint32_t>(*it2));
+            if (CheckCollisionRecs(entityOneBox, entityTwoBox)) {
+                APP_TRACE("Entity {0} collided with Entity {1}", static_cast<std::uint32_t>(*entityIt),
+                            static_cast<std::uint32_t>(*it2));
                 entityOneCollider.isColliding = true;
                 entityTwoCollider.isColliding = true;
-                eventDispatcher_.trigger(events::Collision{*entityIt, *it2});
+                eventDispatcher_.enqueue(events::Collision{*entityIt, *it2});
             }
         }
     }
+
+    eventDispatcher_.update();
 }
 
 } // spielda::system

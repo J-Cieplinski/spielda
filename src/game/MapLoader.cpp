@@ -25,7 +25,8 @@ void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSi
     auto size = Vector2(tileSize.x, tileSize.y);
     auto rotationOffset = Vector2Scale(size, 0.5f);
 
-    entityManager_.emplace<components::Transform>(tileEntity, Vector2Add(position, rotationOffset), scale, rotation);
+    const auto renderedPosition = Vector2Add(position, rotationOffset);
+    entityManager_.emplace<components::Transform>(tileEntity, renderedPosition, renderedPosition, scale, rotation);
 
     entityManager_.emplace<components::Sprite>(tileEntity,
                                                 size,
@@ -41,7 +42,7 @@ void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSi
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)
     {
-        entityManager_.emplace<components::BoxCollider>(tileEntity, position, size, false);
+        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, false);
     }
 }
 

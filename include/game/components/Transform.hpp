@@ -9,6 +9,7 @@ namespace spielda::components
 struct Transform
 {
     Vector2 position;
+    Vector2 previousPosition;
     Vector2 scale;
     float rotation;
 };

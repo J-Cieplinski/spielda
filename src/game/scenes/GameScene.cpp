@@ -13,6 +13,7 @@
 
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
+#include <game/systems/WallBoundaries.hpp>
 #include <game/systems/Movement.hpp>
 #include <game/systems/Keyboard.hpp>
 #include <game/systems/Render.hpp>
@@ -116,10 +117,14 @@ void GameScene::loadHero()
             .x = 24,
             .y = 32
     };
+    constexpr Vector2 colliderPosition {
+            .x = 24,
+            .y = 36
+    };
 
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<components::Transform>(hero, position, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::BoxCollider>(hero, position, Vector2{14, 14}, false);
+    entityManager_.emplace<components::Transform>(hero, position, position, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
 }
@@ -146,6 +151,7 @@ void GameScene::initSystems()
 {
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
+    systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);

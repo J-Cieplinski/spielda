@@ -24,6 +24,9 @@ void Movement::update(double dt)
         auto& collider = group.get<components::BoxCollider>(entity);
         auto rigidBody = group.get<components::RigidBody>(entity);
 
+        transform.previousPosition = transform.position;
+        collider.previousPosition = collider.position;
+
         transform.position.x += rigidBody.velocity.x * dt;
         transform.position.y += rigidBody.velocity.y * dt;
         collider.position.x += rigidBody.velocity.x * dt;

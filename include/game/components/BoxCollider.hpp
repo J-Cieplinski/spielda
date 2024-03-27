@@ -9,6 +9,7 @@ namespace spielda::components
 struct BoxCollider
 {
     Vector2 position;
+    Vector2 previousPosition;
     Vector2 size;
     bool isColliding;
 };
