@@ -10,6 +10,7 @@
 #include <game/components/RigidBody.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
+#include <game/components/Weapon.hpp>
 
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
@@ -18,12 +19,14 @@
 #include <game/systems/Keyboard.hpp>
 #include <game/systems/Render.hpp>
 #include <game/systems/SpriteDirection.hpp>
-
-#include <entt/entt.hpp>
+#include <game/systems/WeaponFollow.hpp>
 
 #include <roen/Utils.hpp>
 #include <roen/log/Logger.hpp>
 #include <roen/manager/GameSceneManager.hpp>
+
+#include <entt/entt.hpp>
+#include <raymath.h>
 
 namespace spielda::scenes
 {
@@ -85,6 +88,7 @@ void GameScene::update()
     systems_.get<system::Keyboard>().update();
     systems_.get<system::Movement>().update(deltaTime_);
     systems_.get<system::SpriteDirection>().update();
+    systems_.get<system::WeaponFollow>().update();
     systems_.get<system::Collision>().update();
 }
 
@@ -129,6 +133,23 @@ void GameScene::loadHero()
     entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
+
+    constexpr Vector2 weaponPosition {
+            .x = 7,
+            .y = -3
+    };
+    constexpr Rectangle weaponSrcRect {
+            .x = 128.f,
+            .y = 128.f,
+            .width = 16.f,
+            .height = 16.f
+    };
+
+    auto weapon = entityManager_.create();
+
+    entityManager_.emplace<components::Weapon>(weapon, weaponPosition, hero);
+    entityManager_.emplace<components::Transform>(weapon, Vector2Add(position, weaponPosition), Vector2Add(position, weaponPosition), Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
 }
 
 void GameScene::updateDeltaTime()
@@ -158,6 +179,7 @@ void GameScene::initSystems()
     systems_.add<system::Movement>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::SpriteDirection>(entityManager_);
+    systems_.add<system::WeaponFollow>(entityManager_);
 }
 
 void GameScene::switchDebug(const events::DebugSwitch& event)
