@@ -10,7 +10,9 @@ namespace spielda
 Game::Game(std::uint32_t windowWith, std::uint32_t windowHeight, const std::string& windowTitle)
     : isRunning_{true}
 {
+#ifdef IS_DEBUG
     roen::log::Logger::Init();
+#endif
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWith, windowHeight, windowTitle.c_str());
@@ -20,6 +22,8 @@ Game::Game(std::uint32_t windowWith, std::uint32_t windowHeight, const std::stri
 
 void Game::run()
 {
+    APP_INFO("Started main loop");
+
     while(isRunning_)
     {
         isRunning_ = !WindowShouldClose();

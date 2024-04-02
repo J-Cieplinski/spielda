@@ -8,11 +8,11 @@
 int main()
 {
     sol::state lua;
-    std::string str {"razdwatrzy"};
+    std::string str {"Print from lua func"};
     lua.set_function("print", [&str]{ APP_INFO("{0}", str); });
 
     std::cout << "Hello, World!" << std::endl;
-    spielda::Game game;
+    spielda::Game game(640, 480);
     lua.script("print()");
 
     game.run();
