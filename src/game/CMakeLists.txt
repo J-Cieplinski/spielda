@@ -4,6 +4,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/MapLoader.hpp
     ${INCLUDE_DIR}/game/components/AI.hpp
     ${INCLUDE_DIR}/game/components/Dirty.hpp
+    ${INCLUDE_DIR}/game/components/GuiElement.hpp
     ${INCLUDE_DIR}/game/components/Player.hpp
     ${INCLUDE_DIR}/game/components/RigidBody.hpp
     ${INCLUDE_DIR}/game/components/Sprite.hpp

@@ -8,6 +8,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <raymath.h>
+
 namespace spielda::system
 {
 
@@ -28,11 +30,13 @@ void Render::update()
 
     for(const auto& [_, sprite, transform] : entities.each())
     {
-        Rectangle dstRect {
+        const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
+
+        const Rectangle dstRect {
             .x = transform.position.x,
             .y = transform.position.y,
-            .width = sprite.size.x * transform.scale.x,
-            .height = sprite.size.y * transform.scale.y
+            .width = scaledSize.x,
+            .height = scaledSize.y
         };
 
         if(!sprite.isFixed)

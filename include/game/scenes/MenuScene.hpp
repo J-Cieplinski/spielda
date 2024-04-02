@@ -24,6 +24,7 @@ private:
     void initSystems();
     void initEntities();
     void initBackground();
+    void initButtons();
 
     entt::registry entityManager_;
     RenderTexture renderTexture_;
