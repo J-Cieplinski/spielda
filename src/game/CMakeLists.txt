@@ -8,6 +8,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/components/Player.hpp
     ${INCLUDE_DIR}/game/components/RigidBody.hpp
     ${INCLUDE_DIR}/game/components/Sprite.hpp
+    ${INCLUDE_DIR}/game/components/Text.hpp
     ${INCLUDE_DIR}/game/components/Transform.hpp
     ${INCLUDE_DIR}/game/components/tags/Enemy.hpp
     ${INCLUDE_DIR}/game/components/tags/Friend.hpp

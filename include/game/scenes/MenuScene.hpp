@@ -21,6 +21,7 @@ public:
     void obscured() override;
     void revealed() override;
 private:
+    void initAssets();
     void initSystems();
     void initEntities();
     void initBackground();

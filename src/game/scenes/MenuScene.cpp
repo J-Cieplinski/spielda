@@ -7,6 +7,7 @@
 #include <game/components/Dirty.hpp>
 #include <game/components/GuiElement.hpp>
 #include <game/components/Sprite.hpp>
+#include <game/components/Text.hpp>
 #include <game/components/Transform.hpp>
 
 #include <game/scenes/GameScene.hpp>
@@ -14,6 +15,7 @@
 #include <game/systems/CollisionRender.hpp>
 #include <game/systems/GuiRender.hpp>
 #include <game/systems/Render.hpp>
+#include <game/systems/TextRender.hpp>
 
 #include <roen/Utils.hpp>
 #include <roen/log/Logger.hpp>
@@ -35,11 +37,13 @@ MenuScene::MenuScene(roen::manager::GameSceneManager &gameSceneManager)
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f}
 {
     entityManager_.ctx().emplace<spielda::TextureManager>();
+    entityManager_.ctx().emplace<spielda::FontManager>();
 
     entityManager_.on_construct<components::Sprite>().connect<[&](entt::registry& reg, entt::entity e){
         reg.emplace<components::Dirty>(e);
     }>();
 
+    initAssets();
     initSystems();
     initEntities();
 }
@@ -58,6 +62,7 @@ void MenuScene::render()
 
     systems_.get<system::Render>().update();
     systems_.get<system::GuiRender>().update();
+    systems_.get<system::TextRender>().update();
     systems_.get<system::CollisionRender>().update();
 
     EndTextureMode();
@@ -89,11 +94,29 @@ void MenuScene::revealed()
     APP_INFO("Entered MenuScene");
 }
 
+void MenuScene::initAssets()
+{
+    /*
+     * Fonts
+     */
+    auto& fontManager = entityManager_.ctx().get<spielda::FontManager>();
+    fontManager.loadAsset("immortal", "assets/fonts/IMMORTAL.ttf");
+
+    /*
+     * Textures
+     */
+    auto& textureManager = entityManager_.ctx().get<spielda::TextureManager>();
+    textureManager.loadAsset(menuBackground, "assets/textures/menu_background.png");
+    textureManager.loadAsset("panel_transparent_border", "assets/textures/gui/panel_transparent_border.png");
+    textureManager.loadAsset("panel_border", "assets/textures/gui/panel_border.png");
+}
+
 void MenuScene::initSystems()
 {
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::GuiRender>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);
+    systems_.add<system::TextRender>(entityManager_);
 }
 
 void MenuScene::initEntities()
@@ -104,8 +127,6 @@ void MenuScene::initEntities()
 
 void MenuScene::initBackground()
 {
-    entityManager_.ctx().get<spielda::TextureManager>().loadAsset(menuBackground, "assets/textures/menu_background.png");
-
     constexpr float rotation {0.f};
     constexpr std::uint32_t layer {1};
     constexpr Rectangle backgroundSrcRect {
@@ -137,9 +158,6 @@ void MenuScene::initBackground()
 
 void MenuScene::initButtons()
 {
-    entityManager_.ctx().get<spielda::TextureManager>().loadAsset("panel_transparent_border", "assets/textures/gui/panel_transparent_border.png");
-    entityManager_.ctx().get<spielda::TextureManager>().loadAsset("panel_border", "assets/textures/gui/panel_border.png");
-
     constexpr float rotation {0.f};
     constexpr Rectangle backgroundSrcRect {
         .x = 0.f,
@@ -183,6 +201,7 @@ void MenuScene::initButtons()
     entityManager_.emplace<components::Transform>(button, buttonPosition, buttonPosition, buttonScale, rotation);
     entityManager_.emplace<components::BoxCollider>(button, colliderPosition, colliderPosition, buttonSize, false);
     entityManager_.emplace<components::GuiElement>(button, nPatchInfo, buttonSize, buttonOrigin, roen::hashString("panel_border"), roen::hashString("panel_transparent_border"), false);
+    entityManager_.emplace<components::Text>(button, "Start", roen::hashString("immortal"), 22.f, WHITE);
 }
 
 } // spielda::scenes

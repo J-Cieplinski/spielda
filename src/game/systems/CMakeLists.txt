@@ -7,6 +7,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/systems/Movement.hpp
     ${INCLUDE_DIR}/game/systems/Render.hpp
     ${INCLUDE_DIR}/game/systems/SpriteDirection.hpp
+    ${INCLUDE_DIR}/game/systems/TextRender.hpp
     ${INCLUDE_DIR}/game/systems/WallBoundaries.hpp
     ${INCLUDE_DIR}/game/systems/WeaponFollow.hpp
     PRIVATE
@@ -18,5 +19,6 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SpriteDirection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TextRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WeaponFollow.cpp
 )
