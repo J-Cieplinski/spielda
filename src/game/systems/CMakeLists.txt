@@ -2,8 +2,10 @@ target_sources(${PROJECT_NAME}
     PUBLIC
     ${INCLUDE_DIR}/game/systems/Collision.hpp
     ${INCLUDE_DIR}/game/systems/CollisionRender.hpp
+    ${INCLUDE_DIR}/game/systems/Gui.hpp
     ${INCLUDE_DIR}/game/systems/GuiRender.hpp
     ${INCLUDE_DIR}/game/systems/Keyboard.hpp
+    ${INCLUDE_DIR}/game/systems/Mouse.hpp
     ${INCLUDE_DIR}/game/systems/Movement.hpp
     ${INCLUDE_DIR}/game/systems/Render.hpp
     ${INCLUDE_DIR}/game/systems/SpriteDirection.hpp
@@ -13,9 +15,11 @@ target_sources(${PROJECT_NAME}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Gui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GuiRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WallBoundaries.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Keyboard.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mouse.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SpriteDirection.cpp

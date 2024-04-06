@@ -13,7 +13,9 @@
 #include <game/scenes/GameScene.hpp>
 
 #include <game/systems/CollisionRender.hpp>
+#include <game/systems/Gui.hpp>
 #include <game/systems/GuiRender.hpp>
+#include <game/systems/Mouse.hpp>
 #include <game/systems/Render.hpp>
 #include <game/systems/TextRender.hpp>
 
@@ -82,6 +84,7 @@ void MenuScene::render()
 void MenuScene::update()
 {
     //gameSceneManager_.push(std::make_unique<GameScene>(gameSceneManager_));
+    systems_.get<system::Mouse>().update();
 }
 
 void MenuScene::obscured()
@@ -107,14 +110,16 @@ void MenuScene::initAssets()
      */
     auto& textureManager = entityManager_.ctx().get<spielda::TextureManager>();
     textureManager.loadAsset(menuBackground, "assets/textures/menu_background.png");
-    textureManager.loadAsset("panel_transparent_border", "assets/textures/gui/panel_transparent_border.png");
+    textureManager.loadAsset("panel_transparent_center", "assets/textures/gui/panel_transparent_center.png");
     textureManager.loadAsset("panel_border", "assets/textures/gui/panel_border.png");
 }
 
 void MenuScene::initSystems()
 {
     systems_.add<system::CollisionRender>(entityManager_, camera_);
+    systems_.add<system::Gui>(entityManager_, eventDisptacher_);
     systems_.add<system::GuiRender>(entityManager_);
+    systems_.add<system::Mouse>(entityManager_, eventDisptacher_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::TextRender>(entityManager_);
 }
@@ -200,7 +205,7 @@ void MenuScene::initButtons()
     auto button = entityManager_.create();
     entityManager_.emplace<components::Transform>(button, buttonPosition, buttonPosition, buttonScale, rotation);
     entityManager_.emplace<components::BoxCollider>(button, colliderPosition, colliderPosition, buttonSize, false);
-    entityManager_.emplace<components::GuiElement>(button, nPatchInfo, buttonSize, buttonOrigin, roen::hashString("panel_border"), roen::hashString("panel_transparent_border"), false);
+    entityManager_.emplace<components::GuiElement>(button, nPatchInfo, buttonSize, buttonOrigin, roen::hashString("panel_border"), roen::hashString("panel_transparent_center"), false);
     entityManager_.emplace<components::Text>(button, "Start", roen::hashString("immortal"), 22.f, WHITE);
 }
 

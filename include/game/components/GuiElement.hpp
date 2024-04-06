@@ -13,7 +13,7 @@ struct GuiElement
     Vector2 origin;
     std::uint64_t guid;
     std::uint64_t guidSelected;
-    bool active;
+    bool selected;
 };
 
 } // spielda::components

@@ -28,6 +28,7 @@ private:
     void initButtons();
 
     entt::registry entityManager_;
+    entt::dispatcher eventDisptacher_;
     RenderTexture renderTexture_;
     Camera2D camera_;
 };

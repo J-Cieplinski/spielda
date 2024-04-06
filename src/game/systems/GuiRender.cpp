@@ -34,7 +34,7 @@ void GuiRender::update()
             .height = scaledSize.y
         };
 
-        const auto& texture = gui.active ? textureManager.getAsset(gui.guidSelected) : textureManager.getAsset(gui.guid);
+        const auto& texture = gui.selected ? textureManager.getAsset(gui.guidSelected) : textureManager.getAsset(gui.guid);
         DrawTextureNPatch(texture, gui.nPatchInfo, dstRect, gui.origin, transform.rotation, WHITE);
     }
 }
