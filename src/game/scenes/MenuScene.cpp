@@ -2,16 +2,17 @@
 
 #include <game/CoreConfig.hpp>
 #include <game/Typedefs.hpp>
+#include <game/Utils.hpp>
 
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Dirty.hpp>
 #include <game/components/GuiElement.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Text.hpp>
+
 #include <game/components/Transform.hpp>
 
 #include <game/scenes/GameScene.hpp>
-
 #include <game/systems/CollisionRender.hpp>
 #include <game/systems/Gui.hpp>
 #include <game/systems/GuiRender.hpp>
@@ -202,10 +203,11 @@ void MenuScene::initButtons()
         .layout = NPATCH_NINE_PATCH
     };
 
+    auto callback = std::make_unique<SwitchSceneFunctor<GameScene>>(gameSceneManager_); //TODO: change this to lua function 
     auto button = entityManager_.create();
     entityManager_.emplace<components::Transform>(button, buttonPosition, buttonPosition, buttonScale, rotation);
     entityManager_.emplace<components::BoxCollider>(button, colliderPosition, colliderPosition, buttonSize, false);
-    entityManager_.emplace<components::GuiElement>(button, nPatchInfo, buttonSize, buttonOrigin, roen::hashString("panel_border"), roen::hashString("panel_transparent_center"), false);
+    entityManager_.emplace<components::GuiElement>(button, nPatchInfo, buttonSize, buttonOrigin, roen::hashString("panel_border"), roen::hashString("panel_transparent_center"), false, std::move(callback));
     entityManager_.emplace<components::Text>(button, "Start", roen::hashString("immortal"), 22.f, WHITE);
 }
 

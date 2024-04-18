@@ -2,7 +2,6 @@
 
 #include <game/components/BoxCollider.hpp>
 #include <game/components/GuiElement.hpp>
-#include <game/components/Transform.hpp>
 
 #include <roen/log/Logger.hpp>
 
@@ -23,11 +22,10 @@ Gui::Gui(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
 
 void Gui::onButtonHighlight(const events::Mouse& event)
 {
-    auto group = entityManager_.group<components::GuiElement>(entt::get<components::Transform, components::BoxCollider>);
+    auto group = entityManager_.group<components::GuiElement>(entt::get<components::BoxCollider>);
 
     for(const auto entity : group)
     {
-        const auto& transform = entityManager_.get<components::Transform>(entity);
         const auto& collider = entityManager_.get<components::BoxCollider>(entity);
         auto& guiElement = entityManager_.get<components::GuiElement>(entity);
 
@@ -43,7 +41,7 @@ void Gui::onButtonHighlight(const events::Mouse& event)
     }
 }
 
-void Gui::onButtonPress(const events::Mouse &event)
+void Gui::onButtonPress(const events::Mouse& event)
 {
     auto view = entityManager_.view<components::GuiElement>();
 
@@ -57,7 +55,7 @@ void Gui::onButtonPress(const events::Mouse &event)
         switch(event.mouseButton)
         {
             case MOUSE_BUTTON_LEFT:
-                APP_INFO("Button pressed");
+                if(guiElement.callback) (*guiElement.callback)();
                 break;
             default:
                 break;

@@ -36,6 +36,13 @@ constexpr std::uint64_t hashString(const std::string& str)
     return hashCode;
 }
 
+class Functor
+{
+public:
+    virtual ~Functor() = default;
+    virtual void operator() () = 0;
+};
+
 } // roen
 
 

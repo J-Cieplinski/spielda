@@ -1,6 +1,9 @@
 #ifndef SPIELDA_GAME_COMPONENTS_GUIELEMENT_HPP
 #define SPIELDA_GAME_COMPONENTS_GUIELEMENT_HPP
 
+#include <roen/Utils.hpp>
+
+#include <memory>
 #include <raylib.h>
 
 namespace spielda::components
@@ -14,6 +17,7 @@ struct GuiElement
     std::uint64_t guid;
     std::uint64_t guidSelected;
     bool selected;
+    std::unique_ptr<roen::Functor> callback;
 };
 
 } // spielda::components
