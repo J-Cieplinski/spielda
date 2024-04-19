@@ -14,12 +14,14 @@ class MenuScene final : public roen::interfaces::IScene
 {
 public:
     explicit MenuScene(roen::manager::GameSceneManager& gameSceneManager);
+    ~MenuScene();
 
     void handleInput() override;
     void render() override;
     void update() override;
     void obscured() override;
     void revealed() override;
+    void quit() override;
 private:
     void initAssets();
     void initSystems();

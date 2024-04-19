@@ -51,9 +51,20 @@ MenuScene::MenuScene(roen::manager::GameSceneManager &gameSceneManager)
     initEntities();
 }
 
+MenuScene::~MenuScene()
+{
+    APP_INFO("Destroyed MenuScene");
+
+    UnloadRenderTexture(renderTexture_);
+    auto& fontManager = entityManager_.ctx().get<spielda::FontManager>();
+    auto& textureManager = entityManager_.ctx().get<spielda::TextureManager>();
+
+    fontManager.freeAssets();
+    textureManager.freeAssets();
+}
+
 void MenuScene::handleInput()
 {
-
 }
 
 void MenuScene::render()
@@ -84,7 +95,6 @@ void MenuScene::render()
 
 void MenuScene::update()
 {
-    //gameSceneManager_.push(std::make_unique<GameScene>(gameSceneManager_));
     systems_.get<system::Mouse>().update();
 }
 
@@ -96,6 +106,11 @@ void MenuScene::obscured()
 void MenuScene::revealed()
 {
     APP_INFO("Entered MenuScene");
+}
+
+void MenuScene::quit()
+{
+    APP_INFO("Quit MenuScene");
 }
 
 void MenuScene::initAssets()

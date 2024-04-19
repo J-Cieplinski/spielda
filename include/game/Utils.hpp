@@ -22,7 +22,7 @@ public:
 
     void operator() () override
     {
-        gameSceneManager_.push(std::make_unique<NewScene>(gameSceneManager_));
+        gameSceneManager_.switchScene(std::make_unique<NewScene>(gameSceneManager_));
     }
 private:
     roen::manager::GameSceneManager& gameSceneManager_;

@@ -26,6 +26,7 @@ public:
     virtual void update() = 0;
     virtual void obscured() = 0;
     virtual void revealed() = 0;
+    virtual void quit() = 0;
 
 protected:
     manager::GameSceneManager& gameSceneManager_;

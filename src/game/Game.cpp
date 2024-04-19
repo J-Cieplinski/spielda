@@ -27,6 +27,7 @@ void Game::run()
     while(isRunning_)
     {
         isRunning_ = !WindowShouldClose();
+        gameSceneManager_.update();
         gameSceneManager_.getCurrentScene()->handleInput();
         gameSceneManager_.getCurrentScene()->update();
         gameSceneManager_.getCurrentScene()->render();

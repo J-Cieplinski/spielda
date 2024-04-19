@@ -18,6 +18,18 @@ void GameSceneManager::push(std::unique_ptr<interfaces::IScene> scene)
     scenes_.push(std::move(scene));
 }
 
+void GameSceneManager::switchScene(std::unique_ptr<interfaces::IScene> scene)
+{
+    if(!scenes_.empty())
+    {
+        scenes_.top()->quit();
+        poppedScenes_.emplace_back(std::move(scenes_.top()));
+        scenes_.pop();
+    }
+
+    scenes_.push(std::move(scene));
+}
+
 void GameSceneManager::pop()
 {
     if(scenes_.empty())
@@ -41,6 +53,15 @@ const std::unique_ptr<interfaces::IScene>& GameSceneManager::getCurrentScene()
     }
 
     return scenes_.top();
+}
+
+void GameSceneManager::update()
+{
+    if(!poppedScenes_.empty())
+    {
+        poppedScenes_.clear();
+        scenes_.top()->revealed();
+    }
 }
 
 } // roen::manager

@@ -22,6 +22,7 @@ public:
     void update() override;
     void obscured() override;
     void revealed() override;
+    void quit() override;
 private:
     void loadHero();
     void updateDeltaTime();

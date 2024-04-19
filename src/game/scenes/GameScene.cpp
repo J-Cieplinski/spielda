@@ -108,6 +108,11 @@ void GameScene::revealed()
     loadHero();
 }
 
+void GameScene::quit()
+{
+
+}
+
 void GameScene::loadHero()
 {
     auto hero = entityManager_.create();

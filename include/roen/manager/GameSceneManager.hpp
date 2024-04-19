@@ -14,9 +14,12 @@ class GameSceneManager
 public:
     void push(std::unique_ptr<interfaces::IScene> scene);
     void pop();
+    void switchScene(std::unique_ptr<interfaces::IScene> scene);
+    void update();
     [[nodiscard]] const std::unique_ptr<interfaces::IScene>& getCurrentScene();
 private:
     std::stack<std::unique_ptr<interfaces::IScene>> scenes_;
+    std::vector<std::unique_ptr<interfaces::IScene>> poppedScenes_;
 };
 
 } // roen::manager
