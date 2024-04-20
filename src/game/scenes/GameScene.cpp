@@ -102,7 +102,7 @@ void GameScene::revealed()
     APP_INFO("Entered GameScene");
 
     auto mapLoader = MapLoader(entityManager_);
-    mapLoader.loadMap(entityManager_, "assets/maps/dungeon.tmj", "dungeon");
+    mapLoader.loadMap("assets/maps/dungeon.tmj", "dungeon");
     auto mapSize = mapLoader.getMapSize();
 
     loadHero();

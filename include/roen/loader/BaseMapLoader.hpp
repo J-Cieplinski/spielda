@@ -30,7 +30,7 @@ class BaseMapLoader
 public:
     explicit BaseMapLoader(entt::registry& entityManager);
 
-    void loadMap(entt::registry& entityManager, const std::string &path, const std::string& assetId);
+    void loadMap(const std::string &path, const std::string& assetId);
     [[nodiscard]] const std::pair<float, float>& getMapSize() const;
 protected:
     static float getTileRotation(tson::Tile* tile);
