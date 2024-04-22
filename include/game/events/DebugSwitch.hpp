@@ -9,6 +9,8 @@ namespace spielda::events
 struct DebugSwitch
 {
     bool switchRender;
+    bool switchSdkLogging;
+    bool switchAppLogging;
     //Rest of the variables for switching
 };
 

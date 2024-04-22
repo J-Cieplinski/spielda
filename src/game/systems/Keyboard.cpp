@@ -23,8 +23,6 @@ Keyboard::Keyboard(entt::registry &entityManager, entt::dispatcher& eventDispatc
 
 void Keyboard::update()
 {
-    auto playerEntity = entityManager_.view<components::Player>().front();
-    auto& playerRigidBody = entityManager_.get<components::RigidBody>(playerEntity);
 
     if(IsKeyReleased(KEY_D))
     {
@@ -46,10 +44,31 @@ void Keyboard::update()
         entityManager_.emplace<components::Transform>(debugEnt, position, Vector2{1, 1}, 0.f);
     }
 
+    checkDebugInput();
+
+    checkPlayerInput();
+}
+
+void Keyboard::checkDebugInput()
+{
     if(IsKeyReleased(KEY_F1))
     {
         eventDispatcher_.trigger(events::DebugSwitch{.switchRender = true});
     }
+    if(IsKeyReleased(KEY_F2))
+    {
+        eventDispatcher_.trigger(events::DebugSwitch{.switchAppLogging = true});
+    }
+    if(IsKeyReleased(KEY_F3))
+    {
+        eventDispatcher_.trigger(events::DebugSwitch{.switchSdkLogging = true});
+    }
+}
+
+void Keyboard::checkPlayerInput()
+{
+    auto playerEntity = entityManager_.view<components::Player>().front();
+    auto& playerRigidBody = entityManager_.get<components::RigidBody>(playerEntity);
 
     playerRigidBody.velocity.x = 0;
     playerRigidBody.velocity.y = 0;

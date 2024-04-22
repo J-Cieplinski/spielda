@@ -13,6 +13,8 @@ public:
     explicit Keyboard(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
     void update();
 private:
+    void checkDebugInput();
+    void checkPlayerInput();
     entt::dispatcher& eventDispatcher_;
 };
 

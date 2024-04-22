@@ -190,6 +190,18 @@ void GameScene::initSystems()
 void GameScene::switchDebug(const events::DebugSwitch& event)
 {
     debugRender_ = event.switchRender ? !debugRender_ : debugRender_;
+
+    if(event.switchAppLogging)
+    {
+        roen::log::Logger::getAppLogger()->level() == spdlog::level::off ? roen::log::Logger::setAppLogLevel(spdlog::level::trace)
+                                                                            : roen::log::Logger::setAppLogLevel(spdlog::level::off);
+    }
+
+    if(event.switchSdkLogging)
+    {
+        roen::log::Logger::getSdkLogger()->level() == spdlog::level::off ? roen::log::Logger::setSdkLogLevel(spdlog::level::trace)
+                                                                            : roen::log::Logger::setSdkLogLevel(spdlog::level::off);
+    }
 }
 
 } // spielda::scenes
