@@ -153,6 +153,7 @@ void GameScene::loadHero()
     auto weapon = entityManager_.create();
 
     entityManager_.emplace<components::Weapon>(weapon, weaponPosition, hero);
+    entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::Transform>(weapon, Vector2Add(position, weaponPosition), Vector2Add(position, weaponPosition), Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
 }

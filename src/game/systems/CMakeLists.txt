@@ -5,6 +5,7 @@ target_sources(${PROJECT_NAME}
     ${INCLUDE_DIR}/game/systems/Gui.hpp
     ${INCLUDE_DIR}/game/systems/GuiRender.hpp
     ${INCLUDE_DIR}/game/systems/Keyboard.hpp
+    ${INCLUDE_DIR}/game/systems/MeleeCombat.hpp
     ${INCLUDE_DIR}/game/systems/Mouse.hpp
     ${INCLUDE_DIR}/game/systems/Movement.hpp
     ${INCLUDE_DIR}/game/systems/Render.hpp
@@ -19,6 +20,7 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/GuiRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WallBoundaries.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Keyboard.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MeleeCombat.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Mouse.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
