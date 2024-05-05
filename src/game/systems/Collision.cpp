@@ -1,6 +1,7 @@
 #include <game/systems/Collision.hpp>
 
 #include <game/components/BoxCollider.hpp>
+#include <game/components/tags/CollisionMask.hpp>
 #include <game/events/Collision.hpp>
 
 #include <roen/log/Logger.hpp>
@@ -42,6 +43,15 @@ void Collision::update()
             };
 
             if (CheckCollisionRecs(entityOneBox, entityTwoBox)) {
+                const auto* maskOne = entityManager_.try_get<tags::CollisionMask>(*entityIt);
+                const auto* maskTwo = entityManager_.try_get<tags::CollisionMask>(*it2);
+
+                if((maskOne && maskTwo)
+                    && ((maskOne->mask & maskTwo->mask) != 0))
+                {
+                    continue;
+                }
+
                 APP_TRACE("Entity {0} collided with Entity {1}", static_cast<std::uint32_t>(*entityIt),
                             static_cast<std::uint32_t>(*it2));
                 entityOneCollider.isColliding = true;

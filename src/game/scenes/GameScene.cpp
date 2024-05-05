@@ -12,6 +12,8 @@
 #include <game/components/Transform.hpp>
 #include <game/components/Weapon.hpp>
 
+#include <game/components/tags/CollisionMask.hpp>
+
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
 #include <game/systems/WallBoundaries.hpp>
@@ -139,6 +141,8 @@ void GameScene::loadHero()
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
 
+    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER);
+
     constexpr Vector2 weaponPosition {
             .x = 7,
             .y = -3
@@ -156,6 +160,8 @@ void GameScene::loadHero()
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::Transform>(weapon, Vector2Add(position, weaponPosition), Vector2Add(position, weaponPosition), Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
+
+    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER);
 }
 
 void GameScene::updateDeltaTime()
