@@ -16,7 +16,7 @@ MapLoader::MapLoader(entt::registry &entityManager)
 }
 
 void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSize, float rotation, tson::Rect drawingRect,
-                         int layerOrder, const std::string& layerClass, const std::string &assetId)
+                                int layerOrder, const std::string& layerClass, const std::string &assetId)
 {
     static auto scale = Vector2(1.f, 1.f);
 

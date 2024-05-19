@@ -1,11 +1,14 @@
 #include <game/systems/Keyboard.hpp>
 
+#include <game/components/BoxCollider.hpp>
 #include <game/components/Player.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/RigidBody.hpp>
 #include <game/components/Transform.hpp>
+#include <game/components/Weapon.hpp>
 
 #include <game/events/DebugSwitch.hpp>
+#include <game/events/Attack.hpp>
 
 #include <roen/Utils.hpp>
 
@@ -62,6 +65,11 @@ void Keyboard::checkDebugInput()
     if(IsKeyReleased(KEY_F3))
     {
         eventDispatcher_.trigger(events::DebugSwitch{.switchSdkLogging = true});
+    }
+    if(IsKeyReleased(KEY_SPACE))
+    {
+        auto playerEntity = entityManager_.view<components::Weapon>();
+        eventDispatcher_.trigger(events::Attack{.attacker = playerEntity.front()});
     }
 }
 

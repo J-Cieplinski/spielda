@@ -16,9 +16,13 @@ void MeleeCombat::onAttack(events::Attack event)
 {
     if(auto* attackerWeapon = entityManager_.try_get<components::Weapon>(event.attacker))
     {
+        attackerWeapon->attacking = true;
         WeaponSwing swing {
             .weapon = *attackerWeapon,
-            .originalRelativePosition = attackerWeapon->relativePosition
+            .weaponEntity = event.attacker,
+            .originalRelativePosition = attackerWeapon->relativePosition,
+            .totalAnimationTime = 1.f,
+            .currentAnimationTime = 0.f
         };
 
         swingsToAnimate_.emplace_back(swing);
@@ -39,8 +43,9 @@ void MeleeCombat::update(double dt)
         {
             swingsToClear.push_back(swing);
 
-            auto& weapon = entityManager_.get<components::Weapon>(swing.weapon.parentEntity);
+            auto& weapon = entityManager_.get<components::Weapon>(swing.weaponEntity);
             weapon.relativePosition = swing.originalRelativePosition;
+            weapon.attacking = false;
         }
     }
 

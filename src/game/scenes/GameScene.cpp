@@ -16,11 +16,12 @@
 
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
-#include <game/systems/WallBoundaries.hpp>
-#include <game/systems/Movement.hpp>
 #include <game/systems/Keyboard.hpp>
+#include <game/systems/Movement.hpp>
+#include <game/systems/MeleeCombat.hpp>
 #include <game/systems/Render.hpp>
 #include <game/systems/SpriteDirection.hpp>
+#include <game/systems/WallBoundaries.hpp>
 #include <game/systems/WeaponFollow.hpp>
 
 #include <roen/Utils.hpp>
@@ -89,6 +90,7 @@ void GameScene::update()
     updateDeltaTime();
     systems_.get<system::Keyboard>().update();
     systems_.get<system::Movement>().update(deltaTime_);
+    systems_.get<system::MeleeCombat>().update(deltaTime_);
     systems_.get<system::SpriteDirection>().update();
     systems_.get<system::WeaponFollow>().update();
     systems_.get<system::Collision>().update();
@@ -189,6 +191,7 @@ void GameScene::initSystems()
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
+    systems_.add<system::MeleeCombat>(entityManager_, eventDisptacher_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::SpriteDirection>(entityManager_);
     systems_.add<system::WeaponFollow>(entityManager_);

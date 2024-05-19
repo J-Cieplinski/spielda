@@ -11,6 +11,7 @@ struct Weapon
 {
     Vector2 relativePosition;
     entt::entity parentEntity;
+    bool attacking {false};
 };
 
 } // spielda::components
