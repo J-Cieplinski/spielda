@@ -20,6 +20,7 @@ public:
     MOCK_METHOD(void, update, (), (override));
     MOCK_METHOD(void, obscured, (), (override));
     MOCK_METHOD(void, revealed, (), (override));
+    MOCK_METHOD(void, quit, (), (override));
 };
 
 } // interfaces

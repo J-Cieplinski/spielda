@@ -24,6 +24,10 @@ add_executable(${PROJECT_NAME})
 #To enable/disable spdlog logging
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC IS_DEBUG)
+    if(UNIX)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -fsanitize=undefined -fsanitize=address")
+        target_link_options(${PROJECT_NAME} BEFORE PUBLIC -fsanitize=undefined PUBLIC -fsanitize=address)
+    endif (UNIX)
 endif ()
 
 add_subdirectory(src)
