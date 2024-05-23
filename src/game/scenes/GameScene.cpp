@@ -11,6 +11,7 @@
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
 #include <game/components/Weapon.hpp>
+#include <game/components/WieldedWeapon.hpp>
 
 #include <game/components/tags/CollisionMask.hpp>
 
@@ -77,11 +78,11 @@ void GameScene::render()
     ClearBackground(BLACK);
 
     DrawTexturePro(renderTexture_.texture,
-                   Rectangle{ 0.f, 0.f, static_cast<float>(renderTexture_.texture.width), static_cast<float>(-(renderTexture_.texture.height)) },
-                   Rectangle{ (GetScreenWidth() - (spielda::RENDER_WIDTH * scale)) * 0.5f, (GetScreenHeight() - (spielda::RENDER_HEIGHT * scale)) * 0.5f, static_cast<float>(spielda::RENDER_WIDTH * scale), static_cast<float>(spielda::RENDER_HEIGHT * scale) },
-                   Vector2{ 0, 0 },
-                   0.f,
-                   WHITE);
+                    Rectangle{ 0.f, 0.f, static_cast<float>(renderTexture_.texture.width), static_cast<float>(-(renderTexture_.texture.height)) },
+                    Rectangle{ (GetScreenWidth() - (spielda::RENDER_WIDTH * scale)) * 0.5f, (GetScreenHeight() - (spielda::RENDER_HEIGHT * scale)) * 0.5f, static_cast<float>(spielda::RENDER_WIDTH * scale), static_cast<float>(spielda::RENDER_HEIGHT * scale) },
+                    Vector2{ 0, 0 },
+                    0.f,
+                    WHITE);
     EndDrawing();
 }
 
@@ -119,36 +120,9 @@ void GameScene::quit()
 
 void GameScene::loadHero()
 {
-    auto hero = entityManager_.create();
-    constexpr Rectangle srcRect {
-            .x = 0.f,
-            .y = 112.f,
-            .width = 16.f,
-            .height = 16.f
-    };
     constexpr std::uint32_t layer = 5;
     constexpr std::uint32_t layerOrder = 1;
-    constexpr Vector2 position {
-            .x = 24,
-            .y = 32
-    };
-    constexpr Vector2 colliderPosition {
-            .x = 24,
-            .y = 36
-    };
 
-    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<components::Transform>(hero, position, position, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, false);
-    entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
-    entityManager_.emplace<components::Player>(hero);
-
-    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER);
-
-    constexpr Vector2 weaponPosition {
-            .x = 7,
-            .y = -3
-    };
     constexpr Rectangle weaponSrcRect {
             .x = 128.f,
             .y = 128.f,
@@ -156,14 +130,68 @@ void GameScene::loadHero()
             .height = 16.f
     };
 
+    constexpr Vector2 weaponOrigin {
+            .x = 8,
+            .y = 16
+    };
+
+    constexpr Vector2 weaponPosition {
+            .x = 0,
+            .y = 0
+    };
+
     auto weapon = entityManager_.create();
 
-    entityManager_.emplace<components::Weapon>(weapon, weaponPosition, hero);
+    entityManager_.emplace<components::Weapon>(weapon, weaponOrigin);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
-    entityManager_.emplace<components::Transform>(weapon, Vector2Add(position, weaponPosition), Vector2Add(position, weaponPosition), Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-
     entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER);
+
+    constexpr Rectangle srcRect {
+            .x = 0.f,
+            .y = 112.f,
+            .width = 16.f,
+            .height = 16.f
+    };
+
+    constexpr Vector2 colliderPosition {
+            .x = 24,
+            .y = 36
+    };
+
+    constexpr Vector2 spriteSize {
+        .x = 16,
+        .y = 16
+    };
+
+    const Vector2 origin = Vector2Scale(spriteSize, 0.5f);
+
+    const Vector2 renderedPosition {
+        .x = colliderPosition.x + origin.x,
+        .y = colliderPosition.y + origin.y / 2
+    };
+
+    constexpr Vector2 weaponAttachOffset {
+            .x = 7,
+            .y = 3
+    };
+
+    constexpr Vector2 weaponColliderAttachOffset {
+            .x = 14,
+            .y = -5
+    };
+
+    auto hero = entityManager_.create();
+
+    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, false);
+    entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
+    entityManager_.emplace<components::Player>(hero);
+    entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
+
+    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER);
 }
 
 void GameScene::updateDeltaTime()

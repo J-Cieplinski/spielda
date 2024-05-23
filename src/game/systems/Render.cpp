@@ -1,14 +1,15 @@
 #include <game/systems/Render.hpp>
 
-#include <game/Typedefs.hpp>
-
 #include <game/components/Dirty.hpp>
-#include <game/components/Sprite.hpp>
-#include <game/components/Transform.hpp>
+#include <game/components/Weapon.hpp>
+#include <game/components/WieldedWeapon.hpp>
+
+#include <game/log/formatters/entity.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <raymath.h>
+#include <rlgl.h>
 
 namespace spielda::system
 {
@@ -28,23 +29,31 @@ void Render::update()
 
     const auto& textureManager = entityManager_.ctx().get<TextureManager>();
 
-    for(const auto& [_, sprite, transform] : entities.each())
+    for(const auto& [entity, sprite, transform] : entities.each())
     {
-        const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
-
-        const Rectangle dstRect {
-            .x = transform.position.x,
-            .y = transform.position.y,
-            .width = scaledSize.x,
-            .height = scaledSize.y
-        };
 
         if(!sprite.isFixed)
         {
             BeginMode2D(camera_);
         }
 
-        DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
+        if(!isComplex(entity))
+        {
+            const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
+
+            const Rectangle dstRect {
+                .x = transform.position.x,
+                .y = transform.position.y,
+                .width = scaledSize.x,
+                .height = scaledSize.y
+            };
+
+            DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
+        }
+        else
+        {
+            drawComplex(entity, sprite, transform, textureManager);
+        }
 
         if(!sprite.isFixed)
         {
@@ -63,6 +72,69 @@ void Render::checkForDirtyAndSort()
 
         entityManager_.clear<components::Dirty>();
     }
+}
+
+bool Render::isComplex(entt::entity entity)
+{
+    bool hasWeapon = entityManager_.any_of<components::WieldedWeapon>(entity);
+    bool isWeapon = entityManager_.any_of<components::Weapon>(entity);
+    
+    return hasWeapon || isWeapon;
+}
+
+void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager)
+{
+    auto weaponComp = entityManager_.try_get<components::Weapon>(entity);
+    if(weaponComp)
+    {
+        APP_WARN("Entity {0} has weapon component no render", entity);
+        return;
+    }
+
+    const auto wieldedWeapon = entityManager_.get<components::WieldedWeapon>(entity);
+
+    const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
+
+    const Rectangle dstRect {
+        .x = transform.position.x,
+        .y = transform.position.y,
+        .width = scaledSize.x,
+        .height = scaledSize.y
+    };
+    APP_WARN("Rendering complex entity {0}", entity);
+
+    DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
+
+    rlPushMatrix();
+
+    const auto weaponPositionOnEntity = Vector2Add(transform.position, wieldedWeapon.weaponAttachOffset);
+    rlTranslatef(weaponPositionOnEntity.x, weaponPositionOnEntity.y, 0);
+
+    //Draw the weapon here
+    drawAttached(wieldedWeapon.weaponEntity, textureManager);
+
+    rlPopMatrix();
+}
+
+void Render::drawAttached(entt::entity entity, const spielda::TextureManager& textureManager)
+{
+    const auto transform = entityManager_.get<components::Transform>(entity);
+    rlRotatef(transform.rotation, 0, 0, 1);
+
+    rlPushMatrix();
+    const auto weapon = entityManager_.get<components::Weapon>(entity);
+
+    float yOrigin = weapon.originPosition.y;
+
+    rlTranslatef(-weapon.originPosition.x, -yOrigin, 0);
+
+    const auto sprite = entityManager_.get<components::Sprite>(entity);
+
+    const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
+
+    DrawTextureRec(textureManager.getAsset(sprite.guid), sprite.srcRect, Vector2Zero(), WHITE);
+
+    rlPopMatrix();
 }
 
 } // spielda::system

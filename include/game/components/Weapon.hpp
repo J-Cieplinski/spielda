@@ -9,8 +9,7 @@ namespace spielda::components
 
 struct Weapon
 {
-    Vector2 relativePosition;
-    entt::entity parentEntity;
+    Vector2 originPosition;
     bool attacking {false};
 };
 

@@ -3,6 +3,11 @@
 
 #include <roen/interfaces/ISystem.hpp>
 
+#include <game/components/Sprite.hpp>
+#include <game/components/Transform.hpp>
+
+#include <game/Typedefs.hpp>
+
 #include <entt/entity/fwd.hpp>
 
 #include <raylib.h>
@@ -17,6 +22,11 @@ public:
     void update();
 private:
     void checkForDirtyAndSort();
+    bool isComplex(entt::entity entity);
+    void drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager);
+    void drawAttached(entt::entity entity, const spielda::TextureManager& textureManager);
+
+
     const Camera2D& camera_;
 };
 

@@ -3,6 +3,7 @@
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Transform.hpp>
 #include <game/components/Weapon.hpp>
+#include <game/components/WieldedWeapon.hpp>
 
 #include <entt/entt.hpp>
 #include <raymath.h>
@@ -17,21 +18,17 @@ WeaponFollow::WeaponFollow(entt::registry &entityManager)
 
 void WeaponFollow::update()
 {
-    auto group = entityManager_.group<components::Weapon>(entt::get<components::Transform, components::BoxCollider>);
+    auto view = entityManager_.view<components::WieldedWeapon>();
+    auto weaponGroup = entityManager_.group<components::Weapon>(entt::get<components::BoxCollider>);
 
-    for(auto entity : group)
+    for (auto weaponWielder : view)
     {
-        auto weapon = group.get<components::Weapon>(entity);
-        auto owner = weapon.parentEntity;
+        auto wieldedWeapon = entityManager_.get<components::WieldedWeapon>(weaponWielder);
+        auto& weaponCollider = weaponGroup.get<components::BoxCollider>(wieldedWeapon.weaponEntity);
+        const auto ownerCollider = entityManager_.get<components::BoxCollider>(weaponWielder);
 
-        auto& weaponTransform = group.get<components::Transform>(entity);
-        auto& weaponCollider = group.get<components::BoxCollider>(entity);
-        const auto ownerTransform = group.get<components::Transform>(owner);
-
-        weaponTransform.previousPosition = weaponTransform.position;
-        weaponCollider.previousPosition = weaponTransform.position;
-        weaponTransform.position = Vector2Add(weapon.relativePosition, ownerTransform.position);
-        weaponCollider.position = weaponTransform.position;
+        weaponCollider.previousPosition = weaponCollider.position;
+        weaponCollider.position = Vector2Add(ownerCollider.position, wieldedWeapon.colliderAttachOffset);
     }
 }
 

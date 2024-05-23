@@ -1,5 +1,7 @@
 #include <game/systems/MeleeCombat.hpp>
 
+#include <game/components/Transform.hpp>
+
 #include <entt/entity/registry.hpp>
 
 namespace spielda::system
@@ -16,12 +18,17 @@ void MeleeCombat::onAttack(events::Attack event)
 {
     if(auto* attackerWeapon = entityManager_.try_get<components::Weapon>(event.attacker))
     {
+        if(attackerWeapon->attacking)
+        {
+            return;
+        }
+        
         attackerWeapon->attacking = true;
         WeaponSwing swing {
             .weapon = *attackerWeapon,
             .weaponEntity = event.attacker,
-            .originalRelativePosition = attackerWeapon->relativePosition,
-            .totalAnimationTime = 1.f,
+            .originalRelativePosition = attackerWeapon->originPosition,
+            .totalAnimationTime = 0.5f,
             .currentAnimationTime = 0.f
         };
 
@@ -34,9 +41,8 @@ void MeleeCombat::update(double dt)
     std::vector<WeaponSwing> swingsToClear {};
     for(auto& swing : swingsToAnimate_)
     {
-        /*
-         * Add weapon swing animation here
-         */
+        auto& weaponTransform = entityManager_.get<components::Transform>(swing.weaponEntity);
+        weaponTransform.rotation = 90 * (swing.currentAnimationTime / swing.totalAnimationTime);
 
         swing.currentAnimationTime += dt;
         if(swing.totalAnimationTime <= swing.currentAnimationTime)
@@ -44,14 +50,15 @@ void MeleeCombat::update(double dt)
             swingsToClear.push_back(swing);
 
             auto& weapon = entityManager_.get<components::Weapon>(swing.weaponEntity);
-            weapon.relativePosition = swing.originalRelativePosition;
+            weapon.originPosition = swing.originalRelativePosition;
+            weaponTransform.rotation = 0;
             weapon.attacking = false;
         }
     }
 
     std::erase_if(swingsToAnimate_, [&swingsToClear](WeaponSwing& swing){
         auto it = std::find_if(swingsToClear.begin(), swingsToClear.end(), [&swing](WeaponSwing& swingToClear) {
-            return swingToClear.weapon.parentEntity == swing.weapon.parentEntity;
+            return swingToClear.weaponEntity == swing.weaponEntity;
         });
 
         return it != swingsToClear.end();

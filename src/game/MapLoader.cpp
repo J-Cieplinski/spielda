@@ -20,17 +20,17 @@ void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSi
 {
     static auto scale = Vector2(1.f, 1.f);
 
-    auto tileEntity = entityManager_.create();
-    auto position = Vector2(tilePosition.x, tilePosition.y);
-    auto size = Vector2(tileSize.x, tileSize.y);
-    auto rotationOffset = Vector2Scale(size, 0.5f);
+    const auto tileEntity = entityManager_.create();
+    const auto position = Vector2(tilePosition.x, tilePosition.y);
+    const auto size = Vector2(tileSize.x, tileSize.y);
+    const auto origin = Vector2Scale(size, 0.5f);
 
-    const auto renderedPosition = Vector2Add(position, rotationOffset);
+    const auto renderedPosition = Vector2Add(position, origin);
     entityManager_.emplace<components::Transform>(tileEntity, renderedPosition, renderedPosition, scale, rotation);
 
     entityManager_.emplace<components::Sprite>(tileEntity,
                                                 size,
-                                                rotationOffset,
+                                                origin,
                                                 Rectangle{static_cast<float>(drawingRect.x),
                                                             static_cast<float>(drawingRect.y),
                                                             static_cast<float>(drawingRect.width),
