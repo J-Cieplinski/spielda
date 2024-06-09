@@ -2,6 +2,7 @@ target_sources(${PROJECT_NAME}
     PUBLIC
     ${INCLUDE_DIR}/game/systems/Collision.hpp
     ${INCLUDE_DIR}/game/systems/CollisionRender.hpp
+    ${INCLUDE_DIR}/game/systems/Damage.hpp
     ${INCLUDE_DIR}/game/systems/DebugRender.hpp
     ${INCLUDE_DIR}/game/systems/Gui.hpp
     ${INCLUDE_DIR}/game/systems/GuiRender.hpp
@@ -17,6 +18,7 @@ target_sources(${PROJECT_NAME}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Damage.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/DebugRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Gui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GuiRender.cpp

@@ -6,6 +6,7 @@
 
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Dirty.hpp>
+#include <game/components/Health.hpp>
 #include <game/components/Player.hpp>
 #include <game/components/RigidBody.hpp>
 #include <game/components/Sprite.hpp>
@@ -17,6 +18,7 @@
 
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
+#include <game/systems/Damage.hpp>
 #include <game/systems/DebugRender.hpp>
 #include <game/systems/Keyboard.hpp>
 #include <game/systems/Movement.hpp>
@@ -41,7 +43,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     , deltaTime_{0}
     , timeLastFrame_{GetTime()}
     , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
-    , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f}
+    , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.5f}
     , debugRender_{true}
 {
     initSystems();
@@ -53,6 +55,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     }>();
 
     eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
+    roen::log::Logger::setAppLogLevel(spdlog::level::info);
 }
 
 void GameScene::handleInput()
@@ -144,7 +147,7 @@ void GameScene::loadHero()
 
     auto weapon = entityManager_.create();
 
-    entityManager_.emplace<components::Weapon>(weapon, weaponOrigin);
+    entityManager_.emplace<components::Weapon>(weapon, weaponOrigin, 20u);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
@@ -218,6 +221,7 @@ void GameScene::updateDeltaTime()
 void GameScene::initSystems()
 {
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
+    systems_.add<system::Damage>(entityManager_, eventDisptacher_);
     systems_.add<system::DebugRender>(entityManager_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
@@ -235,13 +239,13 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
 
     if(event.switchAppLogging)
     {
-        roen::log::Logger::getAppLogger()->level() == spdlog::level::off ? roen::log::Logger::setAppLogLevel(spdlog::level::trace)
+        roen::log::Logger::getAppLogger()->level() == spdlog::level::off ? roen::log::Logger::setAppLogLevel(spdlog::level::info)
                                                                             : roen::log::Logger::setAppLogLevel(spdlog::level::off);
     }
 
     if(event.switchSdkLogging)
     {
-        roen::log::Logger::getSdkLogger()->level() == spdlog::level::off ? roen::log::Logger::setSdkLogLevel(spdlog::level::trace)
+        roen::log::Logger::getSdkLogger()->level() == spdlog::level::off ? roen::log::Logger::setSdkLogLevel(spdlog::level::info)
                                                                             : roen::log::Logger::setSdkLogLevel(spdlog::level::off);
     }
 }

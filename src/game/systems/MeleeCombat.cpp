@@ -53,6 +53,7 @@ void MeleeCombat::update(double dt)
             weapon.originPosition = swing.originalRelativePosition;
             weaponTransform.rotation = 0;
             weapon.attacking = false;
+            weapon.damagedEntities.clear();
         }
     }
 

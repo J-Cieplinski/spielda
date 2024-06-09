@@ -1,8 +1,9 @@
 #ifndef SPIELDA_GAME_SYSTEMS_KEYBOARD_HPP
 #define SPIELDA_GAME_SYSTEMS_KEYBOARD_HPP
 
-#include <entt/signal/dispatcher.hpp>
 #include <roen/interfaces/ISystem.hpp>
+
+#include <entt/signal/dispatcher.hpp>
 
 namespace spielda::system
 {

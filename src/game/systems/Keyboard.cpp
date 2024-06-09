@@ -1,6 +1,7 @@
 #include <game/systems/Keyboard.hpp>
 
 #include <game/components/BoxCollider.hpp>
+#include <game/components/Health.hpp>
 #include <game/components/Player.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/RigidBody.hpp>
@@ -50,6 +51,7 @@ void Keyboard::update()
         entityManager_.emplace<components::BoxCollider>(debugEnt, position, position, Vector2{14, 12}, false);
         entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
         entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
+        entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
 
         APP_INFO("Added debug entity {0}", debugEnt);
     }
