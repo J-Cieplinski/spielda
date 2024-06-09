@@ -4,8 +4,6 @@
 #include <game/components/Weapon.hpp>
 #include <game/components/WieldedWeapon.hpp>
 
-#include <game/log/formatters/entity.hpp>
-
 #include <entt/entity/registry.hpp>
 
 #include <raymath.h>
@@ -66,6 +64,8 @@ void Render::checkForDirtyAndSort()
 {
     if(!entityManager_.view<components::Dirty>().empty())
     {
+        APP_INFO("Detected dirty, sorting Sprites");
+
         entityManager_.sort<components::Sprite>([](const components::Sprite& lhs, const components::Sprite& rhs) {
             return lhs.layer < rhs.layer;
         });
@@ -87,7 +87,6 @@ void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, 
     auto weaponComp = entityManager_.try_get<components::Weapon>(entity);
     if(weaponComp)
     {
-        APP_WARN("Entity {0} has weapon component no render", entity);
         return;
     }
 
@@ -101,7 +100,6 @@ void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, 
         .width = scaledSize.x,
         .height = scaledSize.y
     };
-    APP_WARN("Rendering complex entity {0}", entity);
 
     DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
 

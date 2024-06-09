@@ -10,7 +10,10 @@
 #include <game/events/DebugSwitch.hpp>
 #include <game/events/Attack.hpp>
 
+#include <game/log/formatters/entity.hpp>
+
 #include <roen/Utils.hpp>
+#include <roen/log/Logger.hpp>
 
 #include <entt/entt.hpp>
 #include <raylib.h>
@@ -39,12 +42,16 @@ void Keyboard::update()
         constexpr std::uint32_t layer = 5;
         constexpr std::uint32_t layerOrder = 1;
         constexpr Vector2 position {
-                .x = 24,
-                .y = 40
+                .x = 81,
+                .y = 128
         };
 
         entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-        entityManager_.emplace<components::Transform>(debugEnt, position, Vector2{1, 1}, 0.f);
+        entityManager_.emplace<components::BoxCollider>(debugEnt, position, position, Vector2{14, 12}, false);
+        entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
+        entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
+
+        APP_INFO("Added debug entity {0}", debugEnt);
     }
 
     checkDebugInput();

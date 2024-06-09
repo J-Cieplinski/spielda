@@ -17,6 +17,7 @@
 
 #include <game/systems/Collision.hpp>
 #include <game/systems/CollisionRender.hpp>
+#include <game/systems/DebugRender.hpp>
 #include <game/systems/Keyboard.hpp>
 #include <game/systems/Movement.hpp>
 #include <game/systems/MeleeCombat.hpp>
@@ -70,6 +71,7 @@ void GameScene::render()
     if(debugRender_)
     {
         systems_.get<system::CollisionRender>().update();
+        systems_.get<system::DebugRender>().update();
     }
 
     EndTextureMode();
@@ -145,8 +147,9 @@ void GameScene::loadHero()
     entityManager_.emplace<components::Weapon>(weapon, weaponOrigin);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER);
+    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION);
 
     constexpr Rectangle srcRect {
             .x = 0.f,
@@ -215,6 +218,7 @@ void GameScene::updateDeltaTime()
 void GameScene::initSystems()
 {
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
+    systems_.add<system::DebugRender>(entityManager_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);

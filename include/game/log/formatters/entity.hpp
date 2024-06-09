@@ -1,3 +1,6 @@
+#ifndef SPIELDA_GAME_LOG_FORMATTERS_ENTITY_HPP
+#define SPIELDA_GAME_LOG_FORMATTERS_ENTITY_HPP
+
 #include <fmt/core.h>
 #include <fmt/format.h>
 
@@ -21,3 +24,5 @@ auto formatter<entt::entity>::format(entt::entity entity, format_context& ctx) c
 }
 
 } // namespace fmt
+
+#endif //SPIELDA_GAME_LOG_FORMATTERS_ENTITY_HPP

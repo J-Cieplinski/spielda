@@ -4,6 +4,7 @@
 #include <game/components/BoxCollider.hpp>
 #include <game/components/Sprite.hpp>
 #include <game/components/Transform.hpp>
+#include <game/components/tags/CollisionMask.hpp>
 
 #include <raymath.h>
 
@@ -39,6 +40,8 @@ void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSi
                                                 static_cast<std::uint32_t>(layerOrder),
                                                 roen::hashString(assetId),
                                                 false);
+
+    entityManager_.emplace<tags::CollisionMask>(tileEntity, tags::MaskLayer::DECORATION);
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)
     {
