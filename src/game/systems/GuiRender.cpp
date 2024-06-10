@@ -13,7 +13,7 @@ namespace spielda::system
 {
 
 GuiRender::GuiRender(entt::registry &entityManager)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
 }
 

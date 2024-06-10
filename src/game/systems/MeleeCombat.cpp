@@ -8,8 +8,8 @@ namespace spielda::system
 {
 
 MeleeCombat::MeleeCombat(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
-    , eventDispatcher_(eventDispatcher)
+    : ISystem{entityManager}
+    , eventDispatcher_{eventDispatcher}
 {
     eventDispatcher.sink<events::Attack>().connect<&MeleeCombat::onAttack>(this);
 }

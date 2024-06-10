@@ -13,7 +13,7 @@ namespace spielda::system
 {
 
 TextRender::TextRender(entt::registry &entityManager)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
 
 }

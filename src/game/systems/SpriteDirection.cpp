@@ -9,7 +9,7 @@ namespace spielda::system
 {
 
 SpriteDirection::SpriteDirection(entt::registry &entityManager)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
 }
 

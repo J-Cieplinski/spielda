@@ -10,7 +10,7 @@ namespace spielda::system
 {
 
 Movement::Movement(entt::registry &entityManager)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
 }
 

@@ -39,7 +39,7 @@ namespace spielda::scenes
 {
 
 GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
-    : IScene(gameSceneManager)
+    : IScene{gameSceneManager}
     , deltaTime_{0}
     , timeLastFrame_{GetTime()}
     , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}

@@ -23,8 +23,8 @@ namespace spielda::system
 {
 
 Keyboard::Keyboard(entt::registry &entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
-    , eventDispatcher_(eventDispatcher)
+    : ISystem{entityManager}
+    , eventDispatcher_{eventDispatcher}
 {
 }
 

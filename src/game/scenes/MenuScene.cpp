@@ -35,7 +35,7 @@ const std::string menuBackground {"menu_background"};
 }
 
 MenuScene::MenuScene(roen::manager::GameSceneManager &gameSceneManager)
-    : IScene(gameSceneManager)
+    : IScene{gameSceneManager}
     , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.f}
 {

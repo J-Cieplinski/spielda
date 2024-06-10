@@ -9,8 +9,8 @@ namespace spielda::system
 {
 
 Mouse::Mouse(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
-    , eventDispatcher_(eventDispatcher)
+    : ISystem{entityManager}
+    , eventDispatcher_{eventDispatcher}
 {
 }
 

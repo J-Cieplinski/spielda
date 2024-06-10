@@ -12,7 +12,7 @@ namespace spielda
 {
 
 MapLoader::MapLoader(entt::registry &entityManager)
-    : BaseMapLoader(entityManager)
+    : BaseMapLoader{entityManager}
 {
 }
 

@@ -12,7 +12,7 @@ namespace spielda::system
 {
 
 WallBoundaries::WallBoundaries(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
     eventDispatcher.sink<events::Collision>().connect<&WallBoundaries::onCollision>(this);
 }

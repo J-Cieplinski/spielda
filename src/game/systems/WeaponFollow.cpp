@@ -12,7 +12,7 @@ namespace spielda::system
 {
 
 WeaponFollow::WeaponFollow(entt::registry &entityManager)
-    : ISystem(entityManager)
+    : ISystem{entityManager}
 {
 }
 

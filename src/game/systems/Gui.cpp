@@ -13,8 +13,8 @@ namespace spielda::system
 {
 
 Gui::Gui(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
-    , eventDispatcher_(eventDispatcher)
+    : ISystem{entityManager}
+    , eventDispatcher_{eventDispatcher}
 {
     eventDispatcher_.sink<events::Mouse>().connect<&Gui::onButtonHighlight>(this);
     eventDispatcher_.sink<events::Mouse>().connect<&Gui::onButtonPress>(this);

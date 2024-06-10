@@ -12,8 +12,8 @@ namespace spielda::system
 {
 
 Collision::Collision(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
-    : ISystem(entityManager)
-    , eventDispatcher_(eventDispatcher)
+    : ISystem{entityManager}
+    , eventDispatcher_{eventDispatcher}
 {
 }
 
