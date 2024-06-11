@@ -13,8 +13,9 @@ if(WIN32)
     set(BUILD_SHARED_LIBS TRUE)
 endif()
 
-set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
+set(MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules)
+set(GAME_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules/game/include)
 
 find_package(Lua REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
@@ -30,7 +31,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     endif (UNIX)
 endif ()
 
-add_subdirectory(src)
+add_subdirectory(modules)
 add_subdirectory(tests)
 
 target_sources(${PROJECT_NAME}
@@ -40,7 +41,7 @@ target_sources(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE
     roen)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${GAME_INCLUDE_DIR} ${MODULES_DIR})
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD

@@ -1,6 +1,6 @@
-#include <roen/manager/GameSceneManager.hpp>
+#include <manager/GameSceneManager.hpp>
 
-#include <roen/interfaces/IScene.hpp>
+#include <interfaces/IScene.hpp>
 
 #include <gmock/gmock.h>
 

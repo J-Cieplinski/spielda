@@ -1,0 +1,29 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+    ${GAME_INCLUDE_DIR}/Game.hpp
+    ${GAME_INCLUDE_DIR}/MapLoader.hpp
+    ${GAME_INCLUDE_DIR}/components/AI.hpp
+    ${GAME_INCLUDE_DIR}/components/Dirty.hpp
+    ${GAME_INCLUDE_DIR}/components/GuiElement.hpp
+    ${GAME_INCLUDE_DIR}/components/Health.hpp
+    ${GAME_INCLUDE_DIR}/components/Player.hpp
+    ${GAME_INCLUDE_DIR}/components/RigidBody.hpp
+    ${GAME_INCLUDE_DIR}/components/Sprite.hpp
+    ${GAME_INCLUDE_DIR}/components/Text.hpp
+    ${GAME_INCLUDE_DIR}/components/Transform.hpp
+    ${GAME_INCLUDE_DIR}/components/tags/CollisionMask.hpp
+    ${GAME_INCLUDE_DIR}/components/tags/Enemy.hpp
+    ${GAME_INCLUDE_DIR}/components/tags/Friend.hpp
+    ${GAME_INCLUDE_DIR}/events/Attack.hpp
+    ${GAME_INCLUDE_DIR}/events/Collision.hpp
+    ${GAME_INCLUDE_DIR}/events/DebugSwitch.hpp
+    ${GAME_INCLUDE_DIR}/events/Mouse.hpp
+    ${GAME_INCLUDE_DIR}/log/formatters/entity.hpp
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/MapLoader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
+)
+
+add_subdirectory(asset)
+add_subdirectory(scenes)
+add_subdirectory(systems)

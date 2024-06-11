@@ -1,6 +1,6 @@
-#include <roen/manager/AssetManager.hpp>
+#include <manager/AssetManager.hpp>
 
-#include <roen/interfaces/IAsset.hpp>
+#include <interfaces/IAsset.hpp>
 
 #include <gtest/gtest.h>
 

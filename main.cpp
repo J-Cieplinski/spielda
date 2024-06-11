@@ -2,8 +2,8 @@
 
 #include <sol/sol.hpp>
 
-#include <game/Game.hpp>
-#include <roen/log/Logger.hpp>
+#include <Game.hpp>
+#include <roen/include/log/Logger.hpp>
 
 int main()
 {

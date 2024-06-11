@@ -1,0 +1,34 @@
+target_sources(${PROJECT_NAME}
+    PUBLIC
+    ${GAME_INCLUDE_DIR}/systems/Collision.hpp
+    ${GAME_INCLUDE_DIR}/systems/CollisionRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/Damage.hpp
+    ${GAME_INCLUDE_DIR}/systems/DebugRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/Gui.hpp
+    ${GAME_INCLUDE_DIR}/systems/GuiRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/Keyboard.hpp
+    ${GAME_INCLUDE_DIR}/systems/MeleeCombat.hpp
+    ${GAME_INCLUDE_DIR}/systems/Mouse.hpp
+    ${GAME_INCLUDE_DIR}/systems/Movement.hpp
+    ${GAME_INCLUDE_DIR}/systems/Render.hpp
+    ${GAME_INCLUDE_DIR}/systems/SpriteDirection.hpp
+    ${GAME_INCLUDE_DIR}/systems/TextRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/WallBoundaries.hpp
+    ${GAME_INCLUDE_DIR}/systems/WeaponFollow.hpp
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Damage.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/DebugRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Gui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GuiRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WallBoundaries.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Keyboard.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MeleeCombat.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mouse.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SpriteDirection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TextRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WeaponFollow.cpp
+)
