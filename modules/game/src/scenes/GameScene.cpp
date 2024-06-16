@@ -16,6 +16,8 @@
 
 #include <components/tags/CollisionMask.hpp>
 
+#include <systems/AIDetect.hpp>
+#include <systems/AIMove.hpp>
 #include <systems/Collision.hpp>
 #include <systems/CollisionRender.hpp>
 #include <systems/Damage.hpp>
@@ -23,6 +25,7 @@
 #include <systems/Keyboard.hpp>
 #include <systems/Movement.hpp>
 #include <systems/MeleeCombat.hpp>
+#include <systems/Mouse.hpp>
 #include <systems/Render.hpp>
 #include <systems/SpriteDirection.hpp>
 #include <systems/WallBoundaries.hpp>
@@ -95,6 +98,8 @@ void GameScene::update()
 {
     updateDeltaTime();
     systems_.get<system::Keyboard>().update();
+    systems_.get<system::Mouse>().update();
+    systems_.get<system::AIDetect>().update();
     systems_.get<system::Movement>().update(deltaTime_);
     systems_.get<system::MeleeCombat>().update(deltaTime_);
     systems_.get<system::SpriteDirection>().update();
@@ -220,14 +225,17 @@ void GameScene::updateDeltaTime()
 
 void GameScene::initSystems()
 {
+    systems_.add<system::AIDetect>(entityManager_, eventDisptacher_);
+    systems_.add<system::AIMove>(entityManager_, eventDisptacher_);
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::Damage>(entityManager_, eventDisptacher_);
     systems_.add<system::DebugRender>(entityManager_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);
-    systems_.add<system::Movement>(entityManager_);
     systems_.add<system::MeleeCombat>(entityManager_, eventDisptacher_);
+    systems_.add<system::Mouse>(entityManager_, eventDisptacher_);
+    systems_.add<system::Movement>(entityManager_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::SpriteDirection>(entityManager_);
     systems_.add<system::WeaponFollow>(entityManager_);

@@ -33,8 +33,8 @@ void Mouse::update()
     else if(!Vector2Equals(GetMouseDelta(), Vector2Zero()))
     {
         eventDispatcher_.trigger(events::Mouse {
-                .position = GetMousePosition(),
-                .mouseButton = -1
+            .position = GetMousePosition(),
+            .mouseButton = -1
         });
     }
 }

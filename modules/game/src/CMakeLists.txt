@@ -14,6 +14,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/components/tags/CollisionMask.hpp
     ${GAME_INCLUDE_DIR}/components/tags/Enemy.hpp
     ${GAME_INCLUDE_DIR}/components/tags/Friend.hpp
+    ${GAME_INCLUDE_DIR}/events/AIDetectedEnemy.hpp
     ${GAME_INCLUDE_DIR}/events/Attack.hpp
     ${GAME_INCLUDE_DIR}/events/Collision.hpp
     ${GAME_INCLUDE_DIR}/events/DebugSwitch.hpp
