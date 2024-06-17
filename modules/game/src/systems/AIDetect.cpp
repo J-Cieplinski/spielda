@@ -6,6 +6,8 @@
 
 #include <events/AIDetectedEnemy.hpp>
 
+#include <roen/include/log/Logger.hpp>
+
 #include <entt/entity/registry.hpp>
 
 #include <raylib.h>
@@ -34,8 +36,8 @@ void AIDetect::update()
     };
 
     const Vector2 playerMiddlePos {
-            .x = playerCollider.position.x + collisionBox.width / 2.f,
-            .y = playerCollider.position.y + collisionBox.height / 2.f
+        .x = playerCollider.position.x + collisionBox.width / 2.f,
+        .y = playerCollider.position.y + collisionBox.height / 2.f
     };
 
     auto aiView = entityManager_.view<components::AI>();
@@ -43,9 +45,10 @@ void AIDetect::update()
     for(auto ai : aiView)
     {
         const auto aiComponent = entityManager_.get<components::AI>(ai);
-        const auto aiCollider = entityManager_.get<components::BoxCollider>(ai).position;
+        const auto aiCollider = entityManager_.get<components::BoxCollider>(ai);
+        const auto aiMiddle = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
 
-        if(CheckCollisionCircleRec(Vector2Scale(aiCollider, 0.5f), aiComponent.detectRadius, collisionBox))
+        if(CheckCollisionCircleRec(aiMiddle, aiComponent.detectRadius, collisionBox))
         {
             eventDispatcher_.trigger(events::AIDetectedEnemy {
                 .detectedEntityPosition = playerMiddlePos,

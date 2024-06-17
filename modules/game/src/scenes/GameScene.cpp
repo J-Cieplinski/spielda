@@ -17,6 +17,7 @@
 #include <components/tags/CollisionMask.hpp>
 
 #include <systems/AIDetect.hpp>
+#include <systems/AIDetectRadiusRender.hpp>
 #include <systems/AIMove.hpp>
 #include <systems/Collision.hpp>
 #include <systems/CollisionRender.hpp>
@@ -78,6 +79,7 @@ void GameScene::render()
     {
         systems_.get<system::CollisionRender>().update();
         systems_.get<system::DebugRender>().update();
+        systems_.get<system::AIDetectRadiusRender>().update();
     }
 
     EndTextureMode();
@@ -226,10 +228,11 @@ void GameScene::updateDeltaTime()
 void GameScene::initSystems()
 {
     systems_.add<system::AIDetect>(entityManager_, eventDisptacher_);
+    systems_.add<system::AIDetectRadiusRender>(entityManager_, eventDisptacher_, camera_);
     systems_.add<system::AIMove>(entityManager_, eventDisptacher_);
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::Damage>(entityManager_, eventDisptacher_);
-    systems_.add<system::DebugRender>(entityManager_);
+    systems_.add<system::DebugRender>(entityManager_, camera_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);

@@ -1,6 +1,7 @@
 target_sources(${PROJECT_NAME}
     PUBLIC
     ${GAME_INCLUDE_DIR}/systems/AIDetect.hpp
+    ${GAME_INCLUDE_DIR}/systems/AIDetectRadiusRender.hpp
     ${GAME_INCLUDE_DIR}/systems/AIMove.hpp
     ${GAME_INCLUDE_DIR}/systems/Collision.hpp
     ${GAME_INCLUDE_DIR}/systems/CollisionRender.hpp
@@ -19,6 +20,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/systems/WeaponFollow.hpp
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/AIDetect.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/AIDetectRadiusRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AIMove.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
