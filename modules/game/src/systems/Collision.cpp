@@ -28,21 +28,7 @@ void Collision::update()
             auto &entityOneCollider = view.get<components::BoxCollider>(*entityIt);
             auto &entityTwoCollider = view.get<components::BoxCollider>(*it2);
 
-            Rectangle entityOneBox{
-                    .x = entityOneCollider.position.x,
-                    .y = entityOneCollider.position.y,
-                    .width = entityOneCollider.size.x,
-                    .height = entityOneCollider.size.y
-            };
-
-            Rectangle entityTwoBox{
-                    .x = entityTwoCollider.position.x,
-                    .y = entityTwoCollider.position.y,
-                    .width = entityTwoCollider.size.x,
-                    .height = entityTwoCollider.size.y
-            };
-
-            if (CheckCollisionRecs(entityOneBox, entityTwoBox)) {
+            if (CheckCollisionRecs(entityOneCollider, entityTwoCollider)) {
                 const auto* maskOne = entityManager_.try_get<tags::CollisionMask>(*entityIt);
                 const auto* maskTwo = entityManager_.try_get<tags::CollisionMask>(*it2);
 

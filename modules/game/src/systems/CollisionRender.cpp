@@ -18,16 +18,9 @@ void CollisionRender::update()
 
     for(const auto& [_, boxCollider] : entities.each())
     {
-        Rectangle collisionBox = {
-                .x = boxCollider.position.x,
-                .y = boxCollider.position.y,
-                .width = boxCollider.size.x,
-                .height = boxCollider.size.y
-        };
-
         BeginMode2D(camera_);
 
-        DrawRectangleLinesEx(collisionBox, 0.8, boxCollider.isColliding ? RED : GREEN);
+        DrawRectangleLinesEx(boxCollider, 0.8, boxCollider.isColliding ? RED : GREEN);
 
         EndMode2D();
     }

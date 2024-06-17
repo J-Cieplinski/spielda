@@ -12,6 +12,16 @@ struct BoxCollider
     Vector2 previousPosition;
     Vector2 size;
     bool isColliding;
+
+    operator Rectangle() const
+    {
+        return {
+            .x = position.x,
+            .y = position.y,
+            .width = size.x,
+            .height = size.y
+        };
+    }
 };
 
 } // spielda::components

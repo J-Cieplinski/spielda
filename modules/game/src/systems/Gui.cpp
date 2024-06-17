@@ -29,15 +29,8 @@ void Gui::onButtonHighlight(const events::Mouse& event)
         const auto& collider = entityManager_.get<components::BoxCollider>(entity);
         auto& guiElement = entityManager_.get<components::GuiElement>(entity);
 
-        Rectangle boxCollider {
-            .x = collider.position.x,
-            .y = collider.position.y,
-            .width = collider.size.x,
-            .height = collider.size.y,
-        };
-
         auto mousePosition = event.position;
-        guiElement.selected = CheckCollisionPointRec(mousePosition, boxCollider);
+        guiElement.selected = CheckCollisionPointRec(mousePosition, collider);
     }
 }
 
