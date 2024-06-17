@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_SYSTEMS_RENDER_HPP
 #define SPIELDA_GAME_SYSTEMS_RENDER_HPP
 
-#include <roen/include/interfaces/ISystem.hpp>
+#include <systems/IRenderSystem.hpp>
 
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
@@ -15,19 +15,16 @@
 namespace spielda::system
 {
 
-class Render final : public roen::interfaces::ISystem
+class Render final : public IRenderSystem
 {
 public:
     explicit Render(entt::registry& entityManager, const Camera2D& camera);
-    void update();
+    void update() override;
 private:
     void checkForDirtyAndSort();
     bool isComplex(entt::entity entity);
     void drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager);
     void drawAttached(entt::entity entity, const spielda::TextureManager& textureManager);
-
-
-    const Camera2D& camera_;
 };
 
 } // spielda::system

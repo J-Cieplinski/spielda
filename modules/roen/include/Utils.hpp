@@ -24,6 +24,9 @@ constexpr std::int32_t pow(std::int32_t base, std::uint32_t exponent)
     }
 }
 
+/*
+ * Hashes string used for loaded asset identification
+ */
 constexpr std::uint64_t hashString(const std::string& str)
 {
     constexpr std::uint32_t PRIME_CONST {31};

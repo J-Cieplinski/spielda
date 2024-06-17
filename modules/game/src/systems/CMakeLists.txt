@@ -9,6 +9,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/systems/DebugRender.hpp
     ${GAME_INCLUDE_DIR}/systems/Gui.hpp
     ${GAME_INCLUDE_DIR}/systems/GuiRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/IRenderSystem.hpp
     ${GAME_INCLUDE_DIR}/systems/Keyboard.hpp
     ${GAME_INCLUDE_DIR}/systems/MeleeCombat.hpp
     ${GAME_INCLUDE_DIR}/systems/Mouse.hpp

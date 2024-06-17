@@ -35,7 +35,7 @@ void AIDetect::update()
         .height = playerCollider.size.y
     };
 
-    const Vector2 playerMiddlePos {
+    const Vector2 playerCenter {
         .x = playerCollider.position.x + collisionBox.width / 2.f,
         .y = playerCollider.position.y + collisionBox.height / 2.f
     };
@@ -46,12 +46,12 @@ void AIDetect::update()
     {
         const auto aiComponent = entityManager_.get<components::AI>(ai);
         const auto aiCollider = entityManager_.get<components::BoxCollider>(ai);
-        const auto aiMiddle = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
+        const auto aiEntityCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
 
-        if(CheckCollisionCircleRec(aiMiddle, aiComponent.detectRadius, collisionBox))
+        if(CheckCollisionCircleRec(aiEntityCenter, aiComponent.detectRadius, collisionBox))
         {
             eventDispatcher_.trigger(events::AIDetectedEnemy {
-                .detectedEntityPosition = playerMiddlePos,
+                .detectedEntityPosition = playerCenter,
                 .aiEntity = ai
             });
         }

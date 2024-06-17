@@ -8,8 +8,7 @@ namespace spielda::system
 {
 
 CollisionRender::CollisionRender(entt::registry& entityManager, const Camera2D& camera)
-    : ISystem{entityManager}
-    , camera_{camera}
+    : IRenderSystem{entityManager, camera}
 {
 }
 

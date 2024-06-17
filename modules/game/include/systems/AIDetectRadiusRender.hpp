@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_SYSTEMS_AIDETECTRADIUSRENDER_HPP
 #define SPIELDA_GAME_SYSTEMS_AIDETECTRADIUSRENDER_HPP
 
-#include <roen/include/interfaces/ISystem.hpp>
+#include <systems/IRenderSystem.hpp>
 
 #include <events/Mouse.hpp>
 
@@ -10,17 +10,16 @@
 namespace spielda::system
 {
 
-class AIDetectRadiusRender final : public roen::interfaces::ISystem
+class AIDetectRadiusRender final : public IRenderSystem
 {
 public:
     explicit AIDetectRadiusRender(entt::registry& entityManager, entt::dispatcher& dispatcher, const Camera2D& camera);
-    void update();
+    void update() override;
 private:
     void onMouseClick(events::Mouse event);
 
     entt::dispatcher& eventDispatcher_;
     entt::entity detectedEntity_;
-    const Camera2D& camera_;
 };
 
 } // spielda::system

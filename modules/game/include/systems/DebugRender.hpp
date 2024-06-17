@@ -1,20 +1,18 @@
 #ifndef SPIELDA_GAME_SYSTEMS_DEBUGRENDER_HPP
 #define SPIELDA_GAME_SYSTEMS_DEBUGRENDER_HPP
 
-#include <roen/include/interfaces/ISystem.hpp>
+#include <systems/IRenderSystem.hpp>
 
 #include <raylib.h>
 
 namespace spielda::system
 {
 
-class DebugRender final : public roen::interfaces::ISystem
+class DebugRender final : public IRenderSystem
 {
 public:
     explicit DebugRender(entt::registry& entityManager, const Camera2D& camera);
-    void update();
-private:
-    const Camera2D& camera_;
+    void update() override;
 };
 
 } // spielda::system
