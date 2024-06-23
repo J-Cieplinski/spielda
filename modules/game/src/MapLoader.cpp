@@ -21,7 +21,7 @@ MapLoader::MapLoader(entt::registry &entityManager)
 void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSize, float rotation, tson::Rect drawingRect,
                                 int layerOrder, const std::string& layerClass, const std::string& assetId)
 {
-    static auto scale = Vector2(1.f, 1.f);
+    constexpr auto scale = Vector2(1.f, 1.f);
 
     const auto tileEntity = entityManager_.create();
     const auto position = Vector2(tilePosition.x, tilePosition.y);
@@ -51,7 +51,7 @@ void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSi
     }
 }
 
-roen::manager::IAssetManager &MapLoader::getTextureManager()
+roen::manager::IAssetManager& MapLoader::getTextureManager()
 {
     return entityManager_.ctx().get<TextureManager>();
 }

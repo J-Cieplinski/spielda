@@ -11,6 +11,15 @@ find_package(spdlog CONFIG REQUIRED)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+#To enable/disable spdlog logging
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC IS_DEBUG)
+    if(UNIX)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -fsanitize=undefined -fsanitize=address")
+        target_link_options(${PROJECT_NAME} BEFORE PUBLIC -fsanitize=undefined PUBLIC -fsanitize=address)
+    endif (UNIX)
+endif ()
+
 target_sources(${PROJECT_NAME}
     PUBLIC
     ${INCLUDE_DIR}/Utils.hpp

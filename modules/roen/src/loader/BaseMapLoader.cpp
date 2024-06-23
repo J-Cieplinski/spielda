@@ -13,7 +13,7 @@ BaseMapLoader::BaseMapLoader(entt::registry& entityManager)
 {
 }
 
-void BaseMapLoader::loadMap(const std::string &path, const std::string& assetId)
+void BaseMapLoader::loadMap(const std::string& path, const std::string& assetId)
 {
     SDK_INFO("Loading map: {0} with path: {1}", assetId, path);
 

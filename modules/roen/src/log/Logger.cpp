@@ -19,7 +19,7 @@ void Logger::setSdkLogLevel(spdlog::level::level_enum level)
 {
     if(!sdkLogger_)
     {
-        throw std::runtime_error("SDK LOGGER was not initalized");
+        throw std::runtime_error("SDK LOGGER was not initialized");
     }
     sdkLogger_->set_level(level);
 }
@@ -28,7 +28,7 @@ void Logger::setAppLogLevel(spdlog::level::level_enum level)
 {
     if(!appLogger_)
     {
-        throw std::runtime_error("APP LOGGER was not initalized");
+        throw std::runtime_error("APP LOGGER was not initialized");
     }
     appLogger_->set_level(level);
 }
@@ -37,7 +37,7 @@ std::shared_ptr<spdlog::logger>& Logger::getSdkLogger()
 {
     if(!sdkLogger_)
     {
-        throw std::runtime_error("SDK LOGGER was not initalized");
+        throw std::runtime_error("SDK LOGGER was not initialized");
     }
     return sdkLogger_;
 };
@@ -46,7 +46,7 @@ std::shared_ptr<spdlog::logger>& Logger::getAppLogger()
 {
     if(!appLogger_)
     {
-        throw std::runtime_error("APP LOGGER was not initalized");
+        throw std::runtime_error("APP LOGGER was not initialized");
     }
     return appLogger_;
 };
