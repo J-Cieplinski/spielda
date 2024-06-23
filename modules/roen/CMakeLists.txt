@@ -29,6 +29,7 @@ target_sources(${PROJECT_NAME}
 )
 
 add_subdirectory(src)
+add_subdirectory(tests)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     EnTT::EnTT

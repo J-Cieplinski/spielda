@@ -32,7 +32,6 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif ()
 
 add_subdirectory(modules)
-add_subdirectory(tests)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
