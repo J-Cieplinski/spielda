@@ -1,4 +1,4 @@
-#include <container/SystemsContainer.hpp>
+#include <data_structure/SystemsContainer.hpp>
 #include <interfaces/ISystem.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -31,7 +31,7 @@ public:
 
 } // interfaces
 
-namespace container
+namespace data_structure
 {
 
 class SystemsContainerTests : public ::testing::Test
@@ -127,6 +127,6 @@ TEST_F(SystemsContainerTests, ShouldBeAbleToIterateOverSystems)
     EXPECT_THAT(numOfLoops, expectedNumOfLoops);
 }
 
-} // container
+} // data_structure
 
 } // roen

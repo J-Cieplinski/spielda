@@ -1,6 +1,6 @@
-#include <container/SystemsContainer.hpp>
+#include <data_structure/SystemsContainer.hpp>
 
-namespace roen::container
+namespace roen::data_structure
 {
 
 SystemsContainer::SystemsIterator SystemsContainer::begin()
@@ -32,4 +32,4 @@ SystemsContainer::SystemsConstIterator SystemsContainer::cend() const
 {
     return systems_.cend();
 }
-} // roen::container
+} // roen::data_structure

@@ -1,5 +1,5 @@
-#ifndef ROEN_CONTAINER_SYSTEMSCONTAINER_HPP
-#define ROEN_CONTAINER_SYSTEMSCONTAINER_HPP
+#ifndef ROEN_DATA_STRUCTURE_SYSTEMSCONTAINER_HPP
+#define ROEN_DATA_STRUCTURE_SYSTEMSCONTAINER_HPP
 
 #include <interfaces/ISystem.hpp>
 #include <log/Logger.hpp>
@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <typeindex>
 
-namespace roen::container
+namespace roen::data_structure
 {
 
 namespace
@@ -46,13 +46,13 @@ private:
     SystemsMap systems_;
 };
 
-} // roen::container
+} // roen::data_structure
 
 /*
  * Template implementation
  */
 
-namespace roen::container
+namespace roen::data_structure
 {
 
 template<DerivedFromISystem SystemType, typename... Args>
@@ -98,6 +98,6 @@ SystemType& SystemsContainer::get() const
     return *(std::static_pointer_cast<SystemType>(system->second));
 }
 
-} // roen::container
+} // roen::data_structure
 
-#endif //ROEN_CONTAINER_SYSTEMSCONTAINER_HPP
+#endif //ROEN_DATA_STRUCTURE_SYSTEMSCONTAINER_HPP
