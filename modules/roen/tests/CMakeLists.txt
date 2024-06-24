@@ -17,7 +17,7 @@ target_link_libraries(${PROJECT_NAME}
     GTest::gtest_main
     GTest::gmock
     GTest::gmock_main
-    container_ut
+    data_structure_ut
     utils_ut
     manager_ut)
 
