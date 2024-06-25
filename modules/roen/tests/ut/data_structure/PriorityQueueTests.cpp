@@ -16,7 +16,7 @@ TEST_F(PriorityQueueTests, empty_ShouldReturnTrueForEmptyQueue)
     EXPECT_TRUE(queue.empty());
 }
 
-TEST_F(PriorityQueueTests, insert_ShouldReturnInsertElements)
+TEST_F(PriorityQueueTests, insert_ShouldInsertElements)
 {
     PriorityQueue<int, int> queue;
     queue.insert({1, 1});

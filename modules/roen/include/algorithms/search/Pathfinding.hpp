@@ -22,6 +22,8 @@ std::vector<data_structure::MapNode> getNodeOrderFromPath(
         const data_structure::MapNode& goal,
         const std::unordered_map<data_structure::MapNode, data_structure::MapNode>& path);
 
+std::uint32_t manhattanDistance(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB);
+
 } // roen::algorithms
 
 #endif //ROEN_ALGORITHMS_SEARCH_PATHFINDING_HPP

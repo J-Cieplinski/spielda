@@ -13,9 +13,12 @@ namespace roen::data_structure
 class MapNode : public INode
 {
 public:
+    MapNode();
     MapNode(const std::pair<std::uint32_t, std::uint32_t>& position, const std::pair<std::uint32_t, std::uint32_t>& size, std::uint32_t cost);
     MapNode(const MapNode& other);
     friend bool operator==(const MapNode& lhs, const MapNode& rhs);
+    friend bool operator<(const MapNode& lhs, const MapNode& rhs);
+    std::pair<std::int32_t, std::int32_t> operator-(const MapNode& other) const;
 
     bool contains(const std::pair<float, float>& entity) const override;
     std::uint32_t cost() const override;

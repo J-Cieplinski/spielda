@@ -1,4 +1,7 @@
 #include <algorithms/search/Pathfinding.hpp>
+#include <data_structure/PriorityQueue.hpp>
+
+#include <cmath>
 
 #include <log/Logger.hpp>
 
@@ -11,7 +14,37 @@ std::unordered_map<data_structure::MapNode, data_structure::MapNode> a_star(
         const data_structure::Graph<data_structure::MapNode>& graph,
         const std::function<std::uint32_t(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)>& heuristic)
 {
-    return {};
+    std::unordered_map<data_structure::MapNode, data_structure::MapNode> came_from;
+    std::unordered_map<data_structure::MapNode, std::uint32_t> cost_so_far;
+    data_structure::PriorityQueue<data_structure::MapNode, std::uint32_t> frontier;
+    frontier.insert({0, start});
+    came_from[start] = start;
+    cost_so_far[start] = 0;
+
+    while(!frontier.empty())
+    {
+        auto current = frontier.get();
+        if(current == goal)
+        {
+            break;
+        }
+
+        for(const auto& nextNode : graph.neighbors(current))
+        {
+            auto newCost = cost_so_far[current] + graph.cost(current, nextNode);
+            if(cost_so_far.find(nextNode) == cost_so_far.end()
+                || cost_so_far[nextNode] > newCost)
+            {
+                cost_so_far[nextNode] = newCost;
+                came_from[nextNode] = current;
+
+                auto priority = newCost + heuristic(nextNode, goal);
+                frontier.insert({priority, nextNode});
+            }
+        }
+    }
+
+    return came_from;
 }
 
 std::vector<data_structure::MapNode> getNodeOrderFromPath(
@@ -37,6 +70,12 @@ std::vector<data_structure::MapNode> getNodeOrderFromPath(
     std::reverse(orderedPath.begin(), orderedPath.end());
 
     return orderedPath;
+}
+
+std::uint32_t manhattanDistance(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)
+{
+    auto distance = nodeA - nodeB;
+    return std::abs(distance.first) + std::abs(distance.second);
 }
 
 } // roen::algorithms

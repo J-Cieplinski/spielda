@@ -14,6 +14,7 @@ public:
     using PQElement = std::pair<Priority, T>;
     inline bool empty() const;
     inline void insert(PQElement&& element);
+    inline void insert(const T& element, Priority priority);
     inline T get();
 private:
     std::priority_queue<PQElement, std::vector<PQElement>, std::greater<PQElement>> elements_;
@@ -40,6 +41,12 @@ template<typename T, typename Priority>
 void PriorityQueue<T, Priority>::insert(PriorityQueue::PQElement&& element)
 {
     elements_.emplace(element);
+}
+
+template<typename T, typename Priority>
+void PriorityQueue<T, Priority>::insert(const T& element, Priority priority)
+{
+    elements_.emplace({priority, element});
 }
 
 template<typename T, typename Priority>
