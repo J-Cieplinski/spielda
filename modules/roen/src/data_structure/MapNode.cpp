@@ -45,4 +45,14 @@ bool operator<(const MapNode& lhs, const MapNode& rhs)
     return std::tie(lhs.position_.first, lhs.position_.second) < std::tie(rhs.position_.first, rhs.position_.second);
 }
 
+const std::pair<std::uint32_t, std::uint32_t> &MapNode::getPosition() const
+{
+    return position_;
+}
+
+const std::pair<std::uint32_t, std::uint32_t> &MapNode::getSize() const
+{
+    return size_;
+}
+
 } // roen::data_structure

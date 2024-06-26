@@ -23,6 +23,7 @@
 #include <systems/CollisionRender.hpp>
 #include <systems/Damage.hpp>
 #include <systems/DebugRender.hpp>
+#include <systems/GraphRender.hpp>
 #include <systems/Keyboard.hpp>
 #include <systems/Movement.hpp>
 #include <systems/MeleeCombat.hpp>
@@ -80,6 +81,10 @@ void GameScene::render()
         systems_.get<system::CollisionRender>().update();
         systems_.get<system::DebugRender>().update();
         systems_.get<system::AIDetectRadiusRender>().update();
+        if(systems_.hasSystem<system::GraphRender>())
+        {
+            systems_.get<system::GraphRender>().update();
+        }
     }
 
     EndTextureMode();
@@ -120,6 +125,8 @@ void GameScene::revealed()
 
     auto mapLoader = MapLoader(entityManager_);
     mapLoader.loadMap("assets/maps/dungeon.tmj", "dungeon");
+    pathfindingGraph_ = mapLoader.getGraph();
+    systems_.add<system::GraphRender>(entityManager_, camera_, pathfindingGraph_);
     auto mapSize = mapLoader.getMapSize();
 
     loadHero();

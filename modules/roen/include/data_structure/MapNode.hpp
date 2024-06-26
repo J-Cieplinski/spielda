@@ -22,6 +22,8 @@ public:
 
     bool contains(const std::pair<float, float>& entity) const override;
     std::uint32_t cost() const override;
+    const std::pair<std::uint32_t, std::uint32_t>& getPosition() const;
+    const std::pair<std::uint32_t, std::uint32_t>& getSize() const;
 private:
     friend std::hash<MapNode>;
     std::pair<std::uint32_t, std::uint32_t> position_;

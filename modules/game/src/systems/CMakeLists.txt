@@ -7,6 +7,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/systems/CollisionRender.hpp
     ${GAME_INCLUDE_DIR}/systems/Damage.hpp
     ${GAME_INCLUDE_DIR}/systems/DebugRender.hpp
+    ${GAME_INCLUDE_DIR}/systems/GraphRender.hpp
     ${GAME_INCLUDE_DIR}/systems/Gui.hpp
     ${GAME_INCLUDE_DIR}/systems/GuiRender.hpp
     ${GAME_INCLUDE_DIR}/systems/IRenderSystem.hpp
@@ -27,6 +28,7 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Damage.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/DebugRender.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GraphRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Gui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GuiRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WallBoundaries.cpp

@@ -17,7 +17,7 @@ public:
     inline const std::vector<Node>& neighbors(const Node& node) const;
     inline std::uint32_t cost(const Node& startNode, const Node& destNode) const;
     void addNode(Node&& node, std::vector<Node>&& edges);
-    void addNode(const Node& node, std::vector<Node>&& edges);
+    void addNode(const Node& node, const std::vector<Node>& edges);
 private:
     std::unordered_map<Node, std::vector<Node>> edges_;
 };
@@ -51,7 +51,7 @@ void Graph<Node>::addNode(Node&& node, std::vector<Node>&& edges)
 }
 
 template<typename Node>
-void Graph<Node>::addNode(const Node& node, std::vector<Node>&& edges)
+void Graph<Node>::addNode(const Node& node, const std::vector<Node>& edges)
 {
     edges_[node] = edges;
 }

@@ -5,6 +5,9 @@
 
 #include <events/DebugSwitch.hpp>
 
+#include <roen/include/data_structure/Graph.hpp>
+#include <roen/include/data_structure/MapNode.hpp>
+
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>
 #include <raylib.h>
@@ -36,6 +39,7 @@ private:
     entt::registry entityManager_;
     entt::dispatcher eventDisptacher_;
     bool debugRender_;
+    roen::data_structure::Graph<roen::data_structure::MapNode> pathfindingGraph_;
 };
 
 } // spielda::scenes
