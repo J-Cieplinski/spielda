@@ -105,11 +105,17 @@ const std::pair<std::uint32_t, std::uint32_t>& BaseMapLoader::getMapSize() const
 void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, tson::Vector2i tileSize)
 {
     //                                                          NW                              W                                  SW
-    std::vector<tson::Vector2i> DIRECTIONS = {{-tileSize.x, -tileSize.y}, {-tileSize.x, 0}, {-tileSize.x, tileSize.y},
+    std::vector<tson::Vector2i> DIRECTIONS_WITH_DIAGONAL = {{-tileSize.x, -tileSize.y}, {-tileSize.x, 0}, {-tileSize.x, tileSize.y},
     //                                                      N                       S
                                             {0, -tileSize.y}, {0, tileSize.y},
     //                                                      NE                                  E                                   SE
                                             {tileSize.x, -tileSize.y}, {tileSize.x, 0}, {tileSize.x, tileSize.y}};
+
+    std::vector<tson::Vector2i> DIRECTIONS = {
+    /*W*/   {-tileSize.x, 0},
+    /*N*/   {0, -tileSize.y},
+    /*S*/   {0, tileSize.y},
+    /*E*/   {tileSize.x, 0} };
 
     auto findTile = [&tiles](tson::Vector2i position) {
         return std::find_if(tiles.begin(), tiles.end(), [&position](const MapTile& checkedTile) -> bool {

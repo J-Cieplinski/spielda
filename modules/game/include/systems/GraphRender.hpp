@@ -14,10 +14,8 @@ namespace spielda::system
 class GraphRender final : public IRenderSystem
 {
 public:
-    explicit GraphRender(entt::registry& entityManager, const Camera2D& camera, const roen::data_structure::Graph<roen::data_structure::MapNode>& graph);
+    explicit GraphRender(entt::registry& entityManager, const Camera2D& camera);
     void update() override;
-private:
-    const roen::data_structure::Graph<roen::data_structure::MapNode>& pathfindingGraph_;
 };
 
 } // spielda::system

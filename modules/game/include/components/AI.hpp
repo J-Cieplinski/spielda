@@ -6,9 +6,18 @@
 namespace spielda::components
 {
 
+enum class AIState
+{
+    IDLE,
+    FOLLOWING,
+    ATTACKING,
+    RETURNING
+};
+
 struct AI
 {
     float detectRadius;
+    AIState state {AIState::IDLE};
 };
 
 } // spielda::components

@@ -39,7 +39,6 @@ private:
     entt::registry entityManager_;
     entt::dispatcher eventDisptacher_;
     bool debugRender_;
-    roen::data_structure::Graph<roen::data_structure::MapNode> pathfindingGraph_;
 };
 
 } // spielda::scenes

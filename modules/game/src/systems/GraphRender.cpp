@@ -1,19 +1,30 @@
 #include <systems/GraphRender.hpp>
 
+#include <entt/entity/registry.hpp>
+
 namespace spielda::system
 {
 
-GraphRender::GraphRender(entt::registry& entityManager, const Camera2D& camera,
-                         const roen::data_structure::Graph<roen::data_structure::MapNode>& graph)
+namespace
+{
+using MapGraph = roen::data_structure::Graph<roen::data_structure::MapNode>;
+} //
+
+GraphRender::GraphRender(entt::registry& entityManager, const Camera2D& camera)
     : IRenderSystem{entityManager, camera}
-    , pathfindingGraph_{graph}
 {
 
 }
 
 void GraphRender::update()
 {
-    for(const auto& [node, edges] : pathfindingGraph_.getEdges())
+    if(!entityManager_.ctx().contains<MapGraph>())
+    {
+        return;
+    }
+
+    const auto& pathfindingGraph = entityManager_.ctx().get<MapGraph>();
+    for(const auto& [node, edges] : pathfindingGraph.getEdges())
     {
         BeginMode2D(camera_);
 
@@ -37,6 +48,7 @@ void GraphRender::update()
             DrawLineV(startPos, endPos, YELLOW);
         }
 
+        DrawRectangleLines(pos.first, pos.second, size.first, size.second, MAGENTA);
         DrawCircle(startPos.x, startPos.y, 3.f, BLUE);
 
         EndMode2D();

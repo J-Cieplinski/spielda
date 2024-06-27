@@ -47,9 +47,13 @@ void Keyboard::update()
                 .x = 81,
                 .y = 128
         };
+        constexpr Vector2 colliderPosition {
+                .x = 82,
+                .y = 130
+        };
 
         entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-        entityManager_.emplace<components::BoxCollider>(debugEnt, position, position, Vector2{14, 12}, false);
+        entityManager_.emplace<components::BoxCollider>(debugEnt, colliderPosition, colliderPosition, Vector2{14, 12}, false);
         entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
         entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
         entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
@@ -77,11 +81,6 @@ void Keyboard::checkDebugInput()
     {
         eventDispatcher_.trigger(events::DebugSwitch{.switchSdkLogging = true});
     }
-    if(IsKeyReleased(KEY_SPACE))
-    {
-        auto playerEntity = entityManager_.view<components::Weapon>();
-        eventDispatcher_.trigger(events::Attack{.attacker = playerEntity.front()});
-    }
 }
 
 void Keyboard::checkPlayerInput()
@@ -107,6 +106,10 @@ void Keyboard::checkPlayerInput()
     else if(IsKeyDown(KEY_RIGHT))
     {
         playerRigidBody.velocity.x = 30;
+    }
+    if(IsKeyReleased(KEY_SPACE))
+    {
+        eventDispatcher_.trigger(events::Attack{.attacker = playerEntity});
     }
 }
 

@@ -107,6 +107,7 @@ void GameScene::update()
     systems_.get<system::Keyboard>().update();
     systems_.get<system::Mouse>().update();
     systems_.get<system::AIDetect>().update();
+    systems_.get<system::AIMove>().update();
     systems_.get<system::Movement>().update(deltaTime_);
     systems_.get<system::MeleeCombat>().update(deltaTime_);
     systems_.get<system::SpriteDirection>().update();
@@ -125,8 +126,7 @@ void GameScene::revealed()
 
     auto mapLoader = MapLoader(entityManager_);
     mapLoader.loadMap("assets/maps/dungeon.tmj", "dungeon");
-    pathfindingGraph_ = mapLoader.getGraph();
-    systems_.add<system::GraphRender>(entityManager_, camera_, pathfindingGraph_);
+    entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
     auto mapSize = mapLoader.getMapSize();
 
     loadHero();
@@ -240,6 +240,7 @@ void GameScene::initSystems()
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::Damage>(entityManager_, eventDisptacher_);
     systems_.add<system::DebugRender>(entityManager_, camera_);
+    systems_.add<system::GraphRender>(entityManager_, camera_);
     systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::WallBoundaries>(entityManager_, eventDisptacher_);
     systems_.add<system::Keyboard>(entityManager_, eventDisptacher_);

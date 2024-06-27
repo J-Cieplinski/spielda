@@ -30,4 +30,9 @@ private:
 
 } // spielda
 
+inline bool operator==(Vector2 lhs, Vector2 rhs)
+{
+    return std::tie(lhs.x, lhs.y) == std::tie(rhs.x, rhs.y);
+}
+
 #endif //SPIELDA_UTILS_HPP
