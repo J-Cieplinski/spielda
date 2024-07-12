@@ -1,5 +1,7 @@
 #include <systems/GraphRender.hpp>
 
+#include <Utils.hpp>
+
 #include <entt/entity/registry.hpp>
 
 namespace spielda::system
@@ -30,25 +32,20 @@ void GraphRender::update()
 
         const auto pos = node.getPosition();
         const auto size = node.getSize();
-        Vector2 startPos {
-            .x = static_cast<float>(pos.first + size.first / 2),
-            .y = static_cast<float>(pos.second + size.second / 2)
-        };
+
+        Vector2 startPos = toRayVector(pos + (size / 2.f));
 
         for(const auto& edge : edges)
         {
             const auto edgePos = edge.getPosition();
             const auto edgeSize = edge.getSize();
 
-            Vector2 endPos = {
-                .x = static_cast<float>(edgePos.first + edgeSize.first / 2),
-                .y = static_cast<float>(edgePos.second + edgeSize.second / 2)
-            };
+            Vector2 endPos = toRayVector(edgePos + (edgeSize / 2.f));
 
             DrawLineV(startPos, endPos, YELLOW);
         }
 
-        DrawRectangleLines(pos.first, pos.second, size.first, size.second, MAGENTA);
+        DrawRectangleLines(pos.x, pos.y, size.x, size.y, MAGENTA);
         DrawCircle(startPos.x, startPos.y, 3.f, BLUE);
 
         EndMode2D();

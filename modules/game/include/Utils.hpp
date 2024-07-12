@@ -2,6 +2,7 @@
 #define SPIELDA_UTILS_HPP
 
 #include <roen/include/Utils.hpp>
+#include <roen/include/data_structure/Vector2.hpp>
 #include <roen/include/interfaces/IScene.hpp>
 #include <roen/include/manager/GameSceneManager.hpp>
 
@@ -27,6 +28,11 @@ public:
 private:
     roen::manager::GameSceneManager& gameSceneManager_;
 };
+
+inline Vector2 toRayVector(const roen::data_structure::Vector2f& v)
+{
+    return Vector2{v.x, v.y};
+}
 
 } // spielda
 

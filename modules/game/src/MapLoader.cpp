@@ -1,6 +1,7 @@
 #include <MapLoader.hpp>
 
 #include <Typedefs.hpp>
+#include <Utils.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
@@ -18,14 +19,14 @@ MapLoader::MapLoader(entt::registry &entityManager)
 {
 }
 
-void MapLoader::addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSize, float rotation, tson::Rect drawingRect,
-                                int layerOrder, const std::string& layerClass, const std::string& assetId)
+void MapLoader::addComponents(roen::data_structure::Vector2f tilePosition, roen::data_structure::Vector2f tileSize, float rotation, tson::Rect drawingRect,
+                              int layerOrder, const std::string& layerClass, const std::string& assetId)
 {
     constexpr auto scale = Vector2(1.f, 1.f);
 
     const auto tileEntity = entityManager_.create();
-    const auto position = Vector2(tilePosition.x, tilePosition.y);
-    const auto size = Vector2(tileSize.x, tileSize.y);
+    const auto position = toRayVector(tilePosition);
+    const auto size = toRayVector(tileSize);
     const auto origin = Vector2Scale(size, 0.5f);
 
     const auto renderedPosition = Vector2Add(position, origin);

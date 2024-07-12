@@ -1,5 +1,7 @@
 #include <loader/BaseMapLoader.hpp>
 
+#include <data_structure/Vector2.hpp>
+
 #include <log/Logger.hpp>
 
 #include <regex>
@@ -7,9 +9,17 @@
 namespace roen::loader
 {
 
+using Vector2f = data_structure::Vector2f;
+
+template <typename T>
+data_structure::Vector2f toVector2f(const tson::Vector2<T> v)
+{
+    return {static_cast<float>(v.x), static_cast<float>(v.y)};
+}
+
 BaseMapLoader::BaseMapLoader(entt::registry& entityManager)
     : entityManager_{entityManager}
-    , mapSize_{0u, 0u}
+    , mapSize_{0.f, 0.f}
 {
 }
 
@@ -19,10 +29,10 @@ void BaseMapLoader::loadMap(const std::string& path, const std::string& assetId)
 
     tson::Tileson tileson;
     auto map = tileson.parse(path);
-    mapSize_ = {map->getSize().x, map->getSize().y};
+    mapSize_ = toVector2f(map->getSize());
     std::vector<MapTile> mappedTiles{};
 
-    auto tileSize = map->getTileSize();
+    auto tileSize = toVector2f(map->getTileSize());
 
     auto& textureManager = getTextureManager();
 
@@ -44,14 +54,13 @@ void BaseMapLoader::loadMap(const std::string& path, const std::string& assetId)
 
             for (auto& [pos, tile]: layer.getTileData()) {
 
-                auto tilePosition = tile->getPosition(pos);
+                auto tilePosition = toVector2f(tile->getPosition(pos));
 
                 if(layerClass == LayerTypes::BACKGROUND)
                 {
                     if(auto tileMoveCost = tile->getProp(TileProperties::MOVEMENT_COST))
                     {
-                        mappedTiles.emplace_back(std::any_cast<int>(tileMoveCost->getValue()),
-                                                 tson::Vector2i {static_cast<int>(tilePosition.x), static_cast<int>(tilePosition.y)});
+                        mappedTiles.emplace_back(std::any_cast<int>(tileMoveCost->getValue()), tilePosition);
                     }
                 }
 
@@ -97,27 +106,27 @@ float BaseMapLoader::getTileRotation(tson::Tile *tile)
     return 0.f;
 }
 
-const std::pair<std::uint32_t, std::uint32_t>& BaseMapLoader::getMapSize() const
+const data_structure::Vector2f& BaseMapLoader::getMapSize() const
 {
     return mapSize_;
 }
 
-void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, tson::Vector2i tileSize)
+void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, Vector2f tileSize)
 {
     //                                                          NW                              W                                  SW
-    std::vector<tson::Vector2i> DIRECTIONS_WITH_DIAGONAL = {{-tileSize.x, -tileSize.y}, {-tileSize.x, 0}, {-tileSize.x, tileSize.y},
+    std::vector<Vector2f> DIRECTIONS_WITH_DIAGONAL = {{-tileSize.x, -tileSize.y}, {-tileSize.x, 0}, {-tileSize.x, tileSize.y},
     //                                                      N                       S
                                             {0, -tileSize.y}, {0, tileSize.y},
     //                                                      NE                                  E                                   SE
                                             {tileSize.x, -tileSize.y}, {tileSize.x, 0}, {tileSize.x, tileSize.y}};
 
-    std::vector<tson::Vector2i> DIRECTIONS = {
+    std::vector<Vector2f> DIRECTIONS = {
     /*W*/   {-tileSize.x, 0},
     /*N*/   {0, -tileSize.y},
     /*S*/   {0, tileSize.y},
     /*E*/   {tileSize.x, 0} };
 
-    auto findTile = [&tiles](tson::Vector2i position) {
+    auto findTile = [&tiles](Vector2f position) {
         return std::find_if(tiles.begin(), tiles.end(), [&position](const MapTile& checkedTile) -> bool {
             return checkedTile.position == position;
         });
@@ -132,15 +141,15 @@ void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, ts
         std::vector<data_structure::MapNode> edges {};
         for(const auto& direction : DIRECTIONS)
         {
-            tson::Vector2i neigbourPos {tile.position.x + direction.x, tile.position.y + direction.y};
-            auto mapTile = findTile(neigbourPos);
+            Vector2f neighbourPos {tile.position.x + direction.x, tile.position.y + direction.y};
+            auto mapTile = findTile(neighbourPos);
             if(tileExist(mapTile))
             {
-                edges.push_back({{neigbourPos.x, neigbourPos.y}, {tileSize.x, tileSize.y}, static_cast<uint32_t>(mapTile->cost)});
+                edges.emplace_back(neighbourPos, tileSize, static_cast<std::uint32_t>(mapTile->cost));
             }
         }
 
-        pathfindingGraph_.addNode({{tile.position.x, tile.position.y}, {tileSize.x, tileSize.y}, static_cast<uint32_t>(tile.cost)},
+        pathfindingGraph_.addNode({tile.position, tileSize, static_cast<std::uint32_t>(tile.cost)},
                                   edges);
     }
 }

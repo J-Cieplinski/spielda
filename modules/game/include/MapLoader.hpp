@@ -12,8 +12,8 @@ class MapLoader : public roen::loader::BaseMapLoader
 public:
     explicit MapLoader(entt::registry& entityManager);
 private:
-    void addComponents(tson::Vector2f tilePosition, tson::Vector2i tileSize, float rotation, tson::Rect drawingRect, int layerOrder,
-                        const std::string& layerClass, const std::string& assetId) override;
+    void addComponents(roen::data_structure::Vector2f tilePosition, roen::data_structure::Vector2f tileSize, float rotation, tson::Rect drawingRect, int layerOrder,
+                       const std::string& layerClass, const std::string& assetId) override;
     roen::manager::IAssetManager& getTextureManager() override;
 };
 

@@ -62,7 +62,6 @@ std::uint32_t Graph<Node>::cost(const Node& startNode, const Node& destNode) con
     return startNode.cost() + destNode.cost();
 }
 
-
 } // roen::data_structure
 
 #endif //ROEN_DATA_STRUCTURE_GRAPH_HPP

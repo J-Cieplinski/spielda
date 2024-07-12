@@ -7,20 +7,19 @@ MapNode::MapNode() = default;
 
 MapNode::MapNode(const MapNode& other) = default;
 
-MapNode::MapNode(const std::pair<std::uint32_t, std::uint32_t>& position, const std::pair<std::uint32_t, std::uint32_t>& size,
-                 std::uint32_t cost)
-        : position_{position}
-        , size_{size}
-        , movementCost_{cost}
+MapNode::MapNode(const Vector2f& position, const Vector2f& size, std::uint32_t cost)
+    : position_{position}
+    , size_{size}
+    , movementCost_{cost}
 {
 }
 
-bool MapNode::contains(const std::pair<float, float>& entity) const
+bool MapNode::contains(const Vector2f& entity) const
 {
-    return position_.first <= entity.first
-        && (position_.first + size_.first) >= entity.first
-        && position_.second <= entity.second
-        && (position_.second + size_.second) >= entity.second;
+    return position_.x <= entity.x
+        && (position_.x + size_.x) >= entity.x
+        && position_.y <= entity.y
+        && (position_.y + size_.y) >= entity.y;
 }
 
 std::uint32_t MapNode::cost() const
@@ -35,22 +34,22 @@ bool operator==(const MapNode& lhs, const MapNode& rhs)
         && lhs.movementCost_ == rhs.movementCost_;
 }
 
-std::pair<std::int32_t, std::int32_t> MapNode::operator-(const MapNode &other) const
+Vector2f MapNode::operator-(const MapNode& other) const
 {
-    return {(position_.first - other.position_.first), (position_.second - other.position_.second)};
+    return position_ - other.position_;
 }
 
 bool operator<(const MapNode& lhs, const MapNode& rhs)
 {
-    return std::tie(lhs.position_.first, lhs.position_.second) < std::tie(rhs.position_.first, rhs.position_.second);
+    return lhs.position_ < rhs.position_;
 }
 
-const std::pair<std::uint32_t, std::uint32_t> &MapNode::getPosition() const
+const Vector2f& MapNode::getPosition() const
 {
     return position_;
 }
 
-const std::pair<std::uint32_t, std::uint32_t> &MapNode::getSize() const
+const Vector2f& MapNode::getSize() const
 {
     return size_;
 }

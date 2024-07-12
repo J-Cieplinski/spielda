@@ -5,7 +5,6 @@
 
 #include <cstdint>
 #include <unordered_map>
-#include <utility>
 
 namespace roen::data_structure
 {
@@ -14,20 +13,20 @@ class MapNode : public INode
 {
 public:
     MapNode();
-    MapNode(const std::pair<std::uint32_t, std::uint32_t>& position, const std::pair<std::uint32_t, std::uint32_t>& size, std::uint32_t cost);
+    MapNode(const Vector2f& position, const Vector2f& size, std::uint32_t cost);
     MapNode(const MapNode& other);
     friend bool operator==(const MapNode& lhs, const MapNode& rhs);
     friend bool operator<(const MapNode& lhs, const MapNode& rhs);
-    std::pair<std::int32_t, std::int32_t> operator-(const MapNode& other) const;
+    Vector2f operator-(const MapNode& other) const;
 
-    bool contains(const std::pair<float, float>& entity) const override;
+    bool contains(const Vector2f& entity) const override;
     std::uint32_t cost() const override;
-    const std::pair<std::uint32_t, std::uint32_t>& getPosition() const;
-    const std::pair<std::uint32_t, std::uint32_t>& getSize() const;
+    const Vector2f& getPosition() const;
+    const Vector2f& getSize() const;
 private:
     friend std::hash<MapNode>;
-    std::pair<std::uint32_t, std::uint32_t> position_;
-    std::pair<std::uint32_t, std::uint32_t> size_;
+    Vector2f position_;
+    Vector2f size_;
     std::uint32_t movementCost_;
 };
 
@@ -40,7 +39,9 @@ namespace std
     {
         size_t operator()(const roen::data_structure::MapNode& node) const
         {
-            return std::hash<std::uint32_t>()(node.position_.first ^ (node.position_.second << 16));
+            auto xTemp = node.position_.x;
+            auto yTemp = node.position_.y;
+            return std::hash<size_t>()(std::hash<float>{}(xTemp) ^ (std::hash<float>{}(yTemp)));
         }
     };
 } // std

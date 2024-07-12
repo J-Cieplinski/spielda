@@ -12,7 +12,7 @@ std::unordered_map<data_structure::MapNode, data_structure::MapNode> a_star(
         const data_structure::MapNode& start,
         const data_structure::MapNode& goal,
         const data_structure::Graph<data_structure::MapNode>& graph,
-        const std::function<std::uint32_t(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)>& heuristic)
+        const std::function<float(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)>& heuristic)
 {
     std::unordered_map<data_structure::MapNode, data_structure::MapNode> came_from;
     std::unordered_map<data_structure::MapNode, std::uint32_t> cost_so_far;
@@ -72,10 +72,10 @@ std::vector<data_structure::MapNode> getNodeOrderFromPath(
     return orderedPath;
 }
 
-std::uint32_t manhattanDistance(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)
+float manhattanDistance(const data_structure::MapNode& nodeA, const data_structure::MapNode& nodeB)
 {
     auto distance = nodeA - nodeB;
-    return std::abs(distance.first) + std::abs(distance.second);
+    return std::abs(distance.x) + std::abs(distance.y);
 }
 
 } // roen::algorithms

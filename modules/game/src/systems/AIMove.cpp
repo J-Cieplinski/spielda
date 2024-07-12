@@ -1,5 +1,6 @@
 #include <systems/AIMove.hpp>
 
+#include <Utils.hpp>
 #include <components/AI.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/RigidBody.hpp>
@@ -53,11 +54,9 @@ void AIMove::update()
             const auto& currentNodePos = currentNode.getPosition();
             const auto& currentNodeSize = currentNode.getSize();
 
-            Vector2 currentNodeCenter = {
-                    .x = static_cast<float>(currentNodePos.first + currentNodeSize.first / 2),
-                    .y = static_cast<float>(currentNodePos.second + currentNodeSize.second / 2)
-            };
-            APP_INFO("Current node coords\nx: {0}, y: {1}", currentNodePos.first, currentNodePos.second);
+            Vector2 currentNodeCenter = toRayVector(currentNodePos + (currentNodeSize / 2.f));
+
+            APP_INFO("Current node coords\nx: {0}, y: {1}", currentNodePos.x, currentNodePos.y);
 
             auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiColliderCenter));
             aiVelocity = Vector2Scale(moveVector, velocity);
@@ -107,20 +106,14 @@ roen::data_structure::MapNode AIMove::getClosestMapNode(const Vector2& position,
     currentClosestNode = nodes.front();
     nodes.pop();
 
-    Vector2 currentClosestNodeV {
-            .x = static_cast<float>(currentClosestNode.getPosition().first),
-            .y = static_cast<float>(currentClosestNode.getPosition().second)
-    };
+    Vector2 currentClosestNodeV = toRayVector(currentClosestNode.getPosition());
 
     while(!nodes.empty())
     {
         auto consideredNode = nodes.front();
         nodes.pop();
 
-        Vector2 consideredNodeV {
-            .x = static_cast<float>(consideredNode.getPosition().first),
-            .y = static_cast<float>(consideredNode.getPosition().second)
-        };
+        Vector2 consideredNodeV = toRayVector(consideredNode.getPosition());
 
         if(Vector2Distance(position, currentClosestNodeV) > Vector2Distance(position, consideredNodeV))
         {
