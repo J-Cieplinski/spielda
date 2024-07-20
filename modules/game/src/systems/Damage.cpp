@@ -3,9 +3,8 @@
 #include <components/Health.hpp>
 #include <components/Weapon.hpp>
 
-#include <log/formatters/entity.hpp>
-
 #include <roen/include/log/Logger.hpp>
+#include <roen/include/log/formatters/entity.hpp>
 
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>

@@ -12,7 +12,7 @@
 #include <events/DebugSwitch.hpp>
 #include <events/Attack.hpp>
 
-#include <log/formatters/entity.hpp>
+#include <roen/include/log/formatters/entity.hpp>
 
 #include <roen/include/Utils.hpp>
 #include <roen/include/log/Logger.hpp>

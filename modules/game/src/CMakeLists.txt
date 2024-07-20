@@ -19,7 +19,6 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/events/Collision.hpp
     ${GAME_INCLUDE_DIR}/events/DebugSwitch.hpp
     ${GAME_INCLUDE_DIR}/events/Mouse.hpp
-    ${GAME_INCLUDE_DIR}/log/formatters/entity.hpp
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/MapLoader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
