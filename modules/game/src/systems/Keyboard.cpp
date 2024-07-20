@@ -8,6 +8,7 @@
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
 #include <components/Weapon.hpp>
+#include <components/WieldedWeapon.hpp>
 
 #include <events/DebugSwitch.hpp>
 #include <events/Attack.hpp>
@@ -109,7 +110,8 @@ void Keyboard::checkPlayerInput()
     }
     if(IsKeyReleased(KEY_SPACE))
     {
-        eventDispatcher_.trigger(events::Attack{.attacker = playerEntity});
+        auto weapon = entityManager_.get<components::WieldedWeapon>(playerEntity).weaponEntity;
+        eventDispatcher_.trigger(events::Attack{.attacker = weapon});
     }
 }
 

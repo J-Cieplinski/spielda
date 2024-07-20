@@ -50,6 +50,10 @@ void AIDetect::update()
                 .aiEntity = ai
             });
         }
+        else
+        {
+            entityManager_.get<components::AI>(ai).state = components::AIState::IDLE;
+        }
     }
 }
 

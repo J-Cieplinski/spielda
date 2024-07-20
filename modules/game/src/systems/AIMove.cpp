@@ -29,38 +29,41 @@ void AIMove::update()
     constexpr std::uint16_t velocity {20};
     for(auto& [entity, nodes] : travelingEntities_)
     {
+        if(!entityManager_.valid(entity))
+        {
+            entitiesToRemoveFromTravel_.push_back(entity);
+            continue;
+        }
+
         const auto aiCollider = entityManager_.get<components::BoxCollider>(entity);
         Vector2 aiColliderCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
 
         auto& aiVelocity = entityManager_.get<components::RigidBody>(entity).velocity;
 
-        bool popped {false};
-        if(!nodes.empty() && nodes.front().contains({aiCollider.position.x, aiCollider.position.y}))
+        if(!nodes.empty()
+            && nodes.front().contains({aiCollider.position.x, aiCollider.position.y})
+            && !aiCollider.isColliding)
         {
             nodes.pop_front();
-            popped = true;
         }
 
-        if(nodes.empty())
+        const auto& aiState = entityManager_.get<components::AI>(entity).state;
+
+        if(nodes.empty() || aiState == components::AIState::IDLE)
         {
             entitiesToRemoveFromTravel_.push_back(entity);
             aiVelocity = {0, 0};
             continue;
         }
 
-        if(popped)
-        {
-            const auto& currentNode = nodes.front();
-            const auto& currentNodePos = currentNode.getPosition();
-            const auto& currentNodeSize = currentNode.getSize();
+        const auto& currentNode = nodes.front();
+        const auto& currentNodePos = currentNode.getPosition();
+        const auto& currentNodeSize = currentNode.getSize();
 
-            Vector2 currentNodeCenter = toRayVector(currentNodePos + (currentNodeSize / 2.f));
+        Vector2 currentNodeCenter = toRayVector(currentNodePos + (currentNodeSize / 2.f));
 
-            APP_INFO("Current node coords\nx: {0}, y: {1}", currentNodePos.x, currentNodePos.y);
-
-            auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiColliderCenter));
-            aiVelocity = Vector2Scale(moveVector, velocity);
-        }
+        auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiColliderCenter));
+        aiVelocity = Vector2Scale(moveVector, velocity);
     }
 
     for(const auto entityToRemove : entitiesToRemoveFromTravel_)
@@ -77,7 +80,6 @@ void AIMove::onDetect(events::AIDetectedEnemy event)
     aiState = components::AIState::FOLLOWING;
 
     const auto aiCollider = entityManager_.get<components::BoxCollider>(event.aiEntity).position;
-    auto& aiVelocity = entityManager_.get<components::RigidBody>(event.aiEntity).velocity;
 
     const auto& pathfindingGraph = entityManager_.ctx().get<roen::data_structure::Graph<roen::data_structure::MapNode>>();
     auto closestAINode = getClosestMapNode(aiCollider, pathfindingGraph);

@@ -32,7 +32,6 @@ private:
     void initSystems();
     void switchDebug(const events::DebugSwitch& event);
 
-    double timeLastFrame_;
     double deltaTime_;
     RenderTexture renderTexture_;
     Camera2D camera_;

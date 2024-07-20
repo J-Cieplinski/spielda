@@ -28,7 +28,6 @@ void Render::update()
 
     for(const auto& [entity, sprite, transform] : entities.each())
     {
-
         if(!sprite.isFixed)
         {
             BeginMode2D(camera_);

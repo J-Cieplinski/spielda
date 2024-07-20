@@ -46,10 +46,9 @@ namespace spielda::scenes
 GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     : IScene{gameSceneManager}
     , deltaTime_{0}
-    , timeLastFrame_{GetTime()}
     , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.5f}
-    , debugRender_{true}
+    , debugRender_{false}
 {
     initSystems();
 
@@ -70,7 +69,7 @@ void GameScene::handleInput()
 
 void GameScene::render()
 {
-    float scale = std::min((float)GetScreenWidth() / spielda::RENDER_WIDTH, (float)GetScreenHeight() / spielda::RENDER_HEIGHT);
+    float scale = std::min(static_cast<float>(GetScreenWidth()) / RENDER_WIDTH, static_cast<float>(GetScreenHeight()) / RENDER_HEIGHT);
 
     BeginTextureMode(renderTexture_);
     ClearBackground(RAYWHITE);
@@ -87,6 +86,8 @@ void GameScene::render()
         }
     }
 
+    DrawFPS(5, GetScreenHeight() - 20);
+
     EndTextureMode();
 
     BeginDrawing();
@@ -94,7 +95,7 @@ void GameScene::render()
 
     DrawTexturePro(renderTexture_.texture,
                     Rectangle{ 0.f, 0.f, static_cast<float>(renderTexture_.texture.width), static_cast<float>(-(renderTexture_.texture.height)) },
-                    Rectangle{ (GetScreenWidth() - (spielda::RENDER_WIDTH * scale)) * 0.5f, (GetScreenHeight() - (spielda::RENDER_HEIGHT * scale)) * 0.5f, static_cast<float>(spielda::RENDER_WIDTH * scale), static_cast<float>(spielda::RENDER_HEIGHT * scale) },
+                    Rectangle{ (GetScreenWidth() - RENDER_WIDTH * scale) * 0.5f, (GetScreenHeight() - RENDER_HEIGHT * scale) * 0.5f, RENDER_WIDTH * scale, RENDER_HEIGHT * scale },
                     Vector2{ 0, 0 },
                     0.f,
                     WHITE);
@@ -216,20 +217,10 @@ void GameScene::loadHero()
 
 void GameScene::updateDeltaTime()
 {
-    deltaTime_ = 0;
+    constexpr float MIN_FPS {30};
+    constexpr float MAX_FRAMETIME{1/MIN_FPS};
 
-    auto currentTime = GetTime();
-    auto updateDrawTime = currentTime - timeLastFrame_;
-    auto targetFrametime = 1.f / 144;
-    auto timeToWait = targetFrametime - updateDrawTime;
-    if (timeToWait > 0)
-    {
-        WaitTime(timeToWait);
-        currentTime = GetTime();
-    }
-
-    deltaTime_ = currentTime - timeLastFrame_;
-    timeLastFrame_ = currentTime;
+    deltaTime_ = std::min(GetFrameTime(), MAX_FRAMETIME);
 }
 
 void GameScene::initSystems()

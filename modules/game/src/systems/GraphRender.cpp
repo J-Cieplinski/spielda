@@ -45,7 +45,7 @@ void GraphRender::update()
             DrawLineV(startPos, endPos, YELLOW);
         }
 
-        DrawRectangleLines(pos.x, pos.y, size.x, size.y, MAGENTA);
+        //DrawRectangleLines(pos.x, pos.y, size.x, size.y, MAGENTA);
         DrawCircle(startPos.x, startPos.y, 3.f, BLUE);
 
         EndMode2D();
