@@ -16,6 +16,7 @@ public:
 private:
     void checkDebugInput();
     void checkPlayerInput();
+    void spawnDebugEntity();
     entt::dispatcher& eventDispatcher_;
 };
 

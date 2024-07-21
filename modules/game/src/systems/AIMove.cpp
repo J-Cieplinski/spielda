@@ -42,7 +42,7 @@ void AIMove::update()
 
         if(!nodes.empty()
             && nodes.front().contains({aiCollider.position.x, aiCollider.position.y})
-            && !aiCollider.isColliding)
+            && aiCollider.collisionType != components::CollisionType::WALL)
         {
             nodes.pop_front();
         }

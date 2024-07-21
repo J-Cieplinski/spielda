@@ -5,9 +5,6 @@
 
 #include <events/DebugSwitch.hpp>
 
-#include <roen/include/data_structure/Graph.hpp>
-#include <roen/include/data_structure/MapNode.hpp>
-
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>
 #include <raylib.h>
@@ -31,6 +28,7 @@ private:
     void updateDeltaTime();
     void initSystems();
     void switchDebug(const events::DebugSwitch& event);
+    void spawnDebugEntity();
 
     double deltaTime_;
     RenderTexture renderTexture_;

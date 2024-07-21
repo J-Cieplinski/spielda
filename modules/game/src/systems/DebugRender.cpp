@@ -39,19 +39,6 @@ void DebugRender::update()
     ss << "\nPlayer collider position\n" << "X: " << collider->position.x << "\t Y: " << collider->position.y;
     ss << "\nMouse position\n" << "X: " << mousePos.x << "\t Y: " << mousePos.y;
 
-    auto aiView = entityManager_.view<components::AI>();
-    for(const auto ai : aiView)
-    {
-        const auto aiColliderPos = entityManager_.get<components::BoxCollider>(ai).position;
-        const auto rigidBody = entityManager_.get<components::RigidBody>(ai);
-        const auto enemyTransform = entityManager_.get<components::Transform>(ai).position;
-        const auto normal = Vector2Normalize(rigidBody.velocity);
-
-        ss << "\nEnemy Collider position\n" << "X: " << aiColliderPos.x << "\t Y: " << aiColliderPos.y;
-        ss << "\nEnemy position\n" << "X: " << enemyTransform.x << "\t Y: " << enemyTransform.y;
-        ss << "\nEnemy move vector\n" << "X: " << normal.x << "\t Y: " << normal.y;
-    }
-
     auto size = MeasureText(ss.str().c_str(), 15);
     Vector2 pos {
         .x = static_cast<float>(GetScreenWidth() - size - 5),

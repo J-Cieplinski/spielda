@@ -44,12 +44,16 @@ void MapLoader::addComponents(roen::data_structure::Vector2f tilePosition, roen:
                                                 roen::hashString(assetId),
                                                 false);
 
-    entityManager_.emplace<tags::CollisionMask>(tileEntity, tags::MaskLayer::DECORATION);
+    tags::CollisionMask collisionMask {
+         .mask = tags::MaskLayer::DECORATION
+    };
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)
     {
-        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, false);
+        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, components::CollisionType::NONE);
+        collisionMask.mask |= tags::MaskLayer::WALL;
     }
+    entityManager_.emplace<tags::CollisionMask>(tileEntity, collisionMask);
 }
 
 roen::manager::IAssetManager& MapLoader::getTextureManager()

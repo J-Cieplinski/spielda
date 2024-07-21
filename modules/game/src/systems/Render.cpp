@@ -25,14 +25,10 @@ void Render::update()
     entities.use<components::Sprite>();
 
     const auto& textureManager = entityManager_.ctx().get<TextureManager>();
+    BeginMode2D(camera_);
 
     for(const auto& [entity, sprite, transform] : entities.each())
     {
-        if(!sprite.isFixed)
-        {
-            BeginMode2D(camera_);
-        }
-
         if(!isComplex(entity))
         {
             const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
@@ -51,11 +47,9 @@ void Render::update()
             drawComplex(entity, sprite, transform, textureManager);
         }
 
-        if(!sprite.isFixed)
-        {
-            EndMode2D();
-        }
     }
+
+    EndMode2D();
 }
 
 void Render::checkForDirtyAndSort()
@@ -82,8 +76,7 @@ bool Render::isComplex(entt::entity entity)
 
 void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager)
 {
-    auto weaponComp = entityManager_.try_get<components::Weapon>(entity);
-    if(weaponComp)
+    if(auto weaponComp = entityManager_.try_get<components::Weapon>(entity))
     {
         return;
     }

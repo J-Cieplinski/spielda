@@ -15,15 +15,14 @@ CollisionRender::CollisionRender(entt::registry& entityManager, const Camera2D& 
 void CollisionRender::update()
 {
     const auto entities = entityManager_.view<components::BoxCollider>();
+    BeginMode2D(camera_);
 
     for(const auto& [_, boxCollider] : entities.each())
     {
-        BeginMode2D(camera_);
-
-        DrawRectangleLinesEx(boxCollider, 0.8, boxCollider.isColliding ? RED : GREEN);
-
-        EndMode2D();
+        DrawRectangleLinesEx(boxCollider, 0.8, boxCollider.collisionType == components::CollisionType::WALL ? RED : GREEN);
     }
+
+    EndMode2D();
 }
 
 } // spielda::system

@@ -4,6 +4,7 @@
 #include <MapLoader.hpp>
 #include <Typedefs.hpp>
 
+#include <components/AI.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/Dirty.hpp>
 #include <components/Health.hpp>
@@ -16,6 +17,7 @@
 
 #include <components/tags/CollisionMask.hpp>
 
+#include <systems/AIDetect.hpp>
 #include <systems/AIDetect.hpp>
 #include <systems/AIDetectRadiusRender.hpp>
 #include <systems/AIMove.hpp>
@@ -35,10 +37,12 @@
 
 #include <roen/include/Utils.hpp>
 #include <roen/include/log/Logger.hpp>
-#include <roen/include/manager/GameSceneManager.hpp>
+#include <roen/include/log/formatters/entity.hpp>
 
 #include <entt/entt.hpp>
 #include <raymath.h>
+
+#include <ranges>
 
 namespace spielda::scenes
 {
@@ -46,7 +50,7 @@ namespace spielda::scenes
 GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     : IScene{gameSceneManager}
     , deltaTime_{0}
-    , renderTexture_{LoadRenderTexture(spielda::RENDER_WIDTH, spielda::RENDER_HEIGHT)}
+    , renderTexture_{LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.5f}
     , debugRender_{false}
 {
@@ -131,6 +135,12 @@ void GameScene::revealed()
     auto mapSize = mapLoader.getMapSize();
 
     loadHero();
+#ifdef PROFILE
+    for(auto i : std::ranges::iota_view{1, 100})
+    {
+        spawnDebugEntity();
+    }
+#endif
 }
 
 void GameScene::quit()
@@ -163,11 +173,11 @@ void GameScene::loadHero()
     auto weapon = entityManager_.create();
 
     entityManager_.emplace<components::Weapon>(weapon, weaponOrigin, 20u);
-    entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, false);
+    entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, components::CollisionType::NONE);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION);
+    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
 
     constexpr Rectangle srcRect {
             .x = 0.f,
@@ -207,12 +217,12 @@ void GameScene::loadHero()
 
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, false);
+    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, components::CollisionType::NONE);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
     entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
 
-    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER);
+    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
 }
 
 void GameScene::updateDeltaTime()
@@ -260,4 +270,34 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
     }
 }
 
+void GameScene::spawnDebugEntity()
+{
+    auto debugEnt = entityManager_.create();
+    constexpr Rectangle srcRect {
+        .x = 0.f,
+        .y = 128.f,
+        .width = 16.f,
+        .height = 16.f
+    };
+    constexpr std::uint32_t layer = 5;
+    constexpr std::uint32_t layerOrder = 1;
+    constexpr Vector2 position {
+        .x = 81,
+        .y = 128
+    };
+    constexpr Vector2 colliderPosition {
+        .x = 82,
+        .y = 130
+    };
+
+    entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<components::BoxCollider>(debugEnt, colliderPosition, colliderPosition, Vector2{14, 12}, components::CollisionType::NONE);
+    entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
+    entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
+    entityManager_.emplace<components::AI>(debugEnt, 80.f);
+    entityManager_.emplace<tags::CollisionMask>(debugEnt, tags::MaskLayer::ENEMY | tags::MaskLayer::MOVING);
+
+    APP_INFO("Added debug entity {0}", debugEnt);
+}
 } // spielda::scenes

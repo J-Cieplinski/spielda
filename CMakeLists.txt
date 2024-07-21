@@ -31,6 +31,10 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     endif (UNIX)
 endif ()
 
+if(PROFILE)
+    add_compile_definitions(-DPROFILE=1)
+endif()
+
 add_subdirectory(modules)
 
 target_sources(${PROJECT_NAME}

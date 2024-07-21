@@ -10,7 +10,10 @@ enum MaskLayer : std::uint64_t
 {
     PLAYER = 1u << 0,
     ENEMY = 1u << 1,
-    DECORATION = 1u << 2
+    DECORATION = 1u << 2,
+    WALL = 1u << 3,
+    MOVING = 1u << 4,
+    WEAPON = 1u << 5
 };
 
 /*

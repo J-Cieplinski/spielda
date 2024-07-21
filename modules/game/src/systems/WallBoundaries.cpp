@@ -29,12 +29,10 @@ void WallBoundaries::onCollision(const events::Collision& event)
     if(firstMovable)
     {
         rewindEntity(event.firstCollider);
-        return;
     }
     else
     {
         rewindEntity(event.secondCollider);
-        return;
     }
 }
 

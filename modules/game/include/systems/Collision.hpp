@@ -12,7 +12,7 @@ class Collision final : public roen::interfaces::ISystem
 {
 public:
     explicit Collision(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
-    void update();
+    void update() const;
 private:
     entt::dispatcher& eventDispatcher_;
 };

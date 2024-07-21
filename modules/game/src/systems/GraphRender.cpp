@@ -25,10 +25,11 @@ void GraphRender::update()
         return;
     }
 
+    BeginMode2D(camera_);
+
     const auto& pathfindingGraph = entityManager_.ctx().get<MapGraph>();
     for(const auto& [node, edges] : pathfindingGraph.getEdges())
     {
-        BeginMode2D(camera_);
 
         const auto pos = node.getPosition();
         const auto size = node.getSize();
@@ -45,11 +46,11 @@ void GraphRender::update()
             DrawLineV(startPos, endPos, YELLOW);
         }
 
-        //DrawRectangleLines(pos.x, pos.y, size.x, size.y, MAGENTA);
         DrawCircle(startPos.x, startPos.y, 3.f, BLUE);
 
-        EndMode2D();
     }
+
+    EndMode2D();
 }
 
 } // spielda::system

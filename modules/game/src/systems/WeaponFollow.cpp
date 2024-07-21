@@ -23,7 +23,7 @@ void WeaponFollow::update()
 
     for (auto weaponWielder : view)
     {
-        auto wieldedWeapon = entityManager_.get<components::WieldedWeapon>(weaponWielder);
+        auto wieldedWeapon = view.get<components::WieldedWeapon>(weaponWielder);
         auto& weaponCollider = weaponGroup.get<components::BoxCollider>(wieldedWeapon.weaponEntity);
         const auto ownerCollider = entityManager_.get<components::BoxCollider>(weaponWielder);
 

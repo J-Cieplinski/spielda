@@ -22,17 +22,17 @@ AIDetectRadiusRender::AIDetectRadiusRender(entt::registry& entityManager, entt::
 
 void AIDetectRadiusRender::update()
 {
+    BeginMode2D(camera_);
+
     if (const auto maybeAi = entityManager_.try_get<components::AI>(detectedEntity_))
     {
         const auto collider = entityManager_.get<components::BoxCollider>(detectedEntity_);
         const auto center = Vector2Add(collider.position, Vector2Scale(collider.size, 0.5f));
 
-        BeginMode2D(camera_);
-
         DrawCircleLinesV(center, maybeAi->detectRadius, YELLOW);
-
-        EndMode2D();
     }
+
+    EndMode2D();
 }
 
 void AIDetectRadiusRender::onMouseClick(events::Mouse event)
