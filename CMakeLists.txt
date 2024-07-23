@@ -18,6 +18,7 @@ set(MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(GAME_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules/game/include)
 
 find_package(Lua REQUIRED)
+find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME})
@@ -42,6 +43,7 @@ target_sources(${PROJECT_NAME}
     main.cpp)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    raylib
     roen)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${GAME_INCLUDE_DIR} ${MODULES_DIR})

@@ -5,7 +5,6 @@ add_library(${PROJECT_NAME} SHARED)
 find_package(EnTT CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(raylib CONFIG REQUIRED)
 find_package(sol2 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
@@ -35,7 +34,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     EnTT::EnTT
     ${LUA_LIBRARIES}
     nlohmann_json::nlohmann_json
-    raylib
     sol2
     spdlog::spdlog)
 
