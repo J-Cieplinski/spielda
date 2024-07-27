@@ -12,6 +12,7 @@
 
 #include <raymath.h>
 
+#include <ranges>
 #include <queue>
 
 namespace spielda::system
@@ -95,9 +96,7 @@ roen::data_structure::MapNode AIMove::getClosestMapNode(const Vector2& position,
 {
     std::queue<roen::data_structure::MapNode> nodes{};
 
-    roen::data_structure::MapNode currentClosestNode;
-
-    for(const auto& [node, edge] : pathfindingGraph.getEdges())
+    for(const auto& node : pathfindingGraph.getEdges() | std::ranges::views::keys)
     {
         if(node.contains({position.x, position.y}))
         {
@@ -105,7 +104,7 @@ roen::data_structure::MapNode AIMove::getClosestMapNode(const Vector2& position,
         }
     }
 
-    currentClosestNode = nodes.front();
+    roen::data_structure::MapNode currentClosestNode = nodes.front();
     nodes.pop();
 
     Vector2 currentClosestNodeV = toRayVector(currentClosestNode.getPosition());

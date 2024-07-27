@@ -26,13 +26,13 @@ void Collision::update() const
     const auto& maskView = entityManager_.view<tags::CollisionMask>();
     view.each([](components::BoxCollider& collider) { collider.collisionType = components::CollisionType::NONE; });
 
-    for (auto entityIt = view.begin(); entityIt < view.end(); ++entityIt)
+    for (auto entityIt = view.begin(); entityIt != view.end(); ++entityIt)
     {
         auto& entityOneCollider = view.get<components::BoxCollider>(*entityIt);
         const auto maskOne = maskView.get<tags::CollisionMask>(*entityIt);
         const auto isEntityOneAWeapon = maskOne.mask.test(WEAPON_BIT);
 
-        for (auto it2 = entityIt + 1; it2 < view.end(); ++it2) {
+        for (auto it2 = entityIt + 1; it2 != view.end(); ++it2) {
             auto& entityTwoCollider = view.get<components::BoxCollider>(*it2);
             const auto maskTwo = maskView.get<tags::CollisionMask>(*it2);
 

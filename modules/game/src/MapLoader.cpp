@@ -20,7 +20,7 @@ MapLoader::MapLoader(entt::registry &entityManager)
 }
 
 void MapLoader::addComponents(roen::data_structure::Vector2f tilePosition, roen::data_structure::Vector2f tileSize, float rotation, tson::Rect drawingRect,
-                              int layerOrder, const std::string& layerClass, const std::string& assetId)
+                                int layerOrder, const std::string& layerClass, const std::string& assetId)
 {
     constexpr auto scale = Vector2(1.f, 1.f);
 
@@ -45,7 +45,7 @@ void MapLoader::addComponents(roen::data_structure::Vector2f tilePosition, roen:
                                                 false);
 
     tags::CollisionMask collisionMask {
-         .mask = tags::MaskLayer::DECORATION
+        .mask = tags::MaskLayer::DECORATION
     };
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)

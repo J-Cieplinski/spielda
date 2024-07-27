@@ -1,9 +1,10 @@
 #include <algorithms/search/Pathfinding.hpp>
 #include <data_structure/PriorityQueue.hpp>
 
-#include <cmath>
-
 #include <log/Logger.hpp>
+
+#include <algorithm>
+#include <cmath>
 
 namespace roen::algorithms
 {
@@ -67,7 +68,7 @@ std::vector<data_structure::MapNode> getNodeOrderFromPath(
     }
 
     orderedPath.push_back(start);
-    std::reverse(orderedPath.begin(), orderedPath.end());
+    std::ranges::reverse(orderedPath);
 
     return orderedPath;
 }

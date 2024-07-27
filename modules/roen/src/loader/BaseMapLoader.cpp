@@ -4,6 +4,7 @@
 
 #include <log/Logger.hpp>
 
+#include <ranges>
 #include <regex>
 
 namespace roen::loader
@@ -127,7 +128,7 @@ void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, Ve
     /*E*/   {tileSize.x, 0} };
 
     auto findTile = [&tiles](Vector2f position) {
-        return std::find_if(tiles.begin(), tiles.end(), [&position](const MapTile& checkedTile) -> bool {
+        return std::ranges::find_if(tiles, [&position](const MapTile& checkedTile) -> bool {
             return checkedTile.position == position;
         });
     };
@@ -149,8 +150,7 @@ void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, Ve
             }
         }
 
-        pathfindingGraph_.addNode({tile.position, tileSize, static_cast<std::uint32_t>(tile.cost)},
-                                  edges);
+        pathfindingGraph_.addNode({tile.position, tileSize, static_cast<std::uint32_t>(tile.cost)}, edges);
     }
 }
 

@@ -4,6 +4,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <ranges>
+
 namespace spielda::system
 {
 
@@ -58,7 +60,7 @@ void MeleeCombat::update(double dt)
     }
 
     std::erase_if(swingsToAnimate_, [&swingsToClear](WeaponSwing& swing){
-        auto it = std::find_if(swingsToClear.begin(), swingsToClear.end(), [&swing](WeaponSwing& swingToClear) {
+        auto it = std::ranges::find_if(swingsToClear, [&swing](WeaponSwing& swingToClear) {
             return swingToClear.weaponEntity == swing.weaponEntity;
         });
 
