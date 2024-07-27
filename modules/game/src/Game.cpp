@@ -28,9 +28,9 @@ void Game::run()
     {
         isRunning_ = !WindowShouldClose();
         gameSceneManager_.update();
-        gameSceneManager_.getCurrentScene()->handleInput();
-        gameSceneManager_.getCurrentScene()->update();
-        gameSceneManager_.getCurrentScene()->render();
+        gameSceneManager_.getCurrentScene().handleInput();
+        gameSceneManager_.getCurrentScene().update();
+        gameSceneManager_.getCurrentScene().render();
     }
 }
 

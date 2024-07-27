@@ -11,28 +11,23 @@
 namespace roen::data_structure
 {
 
-namespace
-{
-template <typename T>
-concept DerivedFromISystem = std::is_base_of<interfaces::ISystem, T>::value;
-}
-
 class SystemsContainer
 {
-using SystemsMap = std::unordered_map<std::type_index, std::shared_ptr<interfaces::ISystem>>;
+
+using SystemsMap = std::unordered_map<std::type_index, std::unique_ptr<interfaces::ISystem>>;
 using SystemsIterator = SystemsMap::iterator;
 using SystemsConstIterator = SystemsMap::const_iterator;
 public:
-    template<DerivedFromISystem SystemType, typename ...Args>
+    template<std::derived_from<interfaces::ISystem> SystemType, typename ...Args>
     void add(Args&& ...args);
 
-    template<DerivedFromISystem SystemType>
+    template<std::derived_from<interfaces::ISystem> SystemType>
     void remove();
 
-    template<DerivedFromISystem SystemType>
+    template<std::derived_from<interfaces::ISystem> SystemType>
     [[nodiscard]] bool hasSystem() const;
 
-    template<DerivedFromISystem SystemType>
+    template<std::derived_from<interfaces::ISystem> SystemType>
     SystemType& get() const;
 
     [[nodiscard]] SystemsIterator begin();
@@ -55,17 +50,17 @@ private:
 namespace roen::data_structure
 {
 
-template<DerivedFromISystem SystemType, typename... Args>
+template<std::derived_from<interfaces::ISystem> SystemType, typename... Args>
 void SystemsContainer::add(Args&&... args)
 {
-    auto newSystem = std::make_shared<SystemType>(std::forward<Args>(args)...);
+    auto newSystem = std::make_unique<SystemType>(std::forward<Args>(args)...);
     const auto key = std::type_index(typeid(SystemType));
     SDK_INFO("Adding system of type: {0}", key.name());
 
     systems_.insert({ key, std::move(newSystem) });
 }
 
-template<DerivedFromISystem SystemType>
+template<std::derived_from<interfaces::ISystem> SystemType>
 void SystemsContainer::remove()
 {
     const auto key = std::type_index(typeid(SystemType));
@@ -75,14 +70,14 @@ void SystemsContainer::remove()
     }
 }
 
-template<DerivedFromISystem SystemType>
+template<std::derived_from<interfaces::ISystem> SystemType>
 bool SystemsContainer::hasSystem() const
 {
     const auto key = std::type_index(typeid(SystemType));
     return systems_.contains(key);
 }
 
-template<DerivedFromISystem SystemType>
+template<std::derived_from<interfaces::ISystem> SystemType>
 SystemType& SystemsContainer::get() const
 {
     const auto key = std::type_index(typeid(SystemType));
@@ -95,7 +90,7 @@ SystemType& SystemsContainer::get() const
         throw std::out_of_range(ss.str());
     }
 
-    return *(std::static_pointer_cast<SystemType>(system->second));
+    return static_cast<SystemType&>(*(system->second));
 }
 
 } // roen::data_structure

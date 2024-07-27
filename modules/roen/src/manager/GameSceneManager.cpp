@@ -45,14 +45,14 @@ void GameSceneManager::pop()
     }
 }
 
-const std::unique_ptr<interfaces::IScene>& GameSceneManager::getCurrentScene()
+interfaces::IScene& GameSceneManager::getCurrentScene()
 {
     if(scenes_.empty())
     {
         throw std::out_of_range("There are no game scenes present in the manager");
     }
 
-    return scenes_.top();
+    return static_cast<interfaces::IScene&>(*(scenes_.top()));
 }
 
 void GameSceneManager::update()

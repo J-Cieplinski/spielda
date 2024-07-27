@@ -9,9 +9,8 @@
 namespace spielda
 {
 
-template<typename NewScene>
-requires std::is_base_of_v<roen::interfaces::IScene, NewScene>
-class SwitchSceneFunctor : public roen::Functor
+template<std::derived_from<roen::interfaces::IScene> NewScene>
+class SwitchSceneFunctor final : public roen::Functor
 {
 public:
     explicit SwitchSceneFunctor(roen::manager::GameSceneManager& gameSceneManager)

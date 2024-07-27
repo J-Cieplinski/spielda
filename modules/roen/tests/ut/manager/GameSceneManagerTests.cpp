@@ -41,7 +41,7 @@ TEST_F(GameSceneManagerTests, push_ShouldCorrectlyPushScene)
 
     manager_.push(std::move(scene));
 
-    EXPECT_EQ(manager_.getCurrentScene().get(), scenePtr);
+    EXPECT_EQ(&manager_.getCurrentScene(), scenePtr);
 }
 
 TEST_F(GameSceneManagerTests, push_ShouldCallRevealedOnPushedScene)
@@ -77,10 +77,10 @@ TEST_F(GameSceneManagerTests, pop_ShouldCorrectlyPopTopScene)
     manager_.push(std::move(sceneOne));
     manager_.push(std::move(topScene));
 
-    EXPECT_EQ(manager_.getCurrentScene().get(), topScenePtr);
+    EXPECT_EQ(&manager_.getCurrentScene(), topScenePtr);
 
     manager_.pop();
-    EXPECT_EQ(manager_.getCurrentScene().get(), sceneOnePtr);
+    EXPECT_EQ(&manager_.getCurrentScene(), sceneOnePtr);
 }
 
 TEST_F(GameSceneManagerTests, pop_ShouldCallRevealOnNewTopScene)
@@ -112,8 +112,8 @@ TEST_F(GameSceneManagerTests, getCurrentScene_ShouldReturnTopScene)
 
     auto& currentScene = manager_.getCurrentScene();
 
-    EXPECT_EQ(currentScene.get(), topScenePtr);
-    EXPECT_NE(currentScene.get(), sceneOnePtr);
+    EXPECT_EQ(&currentScene, topScenePtr);
+    EXPECT_NE(&currentScene, sceneOnePtr);
 }
 
 } // manager
