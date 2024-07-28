@@ -27,6 +27,7 @@ AIMove::AIMove(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 void AIMove::update()
 {
+    auto view = entityManager_.view<components::AI, components::BoxCollider, components::RigidBody>();
     constexpr std::uint16_t velocity {20};
     for(auto& [entity, nodes] : travelingEntities_)
     {
@@ -36,10 +37,10 @@ void AIMove::update()
             continue;
         }
 
-        const auto aiCollider = entityManager_.get<components::BoxCollider>(entity);
+        const auto aiCollider = view.get<components::BoxCollider>(entity);
         Vector2 aiColliderCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
 
-        auto& aiVelocity = entityManager_.get<components::RigidBody>(entity).velocity;
+        auto& aiVelocity = view.get<components::RigidBody>(entity).velocity;
 
         if(!nodes.empty()
             && nodes.front().contains({aiCollider.position.x, aiCollider.position.y})
@@ -48,7 +49,7 @@ void AIMove::update()
             nodes.pop_front();
         }
 
-        const auto& aiState = entityManager_.get<components::AI>(entity).state;
+        const auto& aiState = view.get<components::AI>(entity).state;
 
         if(nodes.empty() || aiState == components::AIState::IDLE)
         {
@@ -77,10 +78,12 @@ void AIMove::update()
 
 void AIMove::onDetect(events::AIDetectedEnemy event)
 {
-    auto& aiState = entityManager_.get<components::AI>(event.aiEntity).state;
+    const auto view = entityManager_.view<components::AI, components::BoxCollider>();
+
+    auto& aiState = view.get<components::AI>(event.aiEntity).state;
     aiState = components::AIState::FOLLOWING;
 
-    const auto aiCollider = entityManager_.get<components::BoxCollider>(event.aiEntity).position;
+    const auto aiCollider = view.get<components::BoxCollider>(event.aiEntity).position;
 
     const auto& pathfindingGraph = entityManager_.ctx().get<roen::data_structure::Graph<roen::data_structure::MapNode>>();
     auto closestAINode = getClosestMapNode(aiCollider, pathfindingGraph);
@@ -114,7 +117,7 @@ roen::data_structure::MapNode AIMove::getClosestMapNode(const Vector2& position,
         auto consideredNode = nodes.front();
         nodes.pop();
 
-        Vector2 consideredNodeV = toRayVector(consideredNode.getPosition());
+        const Vector2 consideredNodeV = toRayVector(consideredNode.getPosition());
 
         if(Vector2Distance(position, currentClosestNodeV) > Vector2Distance(position, consideredNodeV))
         {

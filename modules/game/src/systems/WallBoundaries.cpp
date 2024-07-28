@@ -19,8 +19,9 @@ WallBoundaries::WallBoundaries(entt::registry& entityManager, entt::dispatcher& 
 
 void WallBoundaries::onCollision(const events::Collision& event)
 {
-    auto firstMovable = entityManager_.try_get<components::RigidBody>(event.firstCollider);
-    auto secondMovable = entityManager_.try_get<components::RigidBody>(event.secondCollider);
+    auto view = entityManager_.view<components::RigidBody, components::BoxCollider, components::Transform>();
+    auto firstMovable = view.contains(event.firstCollider);
+    auto secondMovable = view.contains(event.secondCollider);
     if(firstMovable && secondMovable)
     {
         return;
@@ -28,18 +29,18 @@ void WallBoundaries::onCollision(const events::Collision& event)
 
     if(firstMovable)
     {
-        rewindEntity(event.firstCollider);
+        rewindEntity(event.firstCollider, view);
     }
     else
     {
-        rewindEntity(event.secondCollider);
+        rewindEntity(event.secondCollider, view);
     }
 }
 
-void WallBoundaries::rewindEntity(entt::entity entity)
+void WallBoundaries::rewindEntity(entt::entity entity, auto& view)
 {
-    auto& collider = entityManager_.get<components::BoxCollider>(entity);
-    auto& transform = entityManager_.get<components::Transform>(entity);
+    auto& collider = view.template get<components::BoxCollider>(entity);
+    auto& transform = view.template get<components::Transform>(entity);
 
     collider.position = collider.previousPosition;
     transform.position = transform.previousPosition;

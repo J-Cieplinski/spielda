@@ -41,17 +41,18 @@ void MeleeCombat::onAttack(events::Attack event)
 void MeleeCombat::update(double dt)
 {
     std::vector<WeaponSwing> swingsToClear {};
+    const auto view = entityManager_.view<components::Transform, components::Weapon>();
     for(auto& swing : swingsToAnimate_)
     {
-        auto& weaponTransform = entityManager_.get<components::Transform>(swing.weaponEntity);
-        weaponTransform.rotation = 90 * (swing.currentAnimationTime / swing.totalAnimationTime);
+        auto& weaponTransform = view.get<components::Transform>(swing.weaponEntity);
+        weaponTransform.rotation = 90.f * (swing.currentAnimationTime / swing.totalAnimationTime);
 
         swing.currentAnimationTime += dt;
         if(swing.totalAnimationTime <= swing.currentAnimationTime)
         {
             swingsToClear.push_back(swing);
 
-            auto& weapon = entityManager_.get<components::Weapon>(swing.weaponEntity);
+            auto& weapon = view.get<components::Weapon>(swing.weaponEntity);
             weapon.originPosition = swing.originalRelativePosition;
             weaponTransform.rotation = 0;
             weapon.attacking = false;

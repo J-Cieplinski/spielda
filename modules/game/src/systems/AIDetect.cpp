@@ -25,10 +25,11 @@ AIDetect::AIDetect(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 }
 
-void AIDetect::update()
+void AIDetect::update() const
 {
+    const auto colliderView = entityManager_.view<components::BoxCollider>();
     const auto player = entityManager_.view<components::Player>().front();
-    const auto playerCollider = entityManager_.get<components::BoxCollider>(player);
+    const auto playerCollider = colliderView.get<components::BoxCollider>(player);
 
     const Vector2 playerCenter {
         .x = playerCollider.position.x + playerCollider.size.x / 2.f,
@@ -39,8 +40,8 @@ void AIDetect::update()
 
     for(auto ai : aiView)
     {
-        const auto aiComponent = entityManager_.get<components::AI>(ai);
-        const auto aiCollider = entityManager_.get<components::BoxCollider>(ai);
+        const auto aiComponent = aiView.get<components::AI>(ai);
+        const auto aiCollider = colliderView.get<components::BoxCollider>(ai);
         const auto aiEntityCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
 
         if(CheckCollisionCircleRec(aiEntityCenter, aiComponent.detectRadius, playerCollider))
@@ -52,7 +53,7 @@ void AIDetect::update()
         }
         else
         {
-            entityManager_.get<components::AI>(ai).state = components::AIState::IDLE;
+            aiView.get<components::AI>(ai).state = components::AIState::IDLE;
         }
     }
 }

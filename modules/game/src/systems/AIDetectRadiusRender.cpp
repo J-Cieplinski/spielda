@@ -24,12 +24,14 @@ void AIDetectRadiusRender::update()
 {
     BeginMode2D(camera_);
 
-    if (const auto maybeAi = entityManager_.try_get<components::AI>(detectedEntity_))
+    auto view = entityManager_.view<components::AI, components::BoxCollider>();
+    if (view.contains(detectedEntity_))
     {
-        const auto collider = entityManager_.get<components::BoxCollider>(detectedEntity_);
+        const auto ai = view.get<components::AI>(detectedEntity_);
+        const auto collider = view.get<components::BoxCollider>(detectedEntity_);
         const auto center = Vector2Add(collider.position, Vector2Scale(collider.size, 0.5f));
 
-        DrawCircleLinesV(center, maybeAi->detectRadius, YELLOW);
+        DrawCircleLinesV(center, ai.detectRadius, YELLOW);
     }
 
     EndMode2D();
@@ -42,13 +44,12 @@ void AIDetectRadiusRender::onMouseClick(events::Mouse event)
         return;
     }
 
-    const auto aiView = entityManager_.view<components::AI>();
+    detectedEntity_ = entt::null;
 
-    for (const auto ai: aiView)
+    const auto aiView = entityManager_.view<components::AI, components::Transform, components::BoxCollider>();
+
+    for (const auto& [entity, ai, transform, collider]: aiView.each())
     {
-        const auto& transform = entityManager_.get<components::Transform>(ai);
-        const auto& collider = entityManager_.get<components::BoxCollider>(ai);
-
         Rectangle boxCollider {
             .x = transform.position.x,
             .y = transform.position.y,
@@ -60,12 +61,8 @@ void AIDetectRadiusRender::onMouseClick(events::Mouse event)
 
         if (CheckCollisionPointRec(mousePosition, boxCollider))
         {
-            detectedEntity_ = ai;
+            detectedEntity_ = entity;
             return;
-        }
-        else
-        {
-            detectedEntity_ = entt::null;
         }
     }
 }

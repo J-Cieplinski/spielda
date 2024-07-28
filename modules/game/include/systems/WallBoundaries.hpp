@@ -16,7 +16,7 @@ public:
     WallBoundaries(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
 private:
     void onCollision(const events::Collision& event);
-    void rewindEntity(entt::entity entity);
+    void rewindEntity(entt::entity entity, auto& view);
 };
 
 } // spielda::system

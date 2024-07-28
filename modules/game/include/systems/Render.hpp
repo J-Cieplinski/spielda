@@ -22,9 +22,9 @@ public:
     void update() override;
 private:
     void checkForDirtyAndSort();
-    bool isComplex(entt::entity entity);
-    void drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager);
-    void drawAttached(entt::entity entity, const spielda::TextureManager& textureManager);
+    bool isComplex(entt::entity entity) const;
+    void drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager) const;
+    void drawAttached(entt::entity entity, const spielda::TextureManager& textureManager) const;
 };
 
 } // spielda::system

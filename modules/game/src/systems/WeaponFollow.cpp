@@ -11,24 +11,22 @@
 namespace spielda::system
 {
 
-WeaponFollow::WeaponFollow(entt::registry &entityManager)
+WeaponFollow::WeaponFollow(entt::registry& entityManager)
     : ISystem{entityManager}
 {
 }
 
-void WeaponFollow::update()
+void WeaponFollow::update() const
 {
-    auto view = entityManager_.view<components::WieldedWeapon>();
-    auto weaponGroup = entityManager_.group<components::Weapon>(entt::get<components::BoxCollider>);
+    auto wielderView = entityManager_.view<components::WieldedWeapon, components::BoxCollider>();
+    auto weaponView = entityManager_.view<components::Weapon, components::BoxCollider>();
 
-    for (auto weaponWielder : view)
+    for (const auto& [wielder, wieldedWeapon, wielderCollider] : wielderView.each())
     {
-        auto wieldedWeapon = view.get<components::WieldedWeapon>(weaponWielder);
-        auto& weaponCollider = weaponGroup.get<components::BoxCollider>(wieldedWeapon.weaponEntity);
-        const auto ownerCollider = entityManager_.get<components::BoxCollider>(weaponWielder);
+        auto& weaponCollider = weaponView.get<components::BoxCollider>(wieldedWeapon.weaponEntity);
 
         weaponCollider.previousPosition = weaponCollider.position;
-        weaponCollider.position = Vector2Add(ownerCollider.position, wieldedWeapon.colliderAttachOffset);
+        weaponCollider.position = Vector2Add(wielderCollider.position, wieldedWeapon.colliderAttachOffset);
     }
 }
 

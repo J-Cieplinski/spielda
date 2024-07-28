@@ -29,7 +29,7 @@ void Render::update()
 
     for(const auto& [entity, sprite, transform] : entities.each())
     {
-        if(!isComplex(entity))
+        if(!isComplex(entity)) [[unlikely]]
         {
             const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
 
@@ -66,7 +66,7 @@ void Render::checkForDirtyAndSort()
     }
 }
 
-bool Render::isComplex(entt::entity entity)
+bool Render::isComplex(entt::entity entity) const
 {
     bool hasWeapon = entityManager_.any_of<components::WieldedWeapon>(entity);
     bool isWeapon = entityManager_.any_of<components::Weapon>(entity);
@@ -74,7 +74,11 @@ bool Render::isComplex(entt::entity entity)
     return hasWeapon || isWeapon;
 }
 
-void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager)
+void Render::drawComplex(
+    entt::entity entity,
+    const components::Sprite& sprite,
+    const components::Transform& transform,
+    const TextureManager& textureManager) const
 {
     if(auto weaponComp = entityManager_.try_get<components::Weapon>(entity))
     {
@@ -105,19 +109,22 @@ void Render::drawComplex(entt::entity entity, const components::Sprite& sprite, 
     rlPopMatrix();
 }
 
-void Render::drawAttached(entt::entity entity, const spielda::TextureManager& textureManager)
+void Render::drawAttached(entt::entity entity, const spielda::TextureManager& textureManager) const
 {
-    const auto transform = entityManager_.get<components::Transform>(entity);
+
+    auto view = entityManager_.view<components::Transform, components::Weapon, components::Sprite>();
+
+    const auto transform = view.get<components::Transform>(entity);
     rlRotatef(transform.rotation, 0, 0, 1);
 
     rlPushMatrix();
-    const auto weapon = entityManager_.get<components::Weapon>(entity);
+    const auto weapon = view.get<components::Weapon>(entity);
 
     float yOrigin = weapon.originPosition.y;
 
     rlTranslatef(-weapon.originPosition.x, -yOrigin, 0);
 
-    const auto sprite = entityManager_.get<components::Sprite>(entity);
+    const auto sprite = view.get<components::Sprite>(entity);
 
     const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
 

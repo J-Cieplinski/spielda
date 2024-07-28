@@ -15,9 +15,9 @@ class MeleeCombat final : public roen::interfaces::ISystem
 struct WeaponSwing
 {
     components::Weapon weapon;
-    entt::entity weaponEntity;
-    Vector2 originalRelativePosition;
-    double totalAnimationTime;
+    entt::entity weaponEntity{entt::null};
+    Vector2 originalRelativePosition{0, 0};
+    double totalAnimationTime{0};
     double currentAnimationTime {0};
 };
 public:

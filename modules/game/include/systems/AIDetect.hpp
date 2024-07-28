@@ -12,7 +12,7 @@ class AIDetect final : public roen::interfaces::ISystem
 {
 public:
     explicit AIDetect(entt::registry& entityManager, entt::dispatcher& dispatcher);
-    void update();
+    void update() const;
 private:
     entt::dispatcher& eventDispatcher_;
 };

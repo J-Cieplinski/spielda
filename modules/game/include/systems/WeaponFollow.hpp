@@ -10,7 +10,7 @@ class WeaponFollow final : public roen::interfaces::ISystem
 {
 public:
     explicit WeaponFollow(entt::registry& entityManager);
-    void update();
+    void update() const;
 };
 
 } // spielda::system
