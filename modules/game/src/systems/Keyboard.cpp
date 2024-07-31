@@ -1,7 +1,7 @@
 #include <ranges>
 #include <systems/Keyboard.hpp>
 
-#include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/AI.hpp>
 #include <components/Health.hpp>
 #include <components/Player.hpp>
@@ -23,6 +23,7 @@
 
 #include <entt/entt.hpp>
 #include <raylib.h>
+#include <raymath.h>
 #include <oneapi/tbb/detail/_task.h>
 
 namespace spielda::system
@@ -116,13 +117,10 @@ void Keyboard::spawnDebugEntity()
         .x = 81,
         .y = 128
     };
-    constexpr Vector2 colliderPosition {
-        .x = 82,
-        .y = 130
-    };
+    const Vector2 colliderPosition = Vector2Add(position, Vector2Scale({16, 16}, 0.5f));
 
     entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<components::BoxCollider>(debugEnt, colliderPosition, colliderPosition, Vector2{14, 12}, components::CollisionType::NONE);
+    entityManager_.emplace<components::CircleCollider>(debugEnt, colliderPosition, colliderPosition, 6, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
     entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);

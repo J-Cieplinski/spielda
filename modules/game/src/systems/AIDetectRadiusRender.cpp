@@ -1,7 +1,7 @@
 #include <systems/AIDetectRadiusRender.hpp>
 
 #include <components/AI.hpp>
-#include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/Transform.hpp>
 
 #include <entt/entity/entity.hpp>
@@ -24,14 +24,13 @@ void AIDetectRadiusRender::update()
 {
     BeginMode2D(camera_);
 
-    auto view = entityManager_.view<components::AI, components::BoxCollider>();
+    auto view = entityManager_.view<components::AI, components::CircleCollider>();
     if (view.contains(detectedEntity_))
     {
         const auto ai = view.get<components::AI>(detectedEntity_);
-        const auto collider = view.get<components::BoxCollider>(detectedEntity_);
-        const auto center = Vector2Add(collider.position, Vector2Scale(collider.size, 0.5f));
+        const auto collider = view.get<components::CircleCollider>(detectedEntity_);
 
-        DrawCircleLinesV(center, ai.detectRadius, YELLOW);
+        DrawCircleLinesV(collider.position, ai.detectRadius, YELLOW);
     }
 
     EndMode2D();
@@ -46,20 +45,12 @@ void AIDetectRadiusRender::onMouseClick(events::Mouse event)
 
     detectedEntity_ = entt::null;
 
-    const auto aiView = entityManager_.view<components::AI, components::Transform, components::BoxCollider>();
+    const auto aiView = entityManager_.view<components::AI, components::Transform, components::CircleCollider>();
+    const auto mousePosition = GetScreenToWorld2D(event.position, camera_);
 
     for (const auto& [entity, ai, transform, collider]: aiView.each())
     {
-        Rectangle boxCollider {
-            .x = transform.position.x,
-            .y = transform.position.y,
-            .width = collider.size.x,
-            .height = collider.size.y,
-        };
-
-        const auto mousePosition = GetScreenToWorld2D(event.position, camera_);
-
-        if (CheckCollisionPointRec(mousePosition, boxCollider))
+        if (CheckCollisionPointCircle(mousePosition, collider.position, collider.radius))
         {
             detectedEntity_ = entity;
             return;

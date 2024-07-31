@@ -2,7 +2,7 @@
 
 #include <Utils.hpp>
 #include <components/AI.hpp>
-#include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/RigidBody.hpp>
 
 #include <roen/include/algorithms/search/Pathfinding.hpp>
@@ -27,7 +27,7 @@ AIMove::AIMove(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 void AIMove::update()
 {
-    auto view = entityManager_.view<components::AI, components::BoxCollider, components::RigidBody>();
+    auto view = entityManager_.view<components::AI, components::CircleCollider, components::RigidBody>();
     constexpr std::uint16_t velocity {20};
     for(auto& [entity, nodes] : travelingEntities_)
     {
@@ -37,14 +37,13 @@ void AIMove::update()
             continue;
         }
 
-        const auto aiCollider = view.get<components::BoxCollider>(entity);
-        Vector2 aiColliderCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
+        const auto aiCollider = view.get<components::CircleCollider>(entity);
 
         auto& aiVelocity = view.get<components::RigidBody>(entity).velocity;
 
         if(!nodes.empty()
             && nodes.front().contains({aiCollider.position.x, aiCollider.position.y})
-            && aiCollider.collisionType != components::CollisionType::WALL)
+            && aiCollider.collisionType != CollisionType::WALL)
         {
             nodes.pop_front();
         }
@@ -64,7 +63,7 @@ void AIMove::update()
 
         Vector2 currentNodeCenter = toRayVector(currentNodePos + (currentNodeSize / 2.f));
 
-        auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiColliderCenter));
+        auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiCollider.position));
         aiVelocity = Vector2Scale(moveVector, velocity);
     }
 
@@ -78,12 +77,12 @@ void AIMove::update()
 
 void AIMove::onDetect(events::AIDetectedEnemy event)
 {
-    const auto view = entityManager_.view<components::AI, components::BoxCollider>();
+    const auto view = entityManager_.view<components::AI, components::CircleCollider>();
 
     auto& aiState = view.get<components::AI>(event.aiEntity).state;
     aiState = components::AIState::FOLLOWING;
 
-    const auto aiCollider = view.get<components::BoxCollider>(event.aiEntity).position;
+    const auto aiCollider = view.get<components::CircleCollider>(event.aiEntity).position;
 
     const auto& pathfindingGraph = entityManager_.ctx().get<roen::data_structure::Graph<roen::data_structure::MapNode>>();
     auto closestAINode = getClosestMapNode(aiCollider, pathfindingGraph);

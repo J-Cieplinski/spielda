@@ -1,17 +1,12 @@
 #ifndef SPIELDA_GAME_COMPONENTS_BOXCOLLIDER_HPP
 #define SPIELDA_GAME_COMPONENTS_BOXCOLLIDER_HPP
 
+#include <Utils.hpp>
+
 #include <raylib.h>
 
 namespace spielda::components
 {
-
-enum class CollisionType
-{
-    WEAPON,
-    WALL,
-    NONE
-};
 
 struct BoxCollider
 {

@@ -6,6 +6,8 @@
 #include <roen/include/interfaces/IScene.hpp>
 #include <roen/include/manager/GameSceneManager.hpp>
 
+#include <raylib.h>
+
 namespace spielda
 {
 
@@ -32,6 +34,13 @@ inline Vector2 toRayVector(const roen::data_structure::Vector2f& v)
 {
     return Vector2{v.x, v.y};
 }
+
+enum class CollisionType
+{
+    WEAPON,
+    WALL,
+    NONE
+};
 
 } // spielda
 

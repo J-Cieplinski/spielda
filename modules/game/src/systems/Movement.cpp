@@ -1,6 +1,6 @@
 #include <systems/Movement.hpp>
 
-#include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
 
@@ -16,12 +16,12 @@ Movement::Movement(entt::registry &entityManager)
 
 void Movement::update(double dt)
 {
-    auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform, components::BoxCollider>);
+    auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform, components::CircleCollider>);
 
     for(auto entity : group)
     {
         auto& transform = group.get<components::Transform>(entity);
-        auto& collider = group.get<components::BoxCollider>(entity);
+        auto& collider = group.get<components::CircleCollider>(entity);
         auto rigidBody = group.get<components::RigidBody>(entity);
 
         transform.previousPosition = transform.position;

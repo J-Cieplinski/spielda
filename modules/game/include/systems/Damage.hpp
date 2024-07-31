@@ -16,11 +16,13 @@ public:
     using CombatEntities = std::pair<entt::entity, entt::entity>; //Attacker, defender
 
     explicit Damage(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
+    void update();
 private:
     void onCollision(events::Collision event);
     CombatEntities getCombatEntities(events::Collision event);
 
     entt::dispatcher& eventDispatcher_;
+    std::vector<entt::entity> entitiesToDestroy_;
 };
 
 } // spielda::system

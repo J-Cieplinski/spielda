@@ -50,7 +50,7 @@ void MapLoader::addComponents(roen::data_structure::Vector2f tilePosition, roen:
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)
     {
-        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, components::CollisionType::NONE);
+        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, CollisionType::NONE);
         collisionMask.mask |= tags::MaskLayer::WALL;
     }
     entityManager_.emplace<tags::CollisionMask>(tileEntity, collisionMask);

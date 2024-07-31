@@ -1,8 +1,9 @@
 #include <systems/AIDetect.hpp>
 
 #include <components/AI.hpp>
-#include <components/Player.hpp>
 #include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
+#include <components/Player.hpp>
 
 #include <events/AIDetectedEnemy.hpp>
 
@@ -27,27 +28,21 @@ AIDetect::AIDetect(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 void AIDetect::update() const
 {
-    const auto colliderView = entityManager_.view<components::BoxCollider>();
+    const auto colliderView = entityManager_.view<components::CircleCollider>();
     const auto player = entityManager_.view<components::Player>().front();
-    const auto playerCollider = colliderView.get<components::BoxCollider>(player);
-
-    const Vector2 playerCenter {
-        .x = playerCollider.position.x + playerCollider.size.x / 2.f,
-        .y = playerCollider.position.y + playerCollider.size.y / 2.f
-    };
+    const auto playerCollider = colliderView.get<components::CircleCollider>(player);
 
     auto aiView = entityManager_.view<components::AI>();
 
     for(auto ai : aiView)
     {
         const auto aiComponent = aiView.get<components::AI>(ai);
-        const auto aiCollider = colliderView.get<components::BoxCollider>(ai);
-        const auto aiEntityCenter = Vector2Add(aiCollider.position, Vector2Scale(aiCollider.size, 0.5f));
+        const auto aiCollider = colliderView.get<components::CircleCollider>(ai);
 
-        if(CheckCollisionCircleRec(aiEntityCenter, aiComponent.detectRadius, playerCollider))
+        if(CheckCollisionCircles(aiCollider.position, aiComponent.detectRadius, playerCollider.position, playerCollider.radius))
         {
             eventDispatcher_.trigger(events::AIDetectedEnemy {
-                .detectedEntityPosition = playerCenter,
+                .detectedEntityPosition = playerCollider.position,
                 .aiEntity = ai
             });
         }
