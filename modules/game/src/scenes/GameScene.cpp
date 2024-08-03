@@ -6,6 +6,7 @@
 
 #include <components/AI.hpp>
 #include <components/BoxCollider.hpp>
+#include <components/CharacterSheet.hpp>
 #include <components/CircleCollider.hpp>
 #include <components/Dirty.hpp>
 #include <components/Health.hpp>
@@ -173,8 +174,9 @@ void GameScene::loadHero()
     };
 
     auto weapon = entityManager_.create();
+    auto hero = entityManager_.create();
 
-    entityManager_.emplace<components::Weapon>(weapon, weaponOrigin, 20u);
+    entityManager_.emplace<components::Weapon>(weapon, hero, weaponOrigin, 20u);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
@@ -217,14 +219,14 @@ void GameScene::loadHero()
         .y = weaponAttachOffset.y - spriteSize.y
     };
 
-    auto hero = entityManager_.create();
-
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::CircleCollider>(hero, colliderPosition, colliderPosition, 6, CollisionType::NONE);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
     entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
+    entityManager_.emplace<components::CharacterSheet>(hero, 10, 10);
+
 
     entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
 }

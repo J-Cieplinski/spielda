@@ -21,7 +21,7 @@ public:
     explicit Render(entt::registry& entityManager, const Camera2D& camera);
     void update() override;
 private:
-    void checkForDirtyAndSort();
+    void checkForDirtyAndSort() const;
     bool isComplex(entt::entity entity) const;
     void drawComplex(entt::entity entity, const components::Sprite& sprite, const components::Transform& transform, const spielda::TextureManager& textureManager) const;
     void drawAttached(entt::entity entity, const spielda::TextureManager& textureManager) const;

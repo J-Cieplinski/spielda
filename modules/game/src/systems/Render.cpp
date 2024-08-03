@@ -52,7 +52,7 @@ void Render::update()
     EndMode2D();
 }
 
-void Render::checkForDirtyAndSort()
+void Render::checkForDirtyAndSort() const
 {
     if(!entityManager_.view<components::Dirty>().empty())
     {
@@ -109,7 +109,7 @@ void Render::drawComplex(
     rlPopMatrix();
 }
 
-void Render::drawAttached(entt::entity entity, const spielda::TextureManager& textureManager) const
+void Render::drawAttached(entt::entity entity, const TextureManager& textureManager) const
 {
 
     auto view = entityManager_.view<components::Transform, components::Weapon, components::Sprite>();

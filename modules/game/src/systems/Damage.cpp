@@ -1,5 +1,6 @@
 #include <systems/Damage.hpp>
 
+#include <components/CharacterSheet.hpp>
 #include <components/Health.hpp>
 #include <components/Weapon.hpp>
 
@@ -35,17 +36,20 @@ void Damage::onCollision(events::Collision event)
     }
 
     auto& attackWeapon = entityManager_.get<components::Weapon>(attacker);
-    
+    auto& attackerSheet = entityManager_.get<components::CharacterSheet>(attackWeapon.wielder);
+
     if(!attackWeapon.attacking || attackWeapon.damagedEntities.contains(defender))
     {
         return;
     }
 
     auto& defenderHp = entityManager_.get<components::Health>(defender);
-    defenderHp.currentHealth -= attackWeapon.damage;
+
+    const auto damage = attackWeapon.damage + attackerSheet.strength;
+    defenderHp.currentHealth -= damage;
     attackWeapon.damagedEntities.insert(defender);
 
-    APP_INFO("Dealt {0} damage to entity {1}", attackWeapon.damage, defender);
+    APP_INFO("Dealt {0} damage to entity {1}", damage, defender);
     
     if(defenderHp.currentHealth <= 0)
     {

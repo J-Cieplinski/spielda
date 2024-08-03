@@ -4,6 +4,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/MapLoader.hpp
     ${GAME_INCLUDE_DIR}/components/AI.hpp
     ${GAME_INCLUDE_DIR}/components/BoxCollider.hpp
+    ${GAME_INCLUDE_DIR}/components/CharacterSheet.hpp
     ${GAME_INCLUDE_DIR}/components/CircleCollider.hpp
     ${GAME_INCLUDE_DIR}/components/Dirty.hpp
     ${GAME_INCLUDE_DIR}/components/GuiElement.hpp
