@@ -15,8 +15,15 @@ namespace spielda::system
 Damage::Damage(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
     : ISystem{entityManager}
     , eventDispatcher_{eventDispatcher}
+    , entitiesToDestroy_{}
 {
     eventDispatcher_.sink<events::Collision>().connect<&Damage::onCollision>(this);
+}
+
+void Damage::update()
+{
+    entityManager_.destroy(entitiesToDestroy_.begin(), entitiesToDestroy_.end());
+    entitiesToDestroy_.clear();
 }
 
 void Damage::onCollision(events::Collision event)
@@ -43,16 +50,21 @@ void Damage::onCollision(events::Collision event)
     if(defenderHp.currentHealth <= 0)
     {
         APP_INFO("Entity {0} killed", defender);
-        entityManager_.destroy(defender);
+        entitiesToDestroy_.push_back(defender);
     }
 }
 
 Damage::CombatEntities Damage::getCombatEntities(events::Collision event)
 {
-    auto weaponView = entityManager_.view<components::Weapon>();
+    if(event.collisionType != CollisionType::WEAPON)
+    {
+        return {entt::null, entt::null};
+    }
 
-    auto isFirstEntityArmed = weaponView.contains(event.firstCollider);
-    auto isSecondEntityArmed = weaponView.contains(event.secondCollider);
+    const auto weaponView = entityManager_.view<components::Weapon>();
+
+    const auto isFirstEntityArmed = weaponView.contains(event.firstCollider);
+    const auto isSecondEntityArmed = weaponView.contains(event.secondCollider);
 
     if(!(isFirstEntityArmed || isSecondEntityArmed))
     {
@@ -62,21 +74,18 @@ Damage::CombatEntities Damage::getCombatEntities(events::Collision event)
     entt::entity attacker {entt::null};
     entt::entity defender {entt::null};
 
-    weaponView.each([&attacker, &event](entt::entity entity, components::Weapon weapon) {
+    weaponView.each([&attacker, &event](const entt::entity entity, const components::Weapon& weapon) {
         if(weapon.attacking && (entity == event.firstCollider || entity == event.secondCollider))
         {
             attacker = entity;
-            return;
         }
     });
 
-
-    auto healthView = entityManager_.view<components::Health>();
-    healthView.each([&defender, &event](entt::entity entity, components::Health health) {
+    const auto healthView = entityManager_.view<components::Health>();
+    healthView.each([&defender, &event](const entt::entity entity, components::Health) {
         if(entity == event.firstCollider || entity == event.secondCollider)
         {
             defender = entity;
-            return;
         }
     });
 

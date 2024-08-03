@@ -6,6 +6,7 @@
 
 #include <components/AI.hpp>
 #include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/Dirty.hpp>
 #include <components/Health.hpp>
 #include <components/Player.hpp>
@@ -118,6 +119,7 @@ void GameScene::update()
     systems_.get<system::SpriteDirection>().update();
     systems_.get<system::WeaponFollow>().update();
     systems_.get<system::Collision>().update();
+    systems_.get<system::Damage>().update();
 }
 
 void GameScene::obscured()
@@ -173,22 +175,22 @@ void GameScene::loadHero()
     auto weapon = entityManager_.create();
 
     entityManager_.emplace<components::Weapon>(weapon, weaponOrigin, 20u);
-    entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, components::CollisionType::NONE);
+    entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
 
     constexpr Rectangle srcRect {
-            .x = 0.f,
-            .y = 112.f,
-            .width = 16.f,
-            .height = 16.f
+        .x = 0.f,
+        .y = 112.f,
+        .width = 16.f,
+        .height = 16.f
     };
 
-    constexpr Vector2 colliderPosition {
-            .x = 24,
-            .y = 36
+    constexpr Vector2 absolutePosition {
+        .x = 24,
+        .y = 36
     };
 
     constexpr Vector2 spriteSize {
@@ -199,25 +201,27 @@ void GameScene::loadHero()
     const Vector2 origin = Vector2Scale(spriteSize, 0.5f);
 
     const Vector2 renderedPosition {
-        .x = colliderPosition.x + origin.x,
-        .y = colliderPosition.y + origin.y / 2
+        .x = absolutePosition.x + origin.x,
+        .y = absolutePosition.y + origin.y / 2
     };
+
+    const Vector2 colliderPosition = renderedPosition;//Vector2Add(absolutePosition, origin);
 
     constexpr Vector2 weaponAttachOffset {
-            .x = 7,
-            .y = 3
+        .x = 7,
+        .y = 3
     };
 
-    constexpr Vector2 weaponColliderAttachOffset {
-            .x = 14,
-            .y = -5
+    constexpr Vector2 weaponColliderAttachOffset = {
+        .x = weaponAttachOffset.x,
+        .y = weaponAttachOffset.y - spriteSize.y
     };
 
     auto hero = entityManager_.create();
 
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::BoxCollider>(hero, colliderPosition, colliderPosition, Vector2{14, 12}, components::CollisionType::NONE);
+    entityManager_.emplace<components::CircleCollider>(hero, colliderPosition, colliderPosition, 6, CollisionType::NONE);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
     entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
@@ -291,7 +295,7 @@ void GameScene::spawnDebugEntity()
     };
 
     entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<components::BoxCollider>(debugEnt, colliderPosition, colliderPosition, Vector2{14, 12}, components::CollisionType::NONE);
+    entityManager_.emplace<components::CircleCollider>(debugEnt, colliderPosition, colliderPosition, 7, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
     entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);

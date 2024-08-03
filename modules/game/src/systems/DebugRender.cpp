@@ -2,6 +2,7 @@
 
 #include <components/AI.hpp>
 #include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/Player.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
@@ -26,7 +27,7 @@ void DebugRender::update()
     std::stringstream ss;
     const auto player = entityManager_.group<components::Player>().front();
     const auto transform = entityManager_.try_get<components::Transform>(player);
-    const auto collider = entityManager_.try_get<components::BoxCollider>(player);
+    const auto collider = entityManager_.try_get<components::CircleCollider>(player);
 
     if(!transform)
     {

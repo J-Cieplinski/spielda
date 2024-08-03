@@ -1,6 +1,7 @@
 #include <systems/Collision.hpp>
 
 #include <components/BoxCollider.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/tags/CollisionMask.hpp>
 #include <events/Collision.hpp>
 
@@ -22,35 +23,36 @@ void Collision::update() const
 {
     constexpr std::uint8_t WEAPON_BIT{5};
 
-    const auto& view = entityManager_.view<components::BoxCollider>();
+    const auto& boxView = entityManager_.view<components::BoxCollider>();
+    const auto& circleView = entityManager_.view<components::CircleCollider>();
     const auto& maskView = entityManager_.view<tags::CollisionMask>();
-    view.each([](components::BoxCollider& collider) { collider.collisionType = components::CollisionType::NONE; });
+    boxView.each([](components::BoxCollider& collider) { collider.collisionType = CollisionType::NONE; });
+    circleView.each([](components::CircleCollider& collider) { collider.collisionType = CollisionType::NONE; });
 
-    for (auto entityIt = view.begin(); entityIt != view.end(); ++entityIt)
+    for(auto& entity : circleView)
     {
-        auto& entityOneCollider = view.get<components::BoxCollider>(*entityIt);
-        const auto maskOne = maskView.get<tags::CollisionMask>(*entityIt);
-        const auto isEntityOneAWeapon = maskOne.mask.test(WEAPON_BIT);
+        auto& entityCollider = circleView.get<components::CircleCollider>(entity);
+        const auto entityMask = maskView.get<tags::CollisionMask>(entity);
 
-        for (auto it2 = entityIt + 1; it2 != view.end(); ++it2) {
-            auto& entityTwoCollider = view.get<components::BoxCollider>(*it2);
-            const auto maskTwo = maskView.get<tags::CollisionMask>(*it2);
-
-            if((maskOne.mask & maskTwo.mask) != 0)
+        boxView.each([this, &maskView, &entityCollider, &entityMask, entity](const entt::entity boxEntity, components::BoxCollider& collider)
+        {
+            const auto boxMask = maskView.get<tags::CollisionMask>(boxEntity);
+            if((entityMask.mask & boxMask.mask) != tags::ZERO_BITSET)
             {
-                continue;
+                return;
             }
 
-            const auto isEntityTwoAWeapon = maskTwo.mask.test(WEAPON_BIT);
+            if (CheckCollisionCircleRec(entityCollider.position, entityCollider.radius, collider))
+            {
+                const auto isBoxEntityAWeapon = boxMask.mask.test(WEAPON_BIT);
 
-            if (CheckCollisionRecs(entityOneCollider, entityTwoCollider)) {
-
-                APP_TRACE("Entity {0} collided with Entity {1}", *entityIt, *it2);
-                entityOneCollider.collisionType = isEntityTwoAWeapon || isEntityOneAWeapon ? components::CollisionType::WEAPON : components::CollisionType::WALL;
-                entityTwoCollider.collisionType = isEntityTwoAWeapon || isEntityOneAWeapon ? components::CollisionType::WEAPON : components::CollisionType::WALL;
-                eventDispatcher_.enqueue(events::Collision{*entityIt, *it2});
+                APP_TRACE("Entity {0} collided with Entity {1}", entity, boxEntity);
+                const auto collisionType = isBoxEntityAWeapon ? CollisionType::WEAPON : CollisionType::WALL;
+                entityCollider.collisionType = collisionType;
+                collider.collisionType = collisionType;
+                eventDispatcher_.enqueue(events::Collision{entity, boxEntity, collisionType});
             }
-        }
+        });
     }
 
     eventDispatcher_.update<events::Collision>();

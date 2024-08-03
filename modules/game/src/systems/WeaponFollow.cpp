@@ -1,7 +1,7 @@
 #include <systems/WeaponFollow.hpp>
 
 #include <components/BoxCollider.hpp>
-#include <components/Transform.hpp>
+#include <components/CircleCollider.hpp>
 #include <components/Weapon.hpp>
 #include <components/WieldedWeapon.hpp>
 
@@ -18,7 +18,7 @@ WeaponFollow::WeaponFollow(entt::registry& entityManager)
 
 void WeaponFollow::update() const
 {
-    auto wielderView = entityManager_.view<components::WieldedWeapon, components::BoxCollider>();
+    auto wielderView = entityManager_.view<components::WieldedWeapon, components::CircleCollider>();
     auto weaponView = entityManager_.view<components::Weapon, components::BoxCollider>();
 
     for (const auto& [wielder, wieldedWeapon, wielderCollider] : wielderView.each())
