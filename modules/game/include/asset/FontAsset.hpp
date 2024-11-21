@@ -11,7 +11,7 @@ namespace spielda::asset
 class FontAsset final : public roen::interfaces::Asset<Font>
 {
 public:
-    bool loadAsset(const std::string& path) override;
+    bool loadAsset(const std::filesystem::path& path) override;
     [[nodiscard]] Font get() const override;
     void freeAsset() override;
 private:

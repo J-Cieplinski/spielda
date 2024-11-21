@@ -11,7 +11,7 @@ namespace spielda::asset
 class TextureAsset final : public roen::interfaces::Asset<Texture2D>
 {
 public:
-    bool loadAsset(const std::string& path) override;
+    bool loadAsset(const std::filesystem::path& path) override;
     [[nodiscard]] Texture2D get() const override;
     void freeAsset() override;
 private:

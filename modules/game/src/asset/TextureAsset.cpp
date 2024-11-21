@@ -7,7 +7,7 @@
 namespace spielda::asset
 {
 
-bool TextureAsset::loadAsset(const std::string &path)
+bool TextureAsset::loadAsset(const std::filesystem::path &path)
 {
     SDK_INFO("Loading texture image: {0}", path);
 
@@ -24,7 +24,10 @@ void TextureAsset::freeAsset()
 {
     SDK_INFO("Freeing texture raylib id: {0}", texture_.id);
 
-    UnloadTexture(texture_);
+    if(IsTextureReady(texture_))
+    {
+        UnloadTexture(texture_);
+    }
 }
 
 } // spielda::asset

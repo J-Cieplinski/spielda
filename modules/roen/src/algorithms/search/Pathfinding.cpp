@@ -33,7 +33,7 @@ std::unordered_map<data_structure::MapNode, data_structure::MapNode> a_star(
         for(const auto& nextNode : graph.neighbors(current))
         {
             auto newCost = cost_so_far[current] + graph.cost(current, nextNode);
-            if(cost_so_far.find(nextNode) == cost_so_far.end()
+            if(not cost_so_far.contains(nextNode)
                 || cost_so_far[nextNode] > newCost)
             {
                 cost_so_far[nextNode] = newCost;

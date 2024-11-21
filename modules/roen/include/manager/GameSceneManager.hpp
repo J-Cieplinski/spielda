@@ -12,6 +12,8 @@ namespace roen::manager
 class GameSceneManager
 {
 public:
+    void shutdown();
+
     void push(std::unique_ptr<interfaces::IScene> scene);
     void pop();
     void switchScene(std::unique_ptr<interfaces::IScene> scene);

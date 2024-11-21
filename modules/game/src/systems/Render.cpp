@@ -111,7 +111,6 @@ void Render::drawComplex(
 
 void Render::drawAttached(entt::entity entity, const TextureManager& textureManager) const
 {
-
     auto view = entityManager_.view<components::Transform, components::Weapon, components::Sprite>();
 
     const auto transform = view.get<components::Transform>(entity);

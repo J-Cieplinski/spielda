@@ -54,7 +54,7 @@ void Damage::onCollision(events::Collision event)
     if(defenderHp.currentHealth <= 0)
     {
         APP_INFO("Entity {0} killed", defender);
-        entitiesToDestroy_.push_back(defender);
+        entitiesToDestroy_.insert(defender);
     }
 }
 

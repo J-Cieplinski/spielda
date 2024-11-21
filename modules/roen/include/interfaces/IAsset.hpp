@@ -1,7 +1,7 @@
 #ifndef ROEN_INTERFACES_IASSET_HPP
 #define ROEN_INTERFACES_IASSET_HPP
 
-#include <string>
+#include <filesystem>
 
 namespace roen::interfaces
 {
@@ -9,7 +9,7 @@ namespace roen::interfaces
 class IAsset
 {
 public:
-    virtual bool loadAsset(const std::string& path) = 0;
+    virtual bool loadAsset(const std::filesystem::path& path) = 0;
     virtual void freeAsset() = 0;
 };
 

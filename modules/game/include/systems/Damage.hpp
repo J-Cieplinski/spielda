@@ -7,6 +7,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <set>
+
 namespace spielda::system
 {
 
@@ -22,7 +24,7 @@ private:
     CombatEntities getCombatEntities(events::Collision event);
 
     entt::dispatcher& eventDispatcher_;
-    std::vector<entt::entity> entitiesToDestroy_;
+    std::set<entt::entity> entitiesToDestroy_;
 };
 
 } // spielda::system

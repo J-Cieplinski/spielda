@@ -7,6 +7,14 @@
 namespace roen::manager
 {
 
+void GameSceneManager::shutdown()
+{
+    while(not scenes_.empty())
+    {
+        scenes_.pop();
+    }
+}
+
 void GameSceneManager::push(std::unique_ptr<interfaces::IScene> scene)
 {
     if(!scenes_.empty())

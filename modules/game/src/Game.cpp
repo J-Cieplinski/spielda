@@ -20,6 +20,12 @@ Game::Game(std::uint32_t windowWith, std::uint32_t windowHeight, const std::stri
     gameSceneManager_.push(std::make_unique<scenes::MenuScene>(gameSceneManager_));
 }
 
+Game::~Game()
+{
+    gameSceneManager_.shutdown();
+    CloseWindow();
+}
+
 void Game::run()
 {
     APP_INFO("Started main loop");

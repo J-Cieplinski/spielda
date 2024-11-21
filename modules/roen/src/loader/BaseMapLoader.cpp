@@ -94,12 +94,10 @@ float BaseMapLoader::getTileRotation(tson::Tile *tile)
         {
             return 270.f;
         }
-        else
-        {
-            return 90.f;
-        }
+        return 90.f;
     }
-    else if(flippedVertically && flippedHorizontally)
+
+    if(flippedVertically && flippedHorizontally)
     {
         return 180.f;
     }
@@ -121,7 +119,7 @@ void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, Ve
     //                                                      NE                                  E                                   SE
                                             {tileSize.x, -tileSize.y}, {tileSize.x, 0}, {tileSize.x, tileSize.y}};
 
-    std::vector<Vector2f> DIRECTIONS = {
+    const std::vector<Vector2f> DIRECTIONS = {
     /*W*/   {-tileSize.x, 0},
     /*N*/   {0, -tileSize.y},
     /*S*/   {0, tileSize.y},

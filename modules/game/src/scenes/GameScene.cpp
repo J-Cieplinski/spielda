@@ -20,7 +20,6 @@
 #include <components/tags/CollisionMask.hpp>
 
 #include <systems/AIDetect.hpp>
-#include <systems/AIDetect.hpp>
 #include <systems/AIDetectRadiusRender.hpp>
 #include <systems/AIMove.hpp>
 #include <systems/Collision.hpp>

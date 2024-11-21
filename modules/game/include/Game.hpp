@@ -13,6 +13,7 @@ class Game final
 {
 public:
     Game(std::uint32_t windowWith = 1920, std::uint32_t windowHeight = 1080, const std::string& windowTitle = "Spielda");
+    ~Game();
     void run();
 private:
     roen::manager::GameSceneManager gameSceneManager_;

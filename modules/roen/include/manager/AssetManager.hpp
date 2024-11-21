@@ -4,8 +4,7 @@
 #include <interfaces/IAsset.hpp>
 #include <log/Logger.hpp>
 
-#include <raylib.h>
-
+#include <filesystem>
 #include <map>
 #include <stdexcept>
 #include <typeindex>
@@ -13,22 +12,24 @@
 namespace roen::manager
 {
 
+template<typename AssetType>
+concept DerivedFromIAsset = std::is_base_of_v<interfaces::IAsset, AssetType>;
+
 class IAssetManager
 {
 public:
     virtual ~IAssetManager() = default;
-    virtual void loadAsset(const std::string& id, const std::string& path) = 0;
+    virtual void loadAsset(const std::string& id, const std::filesystem::path& path) = 0;
     virtual void freeAssets() = 0;
 };
 
-template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>
+template<DerivedFromIAsset AssetType>
 class AssetManager : public IAssetManager
 {
 public:
     ~AssetManager();
 
-    void loadAsset(const std::string& id, const std::string& path) override;
+    void loadAsset(const std::string& id, const std::filesystem::path& path) override;
     void freeAssets() override;
     [[nodiscard]] AssetType& getAsset(std::uint64_t id) const;
 private:
@@ -47,14 +48,13 @@ private:
 namespace roen::manager
 {
 
-template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType> AssetManager<AssetType>::~AssetManager()
+template<DerivedFromIAsset AssetType>
+AssetManager<AssetType>::~AssetManager()
 {
     freeAssets();
 }
 
-template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>
+template<DerivedFromIAsset AssetType>
 void AssetManager<AssetType>::freeAssets()
 {
     for(auto& [guid, asset] : assets_)
@@ -64,11 +64,10 @@ void AssetManager<AssetType>::freeAssets()
     assets_.clear();
 }
 
-template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>
-void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string &path)
+template<DerivedFromIAsset AssetType>
+void AssetManager<AssetType>::loadAsset(const std::string &id, const std::filesystem::path& path)
 {
-    if(assets_.find(hashString(id)) != assets_.end())
+    if(assets_.contains(hashString(id)))
     {
         return;
     }
@@ -86,8 +85,7 @@ void AssetManager<AssetType>::loadAsset(const std::string &id, const std::string
     assets_[hashString(id)] = asset;
 }
 
-template<typename AssetType>
-requires std::is_base_of_v<interfaces::IAsset, AssetType>
+template<DerivedFromIAsset AssetType>
 AssetType& AssetManager<AssetType>::getAsset(std::uint64_t id) const
 {
     try
