@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_EVENTS_COLLISION_HPP
 #define SPIELDA_GAME_EVENTS_COLLISION_HPP
 
-#include <Utils.hpp>
+#include <Utilities.hpp>
 
 #include <entt/entity/entity.hpp>
 

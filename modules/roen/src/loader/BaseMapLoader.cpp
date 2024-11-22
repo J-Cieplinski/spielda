@@ -4,11 +4,15 @@
 
 #include <log/Logger.hpp>
 
+#include <json/single_include/nlohmann/json.hpp>
+
 #include <ranges>
 #include <regex>
 
 namespace roen::loader
 {
+
+using json = nlohmann::json;
 
 using Vector2f = data_structure::Vector2f;
 
@@ -19,17 +23,19 @@ data_structure::Vector2f toVector2f(const tson::Vector2<T> v)
 }
 
 BaseMapLoader::BaseMapLoader(entt::registry& entityManager)
-    : entityManager_{entityManager}
-    , mapSize_{0.f, 0.f}
+    : mapSize_{0.f, 0.f}
+    , entityManager_{entityManager}
 {
 }
 
-void BaseMapLoader::loadMap(const std::string& path, const std::string& assetId)
+void BaseMapLoader::loadMap(const std::filesystem::path& path)
 {
-    SDK_INFO("Loading map: {0} with path: {1}", assetId, path);
+    auto level = loadLevel(path);
+    const std::string assetId = level["mapName"];
+    const std::filesystem::path mapPath{level["mapFile"]};
 
     tson::Tileson tileson;
-    auto map = tileson.parse(path);
+    auto map = tileson.parse(mapPath);
     mapSize_ = toVector2f(map->getSize());
     std::vector<MapTile> mappedTiles{};
 
@@ -45,7 +51,7 @@ void BaseMapLoader::loadMap(const std::string& path, const std::string& assetId)
 
             if(!layerOrderProp)
             {
-                SDK_CRITICAL("Lack of layerOrderProp in layer: {0} of map: {1}", layer.getName(), path);
+                SDK_CRITICAL("Lack of layerOrderProp in layer: {0} of map: {1}", layer.getName(), mapPath.string());
                 return;
             }
 
@@ -150,6 +156,20 @@ void BaseMapLoader::createPathfindingGraph(const std::vector<MapTile>& tiles, Ve
 
         pathfindingGraph_.addNode({tile.position, tileSize, static_cast<std::uint32_t>(tile.cost)}, edges);
     }
+}
+
+nlohmann::json BaseMapLoader::loadLevel(const std::filesystem::path& path)
+{
+    SDK_INFO("Loading level: {0}", path.string());
+
+    std::ifstream file{path};
+    if(!file.is_open())
+    {
+        SDK_CRITICAL("Failed to open level file: {0}", path.string());
+        return {};
+    }
+
+    return json::parse(file);
 }
 
 const data_structure::Graph<data_structure::MapNode>& BaseMapLoader::getGraph() const

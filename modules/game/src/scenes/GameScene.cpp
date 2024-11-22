@@ -28,9 +28,9 @@
 #include <systems/DebugRender.hpp>
 #include <systems/GraphRender.hpp>
 #include <systems/Keyboard.hpp>
-#include <systems/Movement.hpp>
 #include <systems/MeleeCombat.hpp>
 #include <systems/Mouse.hpp>
+#include <systems/Movement.hpp>
 #include <systems/Render.hpp>
 #include <systems/SpriteDirection.hpp>
 #include <systems/WallBoundaries.hpp>
@@ -41,6 +41,7 @@
 #include <roen/include/log/formatters/entity.hpp>
 
 #include <entt/entt.hpp>
+#include <json/single_include/nlohmann/json.hpp>
 #include <raymath.h>
 
 #include <ranges>
@@ -131,12 +132,7 @@ void GameScene::revealed()
 {
     APP_INFO("Entered GameScene");
 
-    auto mapLoader = MapLoader(entityManager_);
-    mapLoader.loadMap("assets/maps/dungeon.tmj", "dungeon");
-    entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
-    auto mapSize = mapLoader.getMapSize();
-
-    loadHero();
+    loadLevel("assets/levels/dungeon.json");
 #ifdef PROFILE
     for(auto i : std::ranges::iota_view{1, 100})
     {
@@ -150,9 +146,32 @@ void GameScene::quit()
 
 }
 
-void GameScene::loadHero()
+void GameScene::loadLevel(std::filesystem::path path)
 {
-    constexpr std::uint32_t layer = 5;
+    using json = nlohmann::json;
+
+    auto mapLoader = MapLoader(entityManager_);
+    mapLoader.loadMap(path);
+    entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
+    auto mapSize = mapLoader.getMapSize();
+
+    APP_INFO("Loading level: {0}", path.string());
+
+    std::ifstream file{path};
+    if(!file.is_open())
+    {
+        APP_CRITICAL("Failed to open level file: {0}", path.string());
+        return;
+    }
+
+    auto level = json::parse(file);
+
+    loadHero(level);
+}
+
+void GameScene::loadHero(const nlohmann::json& level)
+{
+    /*constexpr std::uint32_t layer = 5;
     constexpr std::uint32_t layerOrder = 1;
 
     constexpr Rectangle weaponSrcRect {
@@ -173,30 +192,33 @@ void GameScene::loadHero()
     };
 
     auto weapon = entityManager_.create();
-    auto hero = entityManager_.create();
 
     entityManager_.emplace<components::Weapon>(weapon, hero, weaponOrigin, 20u);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
     entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
+    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);*/
 
-    constexpr Rectangle srcRect {
-        .x = 0.f,
-        .y = 112.f,
-        .width = 16.f,
-        .height = 16.f
+    const auto player = level["player"];
+
+    auto hero = entityManager_.create();
+
+    const Rectangle srcRect {
+        .x = player["sprite"]["source"]["x"],
+        .y = player["sprite"]["source"]["y"],
+        .width = level["tileSize"],
+        .height = level["tileSize"]
     };
 
-    constexpr Vector2 absolutePosition {
-        .x = 24,
-        .y = 36
+    const Vector2 absolutePosition {
+        .x = player["position"]["x"],
+        .y = player["position"]["y"]
     };
 
-    constexpr Vector2 spriteSize {
-        .x = 16,
-        .y = 16
+    const Vector2 spriteSize {
+        .x = level["tileSize"],
+        .y = level["tileSize"]
     };
 
     const Vector2 origin = Vector2Scale(spriteSize, 0.5f);
@@ -213,19 +235,18 @@ void GameScene::loadHero()
         .y = 3
     };
 
-    constexpr Vector2 weaponColliderAttachOffset = {
+    const Vector2 weaponColliderAttachOffset = {
         .x = weaponAttachOffset.x,
         .y = weaponAttachOffset.y - spriteSize.y
     };
 
-    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, player["layer"], player["layerOrder"], roen::hashString(player["sprite"]["name"]), false);
     entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::CircleCollider>(hero, colliderPosition, colliderPosition, 6, CollisionType::NONE);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
     entityManager_.emplace<components::Player>(hero);
-    entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
+    //entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
     entityManager_.emplace<components::CharacterSheet>(hero, 10, 10);
-
 
     entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
 }

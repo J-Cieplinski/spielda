@@ -18,10 +18,8 @@ constexpr std::int32_t pow(std::int32_t base, std::uint32_t exponent)
         std::uint32_t curr = pow(base, exponent / 2);
         return curr * curr;
     }
-    else
-    {
-        return base * pow(base, exponent - 1);
-    }
+
+    return base * pow(base, exponent - 1);
 }
 
 /*
@@ -45,6 +43,21 @@ public:
     virtual ~Functor() = default;
     virtual void operator() () = 0;
 };
+
+#ifdef __GNUC__
+#include <cxxabi.h>
+
+inline std::string getDemangledName(const std::string& name)
+{
+    char* demangledName = nullptr;
+    demangledName = abi::__cxa_demangle(name.c_str(), nullptr, nullptr, nullptr);
+    const std::string result{demangledName};
+    free(demangledName);
+
+    return result;
+}
+
+#endif
 
 } // roen
 

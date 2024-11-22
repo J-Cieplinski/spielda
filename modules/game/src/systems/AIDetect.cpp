@@ -7,7 +7,7 @@
 
 #include <events/AIDetectedEnemy.hpp>
 
-#include <Utils.hpp>
+#include <Utilities.hpp>
 
 #include <roen/include/log/Logger.hpp>
 

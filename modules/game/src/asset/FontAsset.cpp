@@ -9,7 +9,7 @@ namespace spielda::asset
 
 bool FontAsset::loadAsset(const std::filesystem::path& path)
 {
-    SDK_INFO("Loading font: {0}", path);
+    SDK_INFO("Loading font: {0}", path.string());
 
     font_ = LoadFont(path.c_str());
 

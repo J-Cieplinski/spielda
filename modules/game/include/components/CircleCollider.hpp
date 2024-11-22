@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_COMPONENTS_CIRCLECOLLIDER_HPP
 #define SPIELDA_GAME_COMPONENTS_CIRCLECOLLIDER_HPP
 
-#include <Utils.hpp>
+#include <Utilities.hpp>
 
 #include <raylib.h>
 

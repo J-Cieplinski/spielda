@@ -1,7 +1,7 @@
 #include <MapLoader.hpp>
 
 #include <Typedefs.hpp>
-#include <Utils.hpp>
+#include <Utilities.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>

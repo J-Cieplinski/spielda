@@ -8,10 +8,11 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <json/single_include/nlohmann/json_fwd.hpp>
 #include <tileson/tileson.hpp>
 
+#include <filesystem>
 #include <regex>
-#include <utility>
 
 namespace roen::loader
 {
@@ -38,7 +39,7 @@ class BaseMapLoader
 public:
     explicit BaseMapLoader(entt::registry& entityManager);
 
-    void loadMap(const std::string &path, const std::string& assetId);
+    void loadMap(const std::filesystem::path& path);
     [[nodiscard]] const data_structure::Vector2f& getMapSize() const;
     const data_structure::Graph<data_structure::MapNode>& getGraph() const;
 protected:
@@ -59,6 +60,7 @@ protected:
     data_structure::Graph<data_structure::MapNode> pathfindingGraph_;
 private:
     void createPathfindingGraph(const std::vector<MapTile>& tiles, data_structure::Vector2f tileSize);
+    nlohmann::json loadLevel(const std::filesystem::path& path);
 };
 
 } // roen::loader

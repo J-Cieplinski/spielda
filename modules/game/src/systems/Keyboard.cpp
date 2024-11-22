@@ -37,19 +37,6 @@ Keyboard::Keyboard(entt::registry &entityManager, entt::dispatcher& eventDispatc
 
 void Keyboard::update()
 {
-
-    if(IsKeyReleased(KEY_D))
-    {
-        spawnDebugEntity();
-    }
-    if(IsKeyReleased(KEY_LEFT_SHIFT))
-    {
-        for(auto i : std::ranges::iota_view{1, 100})
-        {
-            spawnDebugEntity();
-        }
-    }
-
     checkDebugInput();
 
     checkPlayerInput();
@@ -68,6 +55,17 @@ void Keyboard::checkDebugInput()
     if(IsKeyReleased(KEY_F3))
     {
         eventDispatcher_.trigger(events::DebugSwitch{.switchSdkLogging = true});
+    }
+    if(IsKeyReleased(KEY_D))
+    {
+        spawnDebugEntity();
+    }
+    if(IsKeyReleased(KEY_LEFT_SHIFT))
+    {
+        for(auto i : std::ranges::iota_view{1, 100})
+        {
+            spawnDebugEntity();
+        }
     }
 }
 
@@ -97,8 +95,10 @@ void Keyboard::checkPlayerInput()
     }
     if(IsKeyReleased(KEY_SPACE))
     {
-        auto weapon = entityManager_.get<components::WieldedWeapon>(playerEntity).weaponEntity;
-        eventDispatcher_.trigger(events::Attack{.attacker = weapon});
+        if(const auto weapon = entityManager_.try_get<components::WieldedWeapon>(playerEntity))
+        {
+            eventDispatcher_.trigger(events::Attack{.attacker = weapon->weaponEntity});
+        }
     }
 }
 

@@ -7,7 +7,11 @@
 
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>
+
 #include <raylib.h>
+
+#include <filesystem>
+#include <json/single_include/nlohmann/json.hpp>
 
 namespace spielda::scenes
 {
@@ -24,7 +28,8 @@ public:
     void revealed() override;
     void quit() override;
 private:
-    void loadHero();
+    void loadLevel(std::filesystem::path path);
+    void loadHero(const nlohmann::json& level);
     void updateDeltaTime();
     void initSystems();
     void switchDebug(const events::DebugSwitch& event);

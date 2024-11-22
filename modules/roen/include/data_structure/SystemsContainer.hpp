@@ -4,9 +4,9 @@
 #include <interfaces/ISystem.hpp>
 #include <log/Logger.hpp>
 
-#include <unordered_map>
 #include <stdexcept>
 #include <typeindex>
+#include <unordered_map>
 
 namespace roen::data_structure
 {
@@ -47,6 +47,8 @@ private:
  * Template implementation
  */
 
+#include <Utils.hpp>
+
 namespace roen::data_structure
 {
 
@@ -55,7 +57,14 @@ void SystemsContainer::add(Args&&... args)
 {
     auto newSystem = std::make_unique<SystemType>(std::forward<Args>(args)...);
     const auto key = std::type_index(typeid(SystemType));
-    SDK_INFO("Adding system of type: {0}", key.name());
+
+#ifdef __GNUC__
+    const std::string name {getDemangledName(key.name())};
+#else
+    const std::string name {key.name()};
+#endif
+
+    SDK_INFO("Adding system of type: {0}", name);
 
     systems_.insert({ key, std::move(newSystem) });
 }

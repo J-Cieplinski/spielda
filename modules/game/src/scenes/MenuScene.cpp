@@ -2,7 +2,7 @@
 
 #include <CoreConfig.hpp>
 #include <Typedefs.hpp>
-#include <Utils.hpp>
+#include <Utilities.hpp>
 
 #include <components/BoxCollider.hpp>
 #include <components/Dirty.hpp>

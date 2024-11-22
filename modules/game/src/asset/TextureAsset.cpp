@@ -7,9 +7,9 @@
 namespace spielda::asset
 {
 
-bool TextureAsset::loadAsset(const std::filesystem::path &path)
+bool TextureAsset::loadAsset(const std::filesystem::path& path)
 {
-    SDK_INFO("Loading texture image: {0}", path);
+    SDK_INFO("Loading texture image: {0}", path.string());
 
     texture_ = LoadTexture(path.c_str());
     return texture_.id != 0;

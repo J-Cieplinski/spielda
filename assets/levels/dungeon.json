@@ -1,7 +1,7 @@
 {
   "mapName": "dungeon",
   "tileSize": 16,
-  "mapFile": "assets/maps/dungeon.tmx",
+  "mapFile": "assets/maps/dungeon.tmj",
   "player": {
     "layer": 5,
     "layerOrder": 1,
@@ -11,11 +11,11 @@
       "source": {
         "x": 0,
         "y": 112
-      },
-      "position": {
-        "x": 24,
-        "y": 36
       }
+    },
+    "position": {
+      "x": 24,
+      "y": 36
     }
   }
 }
