@@ -2,6 +2,8 @@
 
 #include <roen/include/log/Logger.hpp>
 
+#include <raylib.h>
+
 #include <stdexcept>
 
 namespace spielda::asset
@@ -24,7 +26,7 @@ void TextureAsset::freeAsset()
 {
     SDK_INFO("Freeing texture raylib id: {0}", texture_.id);
 
-    if(IsTextureReady(texture_))
+    if(IsTextureValid(texture_))
     {
         UnloadTexture(texture_);
     }

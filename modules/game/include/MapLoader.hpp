@@ -3,7 +3,6 @@
 
 #include <loader/BaseMapLoader.hpp>
 
-
 namespace spielda
 {
 
@@ -12,7 +11,7 @@ class MapLoader : public roen::loader::BaseMapLoader
 public:
     explicit MapLoader(entt::registry& entityManager);
 private:
-    void addComponents(roen::data_structure::Vector2f tilePosition, roen::data_structure::Vector2f tileSize, float rotation, tson::Rect drawingRect, int layerOrder,
+    void addComponents(Vector2 tilePosition, Vector2 tileSize, float rotation, tson::Rect drawingRect, int layerOrder,
                        const std::string& layerClass, const std::string& assetId) override;
     roen::manager::IAssetManager& getTextureManager() override;
 };

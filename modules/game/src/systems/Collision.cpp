@@ -9,6 +9,7 @@
 #include <roen/include/log/formatters/entity.hpp>
 
 #include <entt/entt.hpp>
+#include <raylib.h>
 
 namespace spielda::system
 {

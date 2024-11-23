@@ -4,6 +4,7 @@
 #include <Utilities.hpp>
 
 #include <raylib.h>
+#include <raymath.h>
 
 namespace spielda::components
 {

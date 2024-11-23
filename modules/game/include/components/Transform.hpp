@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_COMPONENTS_TRANSFORM_HPP
 #define SPIELDA_GAME_COMPONENTS_TRANSFORM_HPP
 
-#include <raylib.h>
+#include <raymath.h>
 
 namespace spielda::components
 {

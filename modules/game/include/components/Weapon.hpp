@@ -1,7 +1,7 @@
 #ifndef SPIELDA_GAME_COMPONENTS_WEAPON_HPP
 #define SPIELDA_GAME_COMPONENTS_WEAPON_HPP
 
-#include <raylib.h>
+#include <raymath.h>
 #include <entt/entity/entity.hpp>
 
 #include <set>

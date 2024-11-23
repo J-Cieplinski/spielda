@@ -2,11 +2,10 @@
 #define SPIELDA_UTILS_HPP
 
 #include <roen/include/Utils.hpp>
-#include <roen/include/data_structure/Vector2.hpp>
 #include <roen/include/interfaces/IScene.hpp>
 #include <roen/include/manager/GameSceneManager.hpp>
 
-#include <raylib.h>
+#include <raymath.h>
 
 namespace spielda
 {
@@ -30,7 +29,7 @@ private:
     roen::manager::GameSceneManager& gameSceneManager_;
 };
 
-inline Vector2 toRayVector(const roen::data_structure::Vector2f& v)
+inline Vector2 toRayVector(const Vector2& v)
 {
     return Vector2{v.x, v.y};
 }
@@ -43,10 +42,5 @@ enum class CollisionType
 };
 
 } // spielda
-
-inline bool operator==(Vector2 lhs, Vector2 rhs)
-{
-    return std::tie(lhs.x, lhs.y) == std::tie(rhs.x, rhs.y);
-}
 
 #endif //SPIELDA_UTILS_HPP
