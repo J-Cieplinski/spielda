@@ -13,6 +13,8 @@ public:
     explicit Mouse(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
     void update();
 private:
+    Vector2 getVirtualMousePosition() const;
+
     entt::dispatcher& eventDispatcher_;
 };
 
