@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
 
-#To force usage of vcpkg cmake toolchain
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/dependencies/vcpkg/scripts/buildsystems/vcpkg.cmake)
-
 project(spielda)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 #To force windows to create .lib files
 if(WIN32)
@@ -13,13 +10,10 @@ if(WIN32)
     set(BUILD_SHARED_LIBS TRUE)
 endif()
 
+set(RAYLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/roen/dependencies/raylib/src)
 set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 set(MODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(GAME_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules/game/include)
-
-find_package(Lua REQUIRED)
-find_package(raylib CONFIG REQUIRED)
-find_package(sol2 CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME})
 
@@ -36,17 +30,23 @@ if(PROFILE)
     add_compile_definitions(-DPROFILE=1)
 endif()
 
+if(UNIX)
+    add_compile_definitions(-DUSE_WAYLAND=ON)
+endif (UNIX)
+
+add_subdirectory(dependencies)
 add_subdirectory(modules)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
     main.cpp)
 
+target_precompile_headers(${PROJECT_NAME} REUSE_FROM roen)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    raylib
     roen)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${GAME_INCLUDE_DIR} ${MODULES_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${LUA_INCLUDE_DIR} ${DEPENDENCIES_DIR} ${RAYLIB_DIR} ${GAME_INCLUDE_DIR} ${MODULES_DIR})
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
