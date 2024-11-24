@@ -8,36 +8,15 @@ namespace spielda
 {
 
 Game::Game(std::uint32_t windowWith, std::uint32_t windowHeight, const std::string& windowTitle)
-    : isRunning_{true}
+    : Application{windowWith, windowHeight, windowTitle}
 {
-#ifdef IS_DEBUG
-    roen::log::Logger::Init();
-#endif
+}
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(windowWith, windowHeight, windowTitle.c_str());
+Game::~Game() = default;
 
+void Game::init()
+{
     gameSceneManager_.push(std::make_unique<scenes::MenuScene>(gameSceneManager_));
-}
-
-Game::~Game()
-{
-    gameSceneManager_.shutdown();
-    CloseWindow();
-}
-
-void Game::run()
-{
-    APP_INFO("Started main loop");
-
-    while(isRunning_)
-    {
-        isRunning_ = !WindowShouldClose();
-        gameSceneManager_.update();
-        gameSceneManager_.getCurrentScene().handleInput();
-        gameSceneManager_.getCurrentScene().update();
-        gameSceneManager_.getCurrentScene().render();
-    }
 }
 
 } // spielda

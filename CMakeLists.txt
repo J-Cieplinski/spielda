@@ -37,10 +37,6 @@ endif (UNIX)
 add_subdirectory(dependencies)
 add_subdirectory(modules)
 
-target_sources(${PROJECT_NAME}
-    PRIVATE
-    main.cpp)
-
 target_precompile_headers(${PROJECT_NAME} REUSE_FROM roen)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
