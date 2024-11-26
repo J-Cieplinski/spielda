@@ -2,8 +2,6 @@
 
 #include <scenes/MenuScene.hpp>
 
-#include <raylib.h>
-
 namespace spielda
 {
 

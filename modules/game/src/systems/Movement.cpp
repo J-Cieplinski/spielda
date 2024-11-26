@@ -1,5 +1,6 @@
 #include <systems/Movement.hpp>
 
+#include <components/BoxCollider.hpp>
 #include <components/CircleCollider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
@@ -16,21 +17,36 @@ Movement::Movement(entt::registry &entityManager)
 
 void Movement::update(double dt)
 {
-    auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform, components::CircleCollider>);
+    auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform>);
+    auto circleColliderView = entityManager_.view<components::CircleCollider>();
+    auto boxColliderView = entityManager_.view<components::BoxCollider>();
 
     for(auto entity : group)
     {
         auto& transform = group.get<components::Transform>(entity);
-        auto& collider = group.get<components::CircleCollider>(entity);
         auto rigidBody = group.get<components::RigidBody>(entity);
 
         transform.previousPosition = transform.position;
-        collider.previousPosition = collider.position;
 
         transform.position.x += rigidBody.velocity.x * dt;
         transform.position.y += rigidBody.velocity.y * dt;
-        collider.position.x += rigidBody.velocity.x * dt;
-        collider.position.y += rigidBody.velocity.y * dt;
+
+        if(circleColliderView.contains(entity))
+        {
+            auto& collider = circleColliderView.get<components::CircleCollider>(entity);
+
+            collider.previousPosition = collider.position;
+            collider.position.x += rigidBody.velocity.x * dt;
+            collider.position.y += rigidBody.velocity.y * dt;
+        }
+        else if(boxColliderView.contains(entity))
+        {
+            auto& collider = boxColliderView.get<components::BoxCollider>(entity);
+
+            collider.previousPosition = collider.position;
+            collider.position.x += rigidBody.velocity.x * dt;
+            collider.position.y += rigidBody.velocity.y * dt;
+        }
     }
 }
 

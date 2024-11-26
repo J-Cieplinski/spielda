@@ -9,6 +9,7 @@ namespace spielda::components
 struct RigidBody
 {
     Vector2 velocity;
+    Vector2 lastVelocity;
 };
 
 } // spielda::components

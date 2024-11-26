@@ -12,6 +12,7 @@
 #include <components/Health.hpp>
 #include <components/Player.hpp>
 #include <components/RigidBody.hpp>
+#include <components/Spell.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
 #include <components/Weapon.hpp>
@@ -31,6 +32,7 @@
 #include <systems/MeleeCombat.hpp>
 #include <systems/Mouse.hpp>
 #include <systems/Movement.hpp>
+#include <systems/ProjectileSpawner.hpp>
 #include <systems/Render.hpp>
 #include <systems/SpriteDirection.hpp>
 #include <systems/WallBoundaries.hpp>
@@ -66,6 +68,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
 
     eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
     roen::log::Logger::setAppLogLevel(spdlog::level::info);
+
 }
 
 void GameScene::handleInput()
@@ -131,6 +134,7 @@ void GameScene::obscured()
 void GameScene::revealed()
 {
     APP_INFO("Entered GameScene");
+    entityManager_.ctx().get<TextureManager>().loadAsset("fireball", "assets/textures/fireball.png");
 
     loadLevel("assets/levels/dungeon.json");
 #ifdef PROFILE
@@ -243,10 +247,26 @@ void GameScene::loadHero(const nlohmann::json& level)
     entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, player["layer"], player["layerOrder"], roen::hashString(player["sprite"]["name"]), false);
     entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::CircleCollider>(hero, colliderPosition, colliderPosition, 6, CollisionType::NONE);
-    entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0});
+    entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Player>(hero);
     //entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
     entityManager_.emplace<components::CharacterSheet>(hero, 10, 10);
+
+    constexpr components::Spell spell {
+        .velocity = {60.f, 60.f},
+        .size = {64.f, 64.f},
+        .origin = {32.f, 32.f},
+        .srcRect = {
+            .x = 0,
+            .y = 0,
+            .width = 64,
+            .height = 64
+        },
+        .damage = 20,
+        .guid = roen::hashString("fireball")
+    };
+
+    entityManager_.emplace<components::Spell>(hero, spell);
 
     entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
 }
@@ -274,6 +294,7 @@ void GameScene::initSystems()
     systems_.add<system::MeleeCombat>(entityManager_, eventDisptacher_);
     systems_.add<system::Mouse>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
+    systems_.add<system::ProjectileSpawner>(entityManager_, eventDisptacher_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::SpriteDirection>(entityManager_);
     systems_.add<system::WeaponFollow>(entityManager_);
@@ -319,7 +340,7 @@ void GameScene::spawnDebugEntity()
     entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
     entityManager_.emplace<components::CircleCollider>(debugEnt, colliderPosition, colliderPosition, 7, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0});
+    entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
     entityManager_.emplace<components::AI>(debugEnt, 80.f);
     entityManager_.emplace<tags::CollisionMask>(debugEnt, tags::MaskLayer::ENEMY | tags::MaskLayer::MOVING);

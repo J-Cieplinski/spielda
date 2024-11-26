@@ -15,6 +15,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/systems/MeleeCombat.hpp
     ${GAME_INCLUDE_DIR}/systems/Mouse.hpp
     ${GAME_INCLUDE_DIR}/systems/Movement.hpp
+    ${GAME_INCLUDE_DIR}/systems/ProjectileSpawner.hpp
     ${GAME_INCLUDE_DIR}/systems/Render.hpp
     ${GAME_INCLUDE_DIR}/systems/SpriteDirection.hpp
     ${GAME_INCLUDE_DIR}/systems/TextRender.hpp
@@ -36,6 +37,7 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/MeleeCombat.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Mouse.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Movement.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ProjectileSpawner.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Render.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SpriteDirection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TextRender.cpp
