@@ -40,6 +40,7 @@ void AIMove::update()
         const auto aiCollider = view.get<components::CircleCollider>(entity);
 
         auto& aiVelocity = view.get<components::RigidBody>(entity).velocity;
+        auto& lastAiVelocity = view.get<components::RigidBody>(entity).lastVelocity;
 
         if(!nodes.empty()
             && nodes.front().contains({aiCollider.position.x, aiCollider.position.y})
@@ -65,6 +66,9 @@ void AIMove::update()
 
         auto moveVector = Vector2Normalize(Vector2Subtract(currentNodeCenter, aiCollider.position));
         aiVelocity = Vector2Scale(moveVector, velocity);
+        lastAiVelocity = {
+            .x = aiVelocity.x != 0 ? std::abs(aiVelocity.x) / aiVelocity.x : 0,
+            .y = aiVelocity.y != 0 ? std::abs(aiVelocity.y) / aiVelocity.y : 0};
     }
 
     for(const auto entityToRemove : entitiesToRemoveFromTravel_)
