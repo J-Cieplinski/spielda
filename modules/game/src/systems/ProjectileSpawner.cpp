@@ -1,5 +1,6 @@
 #include <systems/ProjectileSpawner.hpp>
 
+#include <components/Animation.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/CircleCollider.hpp>
 #include <components/RigidBody.hpp>
@@ -20,7 +21,19 @@ ProjectileSpawner::ProjectileSpawner(entt::registry& entityManager, entt::dispat
 
 void ProjectileSpawner::onAttack(events::Attack event)
 {
+    constexpr auto spawnFrequency {1.f};
+
     auto attacker = event.attacker;
+    auto currentTime = GetTime();
+
+    if(const auto it = lastSpawnTimePerEntity_.find(attacker); it != lastSpawnTimePerEntity_.end())
+    {
+        if(currentTime - it->second <= spawnFrequency)
+        {
+            return;
+        }
+    }
+
     auto [spell, sprite, transform, rigidBody, mask] = entityManager_.get<components::Spell, components::Sprite, components::Transform, components::RigidBody, tags::CollisionMask>(attacker);
 
     auto projectile = entityManager_.create();
@@ -63,11 +76,23 @@ void ProjectileSpawner::onAttack(events::Attack event)
         .collisionType = CollisionType::WEAPON
     };
 
+    components::Animation spellAnimation {
+        .numberOfFrames = 4,
+        .currentFrame = 0,
+        .frameRateSpeed = 10,
+        .shouldLoop = true,
+        .startTime = currentTime,
+        .type = components::AnimationType::HORIZONTAL
+    };
+
+    entityManager_.emplace<components::Animation>(projectile, spellAnimation);
     entityManager_.emplace<components::RigidBody>(projectile, spellVelocity, Vector2{0, 0});
     entityManager_.emplace<components::Transform>(projectile, spellTransform);
     entityManager_.emplace<components::Sprite>(projectile, spellSprite);
     entityManager_.emplace<components::BoxCollider>(projectile, spellCollider);
     entityManager_.emplace<tags::CollisionMask>(projectile, mask);
+
+    lastSpawnTimePerEntity_[attacker] = currentTime;
 }
 
 } // namespace spielda::system

@@ -23,6 +23,7 @@
 #include <systems/AIDetect.hpp>
 #include <systems/AIDetectRadiusRender.hpp>
 #include <systems/AIMove.hpp>
+#include <systems/Animation.hpp>
 #include <systems/Collision.hpp>
 #include <systems/CollisionRender.hpp>
 #include <systems/Damage.hpp>
@@ -124,6 +125,7 @@ void GameScene::update()
     systems_.get<system::WeaponFollow>().update();
     systems_.get<system::Collision>().update();
     systems_.get<system::Damage>().update();
+    systems_.get<system::Animation>().update();
 }
 
 void GameScene::obscured()
@@ -284,6 +286,7 @@ void GameScene::initSystems()
     systems_.add<system::AIDetect>(entityManager_, eventDisptacher_);
     systems_.add<system::AIDetectRadiusRender>(entityManager_, eventDisptacher_, camera_);
     systems_.add<system::AIMove>(entityManager_, eventDisptacher_);
+    systems_.add<system::Animation>(entityManager_);
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
     systems_.add<system::Damage>(entityManager_, eventDisptacher_);
     systems_.add<system::DebugRender>(entityManager_, camera_);

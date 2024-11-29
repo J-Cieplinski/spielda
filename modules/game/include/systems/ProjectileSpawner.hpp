@@ -17,6 +17,7 @@ public:
 private:
     void onAttack(events::Attack event);
     entt::dispatcher& eventDispatcher_;
+    std::map<entt::entity, double> lastSpawnTimePerEntity_;
 };
 
 } // spielda::system
