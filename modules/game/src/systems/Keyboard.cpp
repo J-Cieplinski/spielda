@@ -12,7 +12,6 @@
 #include <components/WieldedWeapon.hpp>
 #include <components/tags/CollisionMask.hpp>
 
-
 #include <events/DebugSwitch.hpp>
 #include <events/Attack.hpp>
 
@@ -107,10 +106,8 @@ void Keyboard::checkPlayerInput()
         {
             eventDispatcher_.trigger(events::Attack{.attacker = weapon->weaponEntity});
         }
-        else
-        {
-            eventDispatcher_.trigger(events::Attack{.attacker = playerEntity});
-        }
+
+        eventDispatcher_.trigger(events::Attack{.attacker = playerEntity});
     }
 }
 

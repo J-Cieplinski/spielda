@@ -3,6 +3,12 @@
 
 #include <roen/include/interfaces/ISystem.hpp>
 
+#include <components/RigidBody.hpp>
+#include <components/Spell.hpp>
+#include <components/Sprite.hpp>
+#include <components/Transform.hpp>
+#include <components/tags/CollisionMask.hpp>
+
 #include <events/Attack.hpp>
 
 #include <entt/signal/dispatcher.hpp>
@@ -16,8 +22,15 @@ public:
     explicit ProjectileSpawner(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
 private:
     void onAttack(events::Attack event);
+    void spawnEntity(
+        components::Spell spell,
+        components::Sprite sprite,
+        components::Transform transform,
+        components::RigidBody rigidBody,
+        tags::CollisionMask collisionMask,
+        double currentTime) const;
     entt::dispatcher& eventDispatcher_;
-    std::map<entt::entity, double> lastSpawnTimePerEntity_;
+    std::unordered_map<entt::entity, double> lastSpawnTimePerEntity_;
 };
 
 } // spielda::system

@@ -13,6 +13,7 @@ struct Spell
     Vector2 origin;
     Rectangle srcRect;
     float damage;
+    float spawnFrequency;
     std::uint64_t guid;
 };
 

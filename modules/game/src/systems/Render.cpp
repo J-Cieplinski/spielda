@@ -1,13 +1,15 @@
 #include <systems/Render.hpp>
 
+#include <components/AttachedEntities.hpp>
 #include <components/Dirty.hpp>
 #include <components/Weapon.hpp>
-#include <components/WieldedWeapon.hpp>
+#include <components/tags/Attachment.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <raymath.h>
 #include <rlgl.h>
+#include <tileson/include/external/nlohmann.hpp>
 
 namespace spielda::system
 {
@@ -21,32 +23,44 @@ void Render::update()
 {
     checkForDirtyAndSort();
 
-    auto entities = entityManager_.view<components::Sprite, components::Transform>();
-    entities.use<components::Sprite>();
-
+    auto renderAbleEntities = entityManager_.view<components::Sprite, components::Transform>(entt::exclude<tags::Attachment>);
+    renderAbleEntities.use<components::Sprite>();
     const auto& textureManager = entityManager_.ctx().get<TextureManager>();
+    const auto attachedEntitiesView = entityManager_.view<components::AttachedEntities>();
+
     BeginMode2D(camera_);
 
-    for(const auto& [entity, sprite, transform] : entities.each())
+    for(const auto& [entity, sprite, transform] : renderAbleEntities.each())
     {
-        if(!isComplex(entity)) [[unlikely]]
+        rlPushMatrix();
+        rlTranslatef(transform.position.x, transform.position.y, 0); //move entity to its destined draw position
+        rlScalef(transform.scale.x, transform.scale.y, 1);
+
+        rlPushMatrix();
+        rlRotatef(transform.rotation, 0, 0, 1); //rotate entity
+
+        rlTranslatef(sprite.origin.x, sprite.origin.y, 0);
+
+        DrawTextureRec(textureManager.getAsset(sprite.guid), sprite.srcRect, Vector2Zero(), WHITE);   //draw entity
+        if(attachedEntitiesView.contains(entity))
         {
-            const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
+            for(const auto& attachedEntity : attachedEntitiesView.get<components::AttachedEntities>(entity).entities)
+            {
+                const auto& attachedSprite = renderAbleEntities.get<components::Sprite>(attachedEntity);
+                const auto& attachedTransform = renderAbleEntities.get<components::Transform>(attachedEntity);
 
-            const Rectangle dstRect {
-                .x = transform.position.x,
-                .y = transform.position.y,
-                .width = scaledSize.x,
-                .height = scaledSize.y
-            };
-
-            DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
+                rlPushMatrix();
+                rlTranslatef(attachedTransform.position.x, attachedTransform.position.y, 0);
+                rlScalef(attachedTransform.scale.x, attachedTransform.scale.y, 1);
+                rlRotatef(attachedTransform.rotation, 0, 0, 1);
+                rlTranslatef(attachedSprite.origin.x, attachedSprite.origin.y, 0);
+                DrawTextureRec(textureManager.getAsset(attachedSprite.guid), attachedSprite.srcRect, Vector2Zero(), WHITE);   //draw attached entity
+                rlPopMatrix();
+            }
         }
-        else
-        {
-            drawComplex(entity, sprite, transform, textureManager);
-        }
+        rlPopMatrix();
 
+        rlPopMatrix();
     }
 
     EndMode2D();
@@ -64,72 +78,6 @@ void Render::checkForDirtyAndSort() const
 
         entityManager_.clear<components::Dirty>();
     }
-}
-
-bool Render::isComplex(entt::entity entity) const
-{
-    bool hasWeapon = entityManager_.any_of<components::WieldedWeapon>(entity);
-    bool isWeapon = entityManager_.any_of<components::Weapon>(entity);
-    
-    return hasWeapon || isWeapon;
-}
-
-void Render::drawComplex(
-    entt::entity entity,
-    const components::Sprite& sprite,
-    const components::Transform& transform,
-    const TextureManager& textureManager) const
-{
-    if(auto weaponComp = entityManager_.try_get<components::Weapon>(entity))
-    {
-        return;
-    }
-
-    const auto wieldedWeapon = entityManager_.get<components::WieldedWeapon>(entity);
-
-    const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
-
-    const Rectangle dstRect {
-        .x = transform.position.x,
-        .y = transform.position.y,
-        .width = scaledSize.x,
-        .height = scaledSize.y
-    };
-
-    DrawTexturePro(textureManager.getAsset(sprite.guid), sprite.srcRect, dstRect, sprite.origin, transform.rotation, WHITE);
-
-    rlPushMatrix();
-
-    const auto weaponPositionOnEntity = Vector2Add(transform.position, wieldedWeapon.weaponAttachOffset);
-    rlTranslatef(weaponPositionOnEntity.x, weaponPositionOnEntity.y, 0);
-
-    //Draw the weapon here
-    drawAttached(wieldedWeapon.weaponEntity, textureManager);
-
-    rlPopMatrix();
-}
-
-void Render::drawAttached(entt::entity entity, const TextureManager& textureManager) const
-{
-    auto view = entityManager_.view<components::Transform, components::Weapon, components::Sprite>();
-
-    const auto transform = view.get<components::Transform>(entity);
-    rlRotatef(transform.rotation, 0, 0, 1);
-
-    rlPushMatrix();
-    const auto weapon = view.get<components::Weapon>(entity);
-
-    float yOrigin = weapon.originPosition.y;
-
-    rlTranslatef(-weapon.originPosition.x, -yOrigin, 0);
-
-    const auto sprite = view.get<components::Sprite>(entity);
-
-    const auto scaledSize  = Vector2Multiply(sprite.size, transform.scale);
-
-    DrawTextureRec(textureManager.getAsset(sprite.guid), sprite.srcRect, Vector2Zero(), WHITE);
-
-    rlPopMatrix();
 }
 
 } // spielda::system

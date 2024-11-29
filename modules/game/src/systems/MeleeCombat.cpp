@@ -29,7 +29,6 @@ void MeleeCombat::onAttack(events::Attack event)
         WeaponSwing swing {
             .weapon = *attackerWeapon,
             .weaponEntity = event.attacker,
-            .originalRelativePosition = attackerWeapon->originPosition,
             .totalAnimationTime = 0.5f,
             .currentAnimationTime = 0.f
         };
@@ -53,7 +52,6 @@ void MeleeCombat::update(double dt)
             swingsToClear.push_back(swing);
 
             auto& weapon = view.get<components::Weapon>(swing.weaponEntity);
-            weapon.originPosition = swing.originalRelativePosition;
             weaponTransform.rotation = 0;
             weapon.attacking = false;
             weapon.damagedEntities.clear();

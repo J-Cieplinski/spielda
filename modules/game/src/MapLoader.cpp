@@ -27,9 +27,9 @@ void MapLoader::addComponents(Vector2 tilePosition, Vector2 tileSize, float rota
     const auto tileEntity = entityManager_.create();
     const auto position = toRayVector(tilePosition);
     const auto size = toRayVector(tileSize);
-    const auto origin = Vector2Scale(size, 0.5f);
+    const auto origin = Vector2Scale(size, -0.5f);
 
-    const auto renderedPosition = Vector2Add(position, origin);
+    const auto renderedPosition = position - origin;
     entityManager_.emplace<components::Transform>(tileEntity, renderedPosition, renderedPosition, scale, rotation);
 
     entityManager_.emplace<components::Sprite>(tileEntity,

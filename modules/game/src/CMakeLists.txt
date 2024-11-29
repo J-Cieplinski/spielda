@@ -4,6 +4,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/MapLoader.hpp
     ${GAME_INCLUDE_DIR}/components/AI.hpp
     ${GAME_INCLUDE_DIR}/components/Animation.hpp
+    ${GAME_INCLUDE_DIR}/components/AttachedEntities.hpp
     ${GAME_INCLUDE_DIR}/components/BoxCollider.hpp
     ${GAME_INCLUDE_DIR}/components/CharacterSheet.hpp
     ${GAME_INCLUDE_DIR}/components/CircleCollider.hpp
@@ -16,6 +17,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/components/Sprite.hpp
     ${GAME_INCLUDE_DIR}/components/Text.hpp
     ${GAME_INCLUDE_DIR}/components/Transform.hpp
+    ${GAME_INCLUDE_DIR}/components/tags/Attachment.hpp
     ${GAME_INCLUDE_DIR}/components/tags/CollisionMask.hpp
     ${GAME_INCLUDE_DIR}/components/tags/Enemy.hpp
     ${GAME_INCLUDE_DIR}/components/tags/Friend.hpp
