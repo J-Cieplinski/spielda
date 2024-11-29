@@ -5,6 +5,7 @@
 #include <Typedefs.hpp>
 
 #include <components/AI.hpp>
+#include <components/AttachedEntities.hpp>
 #include <components/BoxCollider.hpp>
 #include <components/CharacterSheet.hpp>
 #include <components/CircleCollider.hpp>
@@ -18,6 +19,7 @@
 #include <components/Weapon.hpp>
 #include <components/WieldedWeapon.hpp>
 
+#include <components/tags/Attachment.hpp>
 #include <components/tags/CollisionMask.hpp>
 
 #include <systems/AIDetect.hpp>
@@ -136,7 +138,7 @@ void GameScene::revealed()
     APP_INFO("Entered GameScene");
     entityManager_.ctx().get<TextureManager>().loadAsset("fireball", "assets/textures/fireball.png");
 
-    loadLevel("assets/levels/dungeon.json");
+    loadLevel("assets/definitions/levels/dungeon.json");
 #ifdef PROFILE
     for(auto i : std::ranges::iota_view{1, 100})
     {
@@ -175,7 +177,7 @@ void GameScene::loadLevel(std::filesystem::path path)
 
 void GameScene::loadHero(const nlohmann::json& level)
 {
-    /*constexpr std::uint32_t layer = 5;
+    constexpr std::uint32_t layer = 5;
     constexpr std::uint32_t layerOrder = 1;
 
     constexpr Rectangle weaponSrcRect {
@@ -186,33 +188,37 @@ void GameScene::loadHero(const nlohmann::json& level)
     };
 
     constexpr Vector2 weaponOrigin {
-            .x = 8,
-            .y = 16
+            .x = -8,
+            .y = -16
     };
 
     constexpr Vector2 weaponPosition {
-            .x = 0,
-            .y = 0
+            .x = 14,
+            .y = 13
     };
 
     auto weapon = entityManager_.create();
+    auto hero = entityManager_.create();
 
-    entityManager_.emplace<components::Weapon>(weapon, hero, weaponOrigin, 20u);
+    entityManager_.emplace<components::Weapon>(weapon, hero, 20u);
     entityManager_.emplace<components::BoxCollider>(weapon, weaponPosition, weaponPosition, Vector2{14, 12}, CollisionType::NONE);
     entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::RigidBody>(weapon, Vector2{0, 0});
-    entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, Vector2{0, 0}, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);*/
+    entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, weaponOrigin, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
+    entityManager_.emplace<tags::Attachment>(weapon);
 
     const auto player = level["player"];
 
-    auto hero = entityManager_.create();
+    const Vector2 spriteSize {
+        .x = player["sprite"]["size"],
+        .y = player["sprite"]["size"]
+    };
 
     const Rectangle srcRect {
         .x = player["sprite"]["source"]["x"],
         .y = player["sprite"]["source"]["y"],
-        .width = level["tileSize"],
-        .height = level["tileSize"]
+        .width = spriteSize.x,
+        .height = spriteSize.y
     };
 
     const Vector2 absolutePosition {
@@ -220,42 +226,36 @@ void GameScene::loadHero(const nlohmann::json& level)
         .y = player["position"]["y"]
     };
 
-    const Vector2 spriteSize {
-        .x = level["tileSize"],
-        .y = level["tileSize"]
-    };
-
-    const Vector2 origin = Vector2Scale(spriteSize, 0.5f);
-
-    const Vector2 renderedPosition {
-        .x = absolutePosition.x + origin.x,
-        .y = absolutePosition.y + origin.y / 2
-    };
-
-    const Vector2 colliderPosition = renderedPosition;//Vector2Add(absolutePosition, origin);
-
-    constexpr Vector2 weaponAttachOffset {
-        .x = 7,
-        .y = 3
-    };
-
     const Vector2 weaponColliderAttachOffset = {
-        .x = weaponAttachOffset.x,
-        .y = weaponAttachOffset.y - spriteSize.y
+        .x = 7,
+        .y = 3 - spriteSize.y / 2
     };
 
-    entityManager_.emplace<components::Sprite>(hero, Vector2{16, 16}, origin, srcRect, player["layer"], player["layerOrder"], roen::hashString(player["sprite"]["name"]), false);
-    entityManager_.emplace<components::Transform>(hero, renderedPosition, renderedPosition, Vector2{1, 1}, 0.f);
+    components::Sprite heroSprite {
+        .size = spriteSize,
+        .origin = Vector2Scale(spriteSize, -0.5f),
+        .srcRect = srcRect,
+        .layer = player["layer"],
+        .zIndexInLayer = player["layerOrder"],
+        .guid = roen::hashString(player["sprite"]["name"]),
+        .isFixed = false
+    };
+
+    const Vector2 colliderPosition = absolutePosition;
+
+    entityManager_.emplace<components::Sprite>(hero, heroSprite);
+    entityManager_.emplace<components::Transform>(hero, absolutePosition, absolutePosition, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::CircleCollider>(hero, colliderPosition, colliderPosition, 6, CollisionType::NONE);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Player>(hero);
-    //entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponAttachOffset, weaponColliderAttachOffset);
+    entityManager_.emplace<components::WieldedWeapon>(hero, weapon, weaponColliderAttachOffset);
     entityManager_.emplace<components::CharacterSheet>(hero, 10, 10);
+    entityManager_.emplace<components::AttachedEntities>(hero, std::set{weapon});
 
     constexpr components::Spell spell {
         .velocity = {60.f, 60.f},
         .size = {64.f, 64.f},
-        .origin = {32.f, 32.f},
+        .origin = {-32.f, -32.f},
         .srcRect = {
             .x = 0,
             .y = 0,
@@ -263,6 +263,7 @@ void GameScene::loadHero(const nlohmann::json& level)
             .height = 64
         },
         .damage = 20,
+        .spawnFrequency = 1.f,
         .guid = roen::hashString("fireball")
     };
 

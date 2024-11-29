@@ -56,8 +56,8 @@ MenuScene::~MenuScene()
     APP_INFO("Destroyed MenuScene");
 
     UnloadRenderTexture(renderTexture_);
-    auto& fontManager = entityManager_.ctx().get<spielda::FontManager>();
-    auto& textureManager = entityManager_.ctx().get<spielda::TextureManager>();
+    auto& fontManager = entityManager_.ctx().get<FontManager>();
+    auto& textureManager = entityManager_.ctx().get<TextureManager>();
 
     fontManager.freeAssets();
     textureManager.freeAssets();
@@ -69,7 +69,7 @@ void MenuScene::handleInput()
 
 void MenuScene::render()
 {
-    float scale = std::min((float)GetScreenWidth() / spielda::RENDER_WIDTH, (float)GetScreenHeight() / spielda::RENDER_HEIGHT);
+    float scale = std::min(static_cast<float>(GetScreenWidth()) / RENDER_WIDTH, static_cast<float>(GetScreenHeight()) / RENDER_HEIGHT);
 
     BeginTextureMode(renderTexture_);
     ClearBackground(RAYWHITE);
@@ -86,7 +86,7 @@ void MenuScene::render()
 
     DrawTexturePro(renderTexture_.texture,
                     Rectangle{ 0.f, 0.f, static_cast<float>(renderTexture_.texture.width), static_cast<float>(-(renderTexture_.texture.height)) },
-                    Rectangle{ (GetScreenWidth() - (spielda::RENDER_WIDTH * scale)) * 0.5f, (GetScreenHeight() - (spielda::RENDER_HEIGHT * scale)) * 0.5f, static_cast<float>(spielda::RENDER_WIDTH * scale), static_cast<float>(spielda::RENDER_HEIGHT * scale) },
+                    Rectangle{ (GetScreenWidth() - (RENDER_WIDTH * scale)) * 0.5f, (GetScreenHeight() - (RENDER_HEIGHT * scale)) * 0.5f, RENDER_WIDTH * scale, RENDER_HEIGHT * scale },
                     Vector2{ 0, 0 },
                     0.f,
                     WHITE);
@@ -118,13 +118,13 @@ void MenuScene::initAssets()
     /*
      * Fonts
      */
-    auto& fontManager = entityManager_.ctx().get<spielda::FontManager>();
+    auto& fontManager = entityManager_.ctx().get<FontManager>();
     fontManager.loadAsset("immortal", "assets/fonts/IMMORTAL.ttf");
 
     /*
      * Textures
      */
-    auto& textureManager = entityManager_.ctx().get<spielda::TextureManager>();
+    auto& textureManager = entityManager_.ctx().get<TextureManager>();
     textureManager.loadAsset(menuBackground, "assets/textures/menu_background.png");
     textureManager.loadAsset("panel_transparent_center", "assets/textures/gui/panel_transparent_center.png");
     textureManager.loadAsset("panel_border", "assets/textures/gui/panel_border.png");
@@ -162,15 +162,16 @@ void MenuScene::initBackground()
             .y = 0.f
     };
 
-    constexpr Vector2 backgroundScale {
-            .x = 1.f,
-            .y = 1.f
+    constexpr Vector2 backgroundSize {
+        .x = static_cast<float>(RENDER_WIDTH),
+        .y = static_cast<float>(RENDER_HEIGHT)
     };
 
-    constexpr Vector2 backgroundSize {
-            .x = static_cast<float>(spielda::RENDER_WIDTH),
-            .y = static_cast<float>(spielda::RENDER_HEIGHT)
+    constexpr Vector2 backgroundScale {
+        .x = backgroundSize.x / backgroundSrcRect.width,
+        .y = backgroundSize.y / backgroundSrcRect.height,
     };
+
 
     auto background = entityManager_.create();
     entityManager_.emplace<components::Transform>(background, backgroundPosition, backgroundPosition, backgroundScale, rotation);

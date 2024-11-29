@@ -8,14 +8,15 @@
     "sprite": {
       "file": "assets/textures/tilemap.png",
       "name": "dungeon",
+      "size": 16,
       "source": {
         "x": 0,
         "y": 112
       }
     },
     "position": {
-      "x": 24,
-      "y": 36
+      "x": 32,
+      "y": 40
     }
   }
 }

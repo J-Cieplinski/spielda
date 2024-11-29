@@ -24,7 +24,6 @@ void WeaponFollow::update() const
     for (const auto& [wielder, wieldedWeapon, wielderCollider] : wielderView.each())
     {
         auto& weaponCollider = weaponView.get<components::BoxCollider>(wieldedWeapon.weaponEntity);
-
         weaponCollider.previousPosition = weaponCollider.position;
         weaponCollider.position = Vector2Add(wielderCollider.position, wieldedWeapon.colliderAttachOffset);
     }

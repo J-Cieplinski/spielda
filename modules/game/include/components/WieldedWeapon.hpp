@@ -10,7 +10,6 @@ namespace spielda::components
 struct WieldedWeapon
 {
     entt::entity weaponEntity;
-    Vector2 weaponAttachOffset;
     Vector2 colliderAttachOffset;
 };
 

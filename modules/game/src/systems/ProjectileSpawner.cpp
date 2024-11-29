@@ -21,26 +21,38 @@ ProjectileSpawner::ProjectileSpawner(entt::registry& entityManager, entt::dispat
 
 void ProjectileSpawner::onAttack(events::Attack event)
 {
-    constexpr auto spawnFrequency {1.f};
+    auto group = entityManager_.group<components::Spell>(entt::get<components::Sprite, components::Transform, components::RigidBody, tags::CollisionMask>);
 
-    auto attacker = event.attacker;
+    if(not group.contains(event.attacker))
+    {
+        return;
+    }
+
     auto currentTime = GetTime();
 
-    if(const auto it = lastSpawnTimePerEntity_.find(attacker); it != lastSpawnTimePerEntity_.end())
+    auto [spell, sprite, transform, rigidBody, mask] = group.get<components::Spell, components::Sprite, components::Transform, components::RigidBody, tags::CollisionMask>(event.attacker);
+
+    if(const auto it = lastSpawnTimePerEntity_.find(event.attacker); it != lastSpawnTimePerEntity_.end())
     {
-        if(currentTime - it->second <= spawnFrequency)
+        if(currentTime - it->second <= spell.spawnFrequency)
         {
             return;
         }
     }
 
-    auto [spell, sprite, transform, rigidBody, mask] = entityManager_.get<components::Spell, components::Sprite, components::Transform, components::RigidBody, tags::CollisionMask>(attacker);
+    spawnEntity(spell, sprite, transform, rigidBody, mask, currentTime);
 
+    lastSpawnTimePerEntity_[event.attacker] = currentTime;
+}
+
+void ProjectileSpawner::spawnEntity(components::Spell spell, components::Sprite sprite, components::Transform transform,
+    components::RigidBody rigidBody, tags::CollisionMask collisionMask, double currentTime) const
+{
     auto projectile = entityManager_.create();
 
     Vector2 spellVelocity {
-        .x = rigidBody.lastVelocity.x != 0 ? spell.velocity.x * rigidBody.lastVelocity.x : 0,
-        .y = rigidBody.lastVelocity.y != 0 ? spell.velocity.y * rigidBody.lastVelocity.y : 0,
+        .x = spell.velocity.x * rigidBody.lastVelocity.x,
+        .y = spell.velocity.y * rigidBody.lastVelocity.y,
     };
     auto spellSourceRectangle = spell.srcRect;
     auto spellTransform = transform;
@@ -90,9 +102,7 @@ void ProjectileSpawner::onAttack(events::Attack event)
     entityManager_.emplace<components::Transform>(projectile, spellTransform);
     entityManager_.emplace<components::Sprite>(projectile, spellSprite);
     entityManager_.emplace<components::BoxCollider>(projectile, spellCollider);
-    entityManager_.emplace<tags::CollisionMask>(projectile, mask);
-
-    lastSpawnTimePerEntity_[attacker] = currentTime;
+    entityManager_.emplace<tags::CollisionMask>(projectile, collisionMask);
 }
 
 } // namespace spielda::system
