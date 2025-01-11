@@ -71,8 +71,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     }>();
 
     eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
-    roen::log::Logger::setAppLogLevel(spdlog::level::info);
-
+    SET_APP_LOG_LEVEL(spdlog::level::info);
 }
 
 void GameScene::handleInput()
@@ -320,14 +319,26 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
 
     if(event.switchAppLogging)
     {
-        roen::log::Logger::getAppLogger()->level() == spdlog::level::off ? roen::log::Logger::setAppLogLevel(spdlog::level::info)
-                                                                            : roen::log::Logger::setAppLogLevel(spdlog::level::off);
+        if (GET_SDK_LOG_LEVEL() == spdlog::level::off)
+        {
+            SET_APP_LOG_LEVEL(spdlog::level::info);
+        }
+        else
+        {
+            SET_APP_LOG_LEVEL(spdlog::level::off);
+        }
     }
 
     if(event.switchSdkLogging)
     {
-        roen::log::Logger::getSdkLogger()->level() == spdlog::level::off ? roen::log::Logger::setSdkLogLevel(spdlog::level::info)
-                                                                            : roen::log::Logger::setSdkLogLevel(spdlog::level::off);
+        if (GET_APP_LOG_LEVEL() == spdlog::level::off)
+        {
+            SET_SDK_LOG_LEVEL(spdlog::level::info);
+        }
+        else
+        {
+            SET_SDK_LOG_LEVEL(spdlog::level::off);
+        }
     }
 }
 
