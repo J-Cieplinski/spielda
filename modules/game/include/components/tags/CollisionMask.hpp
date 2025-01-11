@@ -16,7 +16,7 @@ enum MaskLayer : std::uint64_t
     WEAPON = 1u << 5
 };
 
-inline const std::bitset<8> ZERO_BITSET("00000000");
+inline constexpr std::bitset<8> ZERO_BITSET("00000000");
 
 /*
  * Entities within the same mask do NOT collide with each other

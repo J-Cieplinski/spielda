@@ -11,6 +11,7 @@ struct DebugSwitch
     bool switchRender;
     bool switchSdkLogging;
     bool switchAppLogging;
+    bool switchCollisionSystem;
     //Rest of the variables for switching
 };
 

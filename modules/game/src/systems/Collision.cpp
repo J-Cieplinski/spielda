@@ -8,8 +8,8 @@
 #include <roen/include/log/Logger.hpp>
 #include <roen/include/log/formatters/entity.hpp>
 
-#include <entt/entt.hpp>
 #include <raylib.h>
+#include <entt/entt.hpp>
 
 namespace spielda::system
 {
@@ -22,8 +22,6 @@ Collision::Collision(entt::registry& entityManager, entt::dispatcher& eventDispa
 
 void Collision::update() const
 {
-    constexpr std::uint8_t WEAPON_BIT{5};
-
     const auto& boxView = entityManager_.view<components::BoxCollider>();
     const auto& circleView = entityManager_.view<components::CircleCollider>();
     const auto& maskView = entityManager_.view<tags::CollisionMask>();
@@ -45,13 +43,17 @@ void Collision::update() const
 
             if (CheckCollisionCircleRec(entityCollider.position, entityCollider.radius, collider))
             {
-                const auto isBoxEntityAWeapon = boxMask.mask.test(WEAPON_BIT);
+                constexpr std::bitset<8> WEAPON_MASK{tags::MaskLayer::WEAPON};
+                const auto isBoxEntityAWeapon = (boxMask.mask & WEAPON_MASK) != tags::ZERO_BITSET;
 
                 APP_TRACE("Entity {0} collided with Entity {1}", entity, boxEntity);
                 const auto collisionType = isBoxEntityAWeapon ? CollisionType::WEAPON : CollisionType::WALL;
                 entityCollider.collisionType = collisionType;
                 collider.collisionType = collisionType;
-                eventDispatcher_.enqueue(events::Collision{entity, boxEntity, collisionType});
+                eventDispatcher_.enqueue(events::Collision {
+                    .firstCollider = entity,
+                    .secondCollider = boxEntity,
+                    .collisionType = collisionType});
             }
         });
     }

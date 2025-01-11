@@ -55,6 +55,10 @@ void Keyboard::checkDebugInput()
     {
         eventDispatcher_.trigger(events::DebugSwitch{.switchSdkLogging = true});
     }
+    if(IsKeyReleased(KEY_F4))
+    {
+        eventDispatcher_.trigger(events::DebugSwitch{.switchCollisionSystem = true});
+    }
     if(IsKeyReleased(KEY_D))
     {
         spawnDebugEntity();

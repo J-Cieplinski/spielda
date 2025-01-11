@@ -27,6 +27,7 @@
 #include <systems/AIMove.hpp>
 #include <systems/Animation.hpp>
 #include <systems/Collision.hpp>
+#include <systems/CollisionPartitioned.hpp>
 #include <systems/CollisionRender.hpp>
 #include <systems/Damage.hpp>
 #include <systems/DebugRender.hpp>
@@ -44,9 +45,9 @@
 #include <roen/include/log/Logger.hpp>
 #include <roen/include/log/formatters/entity.hpp>
 
+#include <raymath.h>
 #include <entt/entt.hpp>
 #include <json/single_include/nlohmann/json.hpp>
-#include <raymath.h>
 
 #include <ranges>
 
@@ -59,6 +60,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     , renderTexture_{LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT)}
     , camera_{Vector2{0, 0}, Vector2{0, 0}, 0.f, 1.5f}
     , debugRender_{false}
+    , oldCollisionSystem_{true}
 {
     initSystems();
 
@@ -123,7 +125,16 @@ void GameScene::update()
     systems_.get<system::Movement>().update(deltaTime_);
     systems_.get<system::MeleeCombat>().update(deltaTime_);
     systems_.get<system::WeaponFollow>().update();
-    systems_.get<system::Collision>().update();
+
+    if (oldCollisionSystem_)
+    {
+        systems_.get<system::Collision>().update();
+    }
+    else
+    {
+        systems_.get<system::CollisionPartitioned>().update();
+    }
+
     systems_.get<system::Damage>().update();
     systems_.get<system::Animation>().update();
 }
@@ -287,6 +298,7 @@ void GameScene::initSystems()
     systems_.add<system::AIMove>(entityManager_, eventDisptacher_);
     systems_.add<system::Animation>(entityManager_);
     systems_.add<system::Collision>(entityManager_, eventDisptacher_);
+    systems_.add<system::CollisionPartitioned>(entityManager_, eventDisptacher_);
     systems_.add<system::Damage>(entityManager_, eventDisptacher_);
     systems_.add<system::DebugRender>(entityManager_, camera_);
     systems_.add<system::GraphRender>(entityManager_, camera_);
@@ -304,6 +316,7 @@ void GameScene::initSystems()
 void GameScene::switchDebug(const events::DebugSwitch& event)
 {
     debugRender_ = event.switchRender ? !debugRender_ : debugRender_;
+    oldCollisionSystem_ = event.switchCollisionSystem ? !oldCollisionSystem_ : oldCollisionSystem_;
 
     if(event.switchAppLogging)
     {
@@ -348,4 +361,5 @@ void GameScene::spawnDebugEntity()
 
     APP_INFO("Added debug entity {0}", debugEnt);
 }
+
 } // spielda::scenes

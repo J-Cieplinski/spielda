@@ -41,6 +41,7 @@ private:
     entt::registry entityManager_;
     entt::dispatcher eventDisptacher_;
     bool debugRender_;
+    bool oldCollisionSystem_;
 };
 
 } // spielda::scenes

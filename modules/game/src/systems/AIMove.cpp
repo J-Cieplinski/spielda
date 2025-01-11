@@ -89,25 +89,41 @@ void AIMove::onDetect(events::AIDetectedEnemy event)
     const auto aiCollider = view.get<components::CircleCollider>(event.aiEntity).position;
 
     const auto& pathfindingGraph = entityManager_.ctx().get<roen::data_structure::Graph<roen::data_structure::MapNode>>();
-    auto closestAINode = getClosestMapNode(aiCollider, pathfindingGraph);
-    auto closestPlayerNode = getClosestMapNode(event.detectedEntityPosition, pathfindingGraph);
-    auto path = roen::algorithms::a_star(closestAINode, closestPlayerNode, pathfindingGraph, roen::algorithms::manhattanDistance);
-    auto travelOrder = roen::algorithms::getNodeOrderFromPath(closestAINode, closestPlayerNode, path);
+    const auto closestAINode = getClosestMapNodeMaybe(aiCollider, pathfindingGraph);
+    if (not closestAINode)
+    {
+        APP_TRACE("Could not found closest node for AI entity {0}", event.aiEntity);
+        return;
+    }
+    const auto closestPlayerNode = getClosestMapNodeMaybe(event.detectedEntityPosition, pathfindingGraph);
+    if (not closestPlayerNode)
+    {
+        APP_TRACE("Could not found closest node for player entity");
+        return;
+    }
+
+    auto path = roen::algorithms::a_star(*closestAINode, *closestPlayerNode, pathfindingGraph, roen::algorithms::manhattanDistance);
+    auto travelOrder = roen::algorithms::getNodeOrderFromPath(*closestAINode, *closestPlayerNode, path);
 
     travelingEntities_[event.aiEntity] = std::list(travelOrder.begin(), travelOrder.end());
 }
 
-roen::data_structure::MapNode AIMove::getClosestMapNode(const Vector2& position,
+std::optional<roen::data_structure::MapNode> AIMove::getClosestMapNodeMaybe(const Vector2& position,
                                                         const roen::data_structure::Graph<roen::data_structure::MapNode>& pathfindingGraph) const
 {
     std::queue<roen::data_structure::MapNode> nodes{};
 
     for(const auto& node : pathfindingGraph.getEdges() | std::ranges::views::keys)
     {
-        if(node.contains({position.x, position.y}))
+        if(node.contains(position))
         {
             nodes.push(node);
         }
+    }
+
+    if (nodes.empty())
+    {
+        return {};
     }
 
     roen::data_structure::MapNode currentClosestNode = nodes.front();

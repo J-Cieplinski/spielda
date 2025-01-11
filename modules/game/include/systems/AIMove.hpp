@@ -29,7 +29,7 @@ public:
     void update();
 private:
     void onDetect(events::AIDetectedEnemy event);
-    roen::data_structure::MapNode getClosestMapNode(const Vector2& position,
+    std::optional<roen::data_structure::MapNode> getClosestMapNodeMaybe(const Vector2& position,
                                                     const roen::data_structure::Graph<roen::data_structure::MapNode>& pathfindingGraph) const;
 
     entt::dispatcher& eventDispatcher_;
