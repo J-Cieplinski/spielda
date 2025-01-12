@@ -9,7 +9,6 @@
 
 #include <raymath.h>
 #include <rlgl.h>
-#include <tileson/include/external/nlohmann.hpp>
 
 namespace spielda::system
 {
