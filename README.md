@@ -44,3 +44,8 @@ Make sure you have CMake and compiler supporting C++23 standard for your system 
 2. Init submodules `cd spielda && git submodule update --init --recursive`
 2. Compile using cmake `cmake -Bbuild && cmake -DCMAKE_BUILD_TYPE=Release -Bbuild`
 3. run `spielda` from within the same directory that `assets` folder resides
+
+
+#### Disclaimer
+
+This is all a work in progress, some things may not work as expected
