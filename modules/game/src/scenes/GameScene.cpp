@@ -47,7 +47,6 @@
 
 #include <raymath.h>
 #include <entt/entt.hpp>
-#include <json/single_include/nlohmann/json.hpp>
 
 #include <ranges>
 
@@ -71,7 +70,7 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
     }>();
 
     eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
-    SET_APP_LOG_LEVEL(spdlog::level::info);
+    SET_APP_LOG_LEVEL(LOG_LEVEL_INFO);
 }
 
 void GameScene::handleInput()
@@ -319,25 +318,25 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
 
     if(event.switchAppLogging)
     {
-        if (GET_SDK_LOG_LEVEL() == spdlog::level::off)
+        if (GET_SDK_LOG_LEVEL() == LOG_LEVEL_OFF)
         {
-            SET_APP_LOG_LEVEL(spdlog::level::info);
+            SET_APP_LOG_LEVEL(LOG_LEVEL_INFO);
         }
         else
         {
-            SET_APP_LOG_LEVEL(spdlog::level::off);
+            SET_APP_LOG_LEVEL(LOG_LEVEL_OFF);
         }
     }
 
     if(event.switchSdkLogging)
     {
-        if (GET_APP_LOG_LEVEL() == spdlog::level::off)
+        if (GET_APP_LOG_LEVEL() == LOG_LEVEL_OFF)
         {
-            SET_SDK_LOG_LEVEL(spdlog::level::info);
+            SET_SDK_LOG_LEVEL(LOG_LEVEL_INFO);
         }
         else
         {
-            SET_SDK_LOG_LEVEL(spdlog::level::off);
+            SET_SDK_LOG_LEVEL(LOG_LEVEL_OFF);
         }
     }
 }

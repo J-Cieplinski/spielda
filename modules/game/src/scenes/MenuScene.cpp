@@ -13,7 +13,6 @@
 #include <components/Transform.hpp>
 
 #include <scenes/GameScene.hpp>
-#include <systems/CollisionRender.hpp>
 #include <systems/Gui.hpp>
 #include <systems/GuiRender.hpp>
 #include <systems/Mouse.hpp>
@@ -77,7 +76,6 @@ void MenuScene::render()
     systems_.get<system::Render>().update();
     systems_.get<system::GuiRender>().update();
     systems_.get<system::TextRender>().update();
-    systems_.get<system::CollisionRender>().update();
 
     EndTextureMode();
 
@@ -132,7 +130,6 @@ void MenuScene::initAssets()
 
 void MenuScene::initSystems()
 {
-    systems_.add<system::CollisionRender>(entityManager_, camera_);
     systems_.add<system::Gui>(entityManager_, eventDisptacher_);
     systems_.add<system::GuiRender>(entityManager_);
     systems_.add<system::Mouse>(entityManager_, eventDisptacher_);
