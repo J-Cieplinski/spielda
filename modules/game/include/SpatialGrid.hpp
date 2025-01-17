@@ -18,7 +18,7 @@ class SpatialGrid
 using iterator = std::unordered_map<std::uint32_t, std::list<entt::entity>>::iterator;
 using const_iterator = std::unordered_map<std::uint32_t, std::list<entt::entity>>::const_iterator;
 public:
-    SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::uint32_t cellSize);
+    SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::int32_t cellSize);
 
     void initGrid(const entt::registry& registry);
 
@@ -37,7 +37,7 @@ public:
 private:
     std::uint32_t mapWidth_;
     std::uint32_t mapHeight_;
-    std::uint32_t cellSize_;
+    std::int32_t cellSize_;
     std::unordered_map<std::uint32_t, std::list<entt::entity>> grid_;
 };
 

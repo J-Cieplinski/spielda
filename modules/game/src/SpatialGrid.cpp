@@ -7,7 +7,7 @@
 namespace spielda
 {
 
-SpatialGrid::SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::uint32_t cellSize)
+SpatialGrid::SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::int32_t cellSize)
     : mapWidth_{mapWidth}
     , mapHeight_{mapHeight}
     , cellSize_{cellSize}
@@ -101,8 +101,8 @@ void SpatialGrid::updateEntityPosition(entt::entity entity, const Vector2 oldPos
 
 std::uint32_t SpatialGrid::getCellIndex(const Vector2& position) const
 {
-    auto cellX = static_cast<std::uint32_t>(position.x) / cellSize_;
-    auto cellY = static_cast<std::uint32_t>(position.y) / cellSize_;
+    auto cellX = static_cast<int>(position.x) / cellSize_;
+    auto cellY = static_cast<int>(position.y) / cellSize_;
     return cellY * mapWidth_ + cellX;
 }
 
