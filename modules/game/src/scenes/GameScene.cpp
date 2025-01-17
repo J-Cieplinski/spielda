@@ -3,6 +3,7 @@
 #include <CoreConfig.hpp>
 #include <MapLoader.hpp>
 #include <Typedefs.hpp>
+#include <SpatialGrid.hpp>
 
 #include <components/AI.hpp>
 #include <components/AttachedEntities.hpp>
@@ -169,6 +170,7 @@ void GameScene::loadLevel(std::filesystem::path path)
     mapLoader.loadMap(path);
     entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
     auto mapSize = mapLoader.getMapSize();
+    auto& grid = entityManager_.ctx().emplace<SpatialGrid>(mapSize.x, mapSize.y, 16);
     auto tileSize = mapLoader.getTileSize();
     auto realMapSize = mapSize * tileSize;
 
@@ -186,6 +188,8 @@ void GameScene::loadLevel(std::filesystem::path path)
     auto level = json::parse(file);
 
     loadHero(level);
+
+    grid.initGrid(entityManager_);
 }
 
 void GameScene::loadHero(const nlohmann::json& level)

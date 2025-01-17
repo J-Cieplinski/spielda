@@ -1,5 +1,7 @@
 #include <SpatialGrid.hpp>
 
+#include <components/Collider.hpp>
+
 #include <roen/include/log/Logger.hpp>
 
 namespace spielda
@@ -10,9 +12,17 @@ SpatialGrid::SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::u
     , mapHeight_{mapHeight}
     , cellSize_{cellSize}
 {
-
 }
 
+void SpatialGrid::initGrid(const entt::registry& registry)
+{
+    registry.view<components::Collider>().each([this](entt::entity entity, const components::Collider& collider) 
+    {
+        std::visit([this, entity](const auto& col){
+            updateEntityPosition(entity, Vector2{-1, -1}, col.position);
+        }, collider);
+    });
+}
 
 std::vector<int> SpatialGrid::getNeighboringCells(const Vector2& position) const
 {
