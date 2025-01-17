@@ -21,6 +21,9 @@ public:
 
     std::vector<int> getNeighboringCells(const Vector2& position) const;
     std::optional<std::reference_wrapper<const std::list<entt::entity>>> at(std::uint32_t key) const;
+    std::optional<std::reference_wrapper<std::list<entt::entity>>> at(std::uint32_t key);
+    void updateEntityPosition(entt::entity entity, const Vector2 oldPosition, const Vector2 newPosition);
+    std::uint32_t getCellIndex(const Vector2& position) const;
 
     iterator begin();
     iterator end();
