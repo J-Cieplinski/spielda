@@ -1,7 +1,6 @@
 #include <systems/Movement.hpp>
 
-#include <components/BoxCollider.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
@@ -19,8 +18,7 @@ Movement::Movement(entt::registry &entityManager)
 void Movement::update(double dt)
 {
     auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform, components::Sprite>);
-    auto circleColliderView = entityManager_.view<components::CircleCollider>();
-    auto boxColliderView = entityManager_.view<components::BoxCollider>();
+    auto colliderView = entityManager_.view<components::Collider>();
 
     for(auto entity : group)
     {
@@ -40,21 +38,14 @@ void Movement::update(double dt)
         transform.position.y += rigidBody.velocity.y * dt;
         sprite.srcRect.width = abs(sprite.srcRect.width) * (rigidBody.lastVelocity.x != 0 ? rigidBody.lastVelocity.x : 1);
 
-        if(circleColliderView.contains(entity))
+        if(colliderView.contains(entity))
         {
-            auto& collider = circleColliderView.get<components::CircleCollider>(entity);
-
-            collider.previousPosition = collider.position;
-            collider.position.x += rigidBody.velocity.x * dt;
-            collider.position.y += rigidBody.velocity.y * dt;
-        }
-        else if(boxColliderView.contains(entity))
-        {
-            auto& collider = boxColliderView.get<components::BoxCollider>(entity);
-
-            collider.previousPosition = collider.position;
-            collider.position.x += rigidBody.velocity.x * dt;
-            collider.position.y += rigidBody.velocity.y * dt;
+            auto& collider = colliderView.get<components::Collider>(entity);
+            std::visit([&](auto& col){
+                col.previousPosition = col.position;
+                col.position.x += rigidBody.velocity.x * dt;
+                col.position.y += rigidBody.velocity.y * dt;
+            }, collider);
         }
     }
 }

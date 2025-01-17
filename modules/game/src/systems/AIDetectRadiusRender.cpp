@@ -1,7 +1,7 @@
 #include <systems/AIDetectRadiusRender.hpp>
 
 #include <components/AI.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/Transform.hpp>
 
 #include <entt/entity/entity.hpp>
@@ -22,13 +22,14 @@ AIDetectRadiusRender::AIDetectRadiusRender(entt::registry& entityManager, entt::
 
 void AIDetectRadiusRender::update()
 {
+    //TODO: temporary move on variant Collider
     BeginMode2D(camera_);
 
-    auto view = entityManager_.view<components::AI, components::CircleCollider>();
+    auto view = entityManager_.view<components::AI, components::Collider>();
     if (view.contains(detectedEntity_))
     {
         const auto ai = view.get<components::AI>(detectedEntity_);
-        const auto collider = view.get<components::CircleCollider>(detectedEntity_);
+        const auto collider = std::get<components::CircleCollider>(view.get<components::Collider>(detectedEntity_));
 
         DrawCircleLinesV(collider.position, ai.detectRadius, YELLOW);
     }
@@ -45,12 +46,13 @@ void AIDetectRadiusRender::onMouseClick(events::Mouse event)
 
     detectedEntity_ = entt::null;
 
-    const auto aiView = entityManager_.view<components::AI, components::Transform, components::CircleCollider>();
+    const auto aiView = entityManager_.view<components::AI, components::Transform, components::Collider>();
     const auto mousePosition = GetScreenToWorld2D(event.position, camera_);
 
     for (const auto& [entity, ai, transform, collider]: aiView.each())
     {
-        if (CheckCollisionPointCircle(mousePosition, collider.position, collider.radius))
+        auto circleCollider = std::get<components::CircleCollider>(collider);
+        if (CheckCollisionPointCircle(mousePosition, circleCollider.position, circleCollider.radius))
         {
             detectedEntity_ = entity;
             return;

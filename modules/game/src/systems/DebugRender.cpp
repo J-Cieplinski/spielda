@@ -1,8 +1,7 @@
 #include <systems/DebugRender.hpp>
 
 #include <components/AI.hpp>
-#include <components/BoxCollider.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/Player.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
@@ -24,10 +23,11 @@ DebugRender::DebugRender(entt::registry &entityManager, const Camera2D& camera)
 
 void DebugRender::update()
 {
+    //TODO: temporary measures for Collider
     std::stringstream ss;
     const auto player = entityManager_.group<components::Player>().front();
     const auto transform = entityManager_.try_get<components::Transform>(player);
-    const auto collider = entityManager_.try_get<components::CircleCollider>(player);
+    const auto collider = std::get<components::CircleCollider>(entityManager_.get<components::Collider>(player));
 
     if(!transform)
     {
@@ -37,7 +37,7 @@ void DebugRender::update()
     auto mousePos = GetScreenToWorld2D(GetMousePosition(), camera_);
 
     ss << "Player position\n" << "X: " << transform->position.x << "\t Y: " << transform->position.y;
-    ss << "\nPlayer collider position\n" << "X: " << collider->position.x << "\t Y: " << collider->position.y;
+    ss << "\nPlayer collider position\n" << "X: " << collider.position.x << "\t Y: " << collider.position.y;
     ss << "\nMouse position\n" << "X: " << mousePos.x << "\t Y: " << mousePos.y;
 
     auto size = MeasureText(ss.str().c_str(), 15);

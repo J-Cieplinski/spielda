@@ -3,7 +3,7 @@
 
 #include <components/AI.hpp>
 #include <components/CharacterSheet.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/Health.hpp>
 #include <components/Player.hpp>
 #include <components/RigidBody.hpp>
@@ -132,9 +132,16 @@ void Keyboard::spawnDebugEntity()
     };
     const Vector2 colliderPosition = Vector2Add(position, Vector2Scale({16, 16}, 0.5f));
 
+    components::CircleCollider collider {
+        .position = colliderPosition,
+        .previousPosition = colliderPosition,
+        .radius = 6,
+        .collisionType = CollisionType::NONE
+    };
+
     entityManager_.emplace<components::AI>(debugEnt, 40.f);
     entityManager_.emplace<components::CharacterSheet>(debugEnt, 10, 10);
-    entityManager_.emplace<components::CircleCollider>(debugEnt, colliderPosition, colliderPosition, 6, CollisionType::NONE);
+    entityManager_.emplace<components::Collider>(debugEnt, collider);
     entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
     entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
