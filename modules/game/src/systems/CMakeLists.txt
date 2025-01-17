@@ -4,7 +4,6 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/systems/AIDetectRadiusRender.hpp
     ${GAME_INCLUDE_DIR}/systems/AIMove.hpp
     ${GAME_INCLUDE_DIR}/systems/Animation.hpp
-    ${GAME_INCLUDE_DIR}/systems/Collision.hpp
     ${GAME_INCLUDE_DIR}/systems/CollisionPartitioned.hpp
     ${GAME_INCLUDE_DIR}/systems/CollisionRender.hpp
     ${GAME_INCLUDE_DIR}/systems/Damage.hpp
@@ -27,7 +26,6 @@ target_sources(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/AIDetectRadiusRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AIMove.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Collision.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionPartitioned.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CollisionRender.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Damage.cpp
