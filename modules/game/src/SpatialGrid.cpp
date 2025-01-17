@@ -54,6 +54,48 @@ std::optional<std::reference_wrapper<const std::list<entt::entity>>> SpatialGrid
     return std::nullopt;
 }
 
+std::optional<std::reference_wrapper<std::list<entt::entity>>> SpatialGrid::at(std::uint32_t key)
+{
+    auto it = grid_.find(key);
+    if(it != grid_.end())
+    {
+        return std::ref(it->second);
+    }
+    
+    APP_WARN("No key {} present in SpatialGrid", key);
+    
+    return std::nullopt;
+}
+
+
+void SpatialGrid::updateEntityPosition(entt::entity entity, const Vector2 oldPosition, const Vector2 newPosition)
+{
+    auto oldCellIndex = getCellIndex(oldPosition);
+    auto newCellIndex = getCellIndex(newPosition);
+
+    if(oldCellIndex == newCellIndex)
+    {
+        return;
+    }
+
+    if(auto oldCell = at(oldCellIndex))
+    {
+        if(oldCell.has_value())
+        {
+            oldCell->get().remove(entity);
+        }
+    }
+
+    grid_[newCellIndex].push_back(entity);
+}
+
+std::uint32_t SpatialGrid::getCellIndex(const Vector2& position) const
+{
+    auto cellX = static_cast<std::uint32_t>(position.x) / cellSize_;
+    auto cellY = static_cast<std::uint32_t>(position.y) / cellSize_;
+    return cellY * mapWidth_ + cellX;
+}
+
 SpatialGrid::iterator SpatialGrid::begin()
 {
     return grid_.begin();
