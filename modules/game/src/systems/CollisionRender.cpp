@@ -1,8 +1,5 @@
 #include <systems/CollisionRender.hpp>
 
-#include <components/BoxCollider.hpp>
-#include <components/CircleCollider.hpp>
-
 #include <entt/entity/registry.hpp>
 
 namespace spielda::system
@@ -15,21 +12,26 @@ CollisionRender::CollisionRender(entt::registry& entityManager, const Camera2D& 
 
 void CollisionRender::update()
 {
-    const auto entities = entityManager_.view<components::BoxCollider>();
-    const auto circleEntities = entityManager_.view<components::CircleCollider>();
+    const auto entities = entityManager_.view<components::Collider>();
     BeginMode2D(camera_);
 
-    for(const auto& [_, boxCollider] : entities.each())
-    {
-        DrawRectangleLinesEx(boxCollider, 0.8, boxCollider.collisionType == CollisionType::WALL ? RED : GREEN);
-    }
-
-    for(const auto& [_, cirlceCollider] : circleEntities.each())
-    {
-        DrawCircleLinesV(cirlceCollider.position, cirlceCollider.radius, cirlceCollider.collisionType == CollisionType::WALL ? RED : GREEN);
-    }
+    entityManager_.view<components::Collider>().each([&](auto entity, const auto& collider) {
+        std::visit([&](const auto& collider) {
+            drawCollider(collider);
+        }, collider);
+    });
 
     EndMode2D();
+}
+
+void CollisionRender::drawCollider(const components::BoxCollider& collider)
+{
+    DrawRectangleLinesEx(collider, 0.8, collider.collisionType == CollisionType::WALL ? RED : GREEN);
+}
+
+void CollisionRender::drawCollider(const components::CircleCollider& collider)
+{
+    DrawCircleLinesV(collider.position, collider.radius, collider.collisionType == CollisionType::WALL ? RED : GREEN);
 }
 
 } // spielda::system

@@ -3,6 +3,8 @@
 
 #include <roen/include/interfaces/ISystem.hpp>
 
+#include <components/Collider.hpp>
+
 namespace spielda::system
 {
 

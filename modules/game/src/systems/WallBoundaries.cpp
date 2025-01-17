@@ -1,6 +1,6 @@
 #include <systems/WallBoundaries.hpp>
 
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
 
@@ -24,7 +24,7 @@ void WallBoundaries::onCollision(const events::Collision& event)
         return;
     }
 
-    auto view = entityManager_.view<components::RigidBody, components::CircleCollider, components::Transform>();
+    auto view = entityManager_.view<components::RigidBody, components::Collider, components::Transform>();
     const auto firstMovable = view.contains(event.firstCollider);
     const auto secondMovable = view.contains(event.secondCollider);
     if(firstMovable && secondMovable)
@@ -37,10 +37,13 @@ void WallBoundaries::onCollision(const events::Collision& event)
 
 void WallBoundaries::rewindEntity(entt::entity entity, auto& view)
 {
-    auto& collider = view.template get<components::CircleCollider>(entity);
+    auto& collider = view.template get<components::Collider>(entity);
     auto& transform = view.template get<components::Transform>(entity);
 
-    collider.position = collider.previousPosition;
+    std::visit([](auto& col){
+        col.position = col.previousPosition;
+    }, collider);
+
     transform.position = transform.previousPosition;
 }
 

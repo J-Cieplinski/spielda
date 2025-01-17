@@ -1,8 +1,7 @@
 #include <systems/AIDetect.hpp>
 
 #include <components/AI.hpp>
-#include <components/BoxCollider.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/Player.hpp>
 
 #include <events/AIDetectedEnemy.hpp>
@@ -28,16 +27,17 @@ AIDetect::AIDetect(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 void AIDetect::update() const
 {
-    const auto colliderView = entityManager_.view<components::CircleCollider>();
+    //TODO: temporary move to variant, need to be changed
+    const auto colliderView = entityManager_.view<components::Collider>();
     const auto player = entityManager_.view<components::Player>().front();
-    const auto playerCollider = colliderView.get<components::CircleCollider>(player);
+    const auto playerCollider = std::get<components::CircleCollider>(colliderView.get<components::Collider>(player));
 
     auto aiView = entityManager_.view<components::AI>();
 
     for(auto ai : aiView)
     {
         const auto aiComponent = aiView.get<components::AI>(ai);
-        const auto aiCollider = colliderView.get<components::CircleCollider>(ai);
+        const auto aiCollider = std::get<components::CircleCollider>(colliderView.get<components::Collider>(ai));
 
         if(CheckCollisionCircles(aiCollider.position, aiComponent.detectRadius, playerCollider.position, playerCollider.radius))
         {

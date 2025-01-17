@@ -2,7 +2,7 @@
 
 #include <Typedefs.hpp>
 #include <Utilities.hpp>
-#include <components/BoxCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/MapTile.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
@@ -52,7 +52,14 @@ void MapLoader::addComponents(Vector2 tilePosition, Vector2 tileSize, float rota
 
     if(layerClass == roen::loader::LayerTypes::COLLIDABLE || layerClass == roen::loader::LayerTypes::TRIGGERS)
     {
-        entityManager_.emplace<components::BoxCollider>(tileEntity, position, position, size, CollisionType::NONE);
+        components::BoxCollider collider {
+            .position = position,
+            .previousPosition = position,
+            .size = size,
+            .collisionType = CollisionType::NONE
+        };
+
+        entityManager_.emplace<components::Collider>(tileEntity, collider);
         collisionMask.mask |= tags::MaskLayer::WALL;
     }
     entityManager_.emplace<tags::CollisionMask>(tileEntity, collisionMask);

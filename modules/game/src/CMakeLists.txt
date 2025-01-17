@@ -2,12 +2,14 @@ target_sources(${PROJECT_NAME}
     PUBLIC
     ${GAME_INCLUDE_DIR}/Game.hpp
     ${GAME_INCLUDE_DIR}/MapLoader.hpp
+    ${GAME_INCLUDE_DIR}/SpatialGrid.hpp
     ${GAME_INCLUDE_DIR}/components/AI.hpp
     ${GAME_INCLUDE_DIR}/components/Animation.hpp
     ${GAME_INCLUDE_DIR}/components/AttachedEntities.hpp
     ${GAME_INCLUDE_DIR}/components/BoxCollider.hpp
     ${GAME_INCLUDE_DIR}/components/CharacterSheet.hpp
     ${GAME_INCLUDE_DIR}/components/CircleCollider.hpp
+    ${GAME_INCLUDE_DIR}/components/Collider.hpp
     ${GAME_INCLUDE_DIR}/components/Dirty.hpp
     ${GAME_INCLUDE_DIR}/components/GuiElement.hpp
     ${GAME_INCLUDE_DIR}/components/Health.hpp
@@ -29,6 +31,7 @@ target_sources(${PROJECT_NAME}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/MapLoader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Game.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SpatialGrid.cpp
 )
 
 add_subdirectory(asset)

@@ -2,7 +2,7 @@
 
 #include <Utilities.hpp>
 #include <components/AI.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/RigidBody.hpp>
 
 #include <roen/include/algorithms/search/Pathfinding.hpp>
@@ -27,7 +27,7 @@ AIMove::AIMove(entt::registry& entityManager, entt::dispatcher& dispatcher)
 
 void AIMove::update()
 {
-    auto view = entityManager_.view<components::AI, components::CircleCollider, components::RigidBody>();
+    auto view = entityManager_.view<components::AI, components::Collider, components::RigidBody>();
     constexpr std::uint16_t velocity {20};
     for(auto& [entity, nodes] : travelingEntities_)
     {
@@ -37,7 +37,7 @@ void AIMove::update()
             continue;
         }
 
-        const auto aiCollider = view.get<components::CircleCollider>(entity);
+        const auto aiCollider = std::get<components::CircleCollider>(view.get<components::Collider>(entity));
 
         auto& aiVelocity = view.get<components::RigidBody>(entity).velocity;
         auto& lastAiVelocity = view.get<components::RigidBody>(entity).lastVelocity;
@@ -81,12 +81,12 @@ void AIMove::update()
 
 void AIMove::onDetect(events::AIDetectedEnemy event)
 {
-    const auto view = entityManager_.view<components::AI, components::CircleCollider>();
+    const auto view = entityManager_.view<components::AI, components::Collider>();
 
     auto& aiState = view.get<components::AI>(event.aiEntity).state;
     aiState = components::AIState::FOLLOWING;
 
-    const auto aiCollider = view.get<components::CircleCollider>(event.aiEntity).position;
+    const auto aiCollider = std::get<components::CircleCollider>(view.get<components::Collider>(event.aiEntity)).position;
 
     const auto& pathfindingGraph = entityManager_.ctx().get<roen::data_structure::Graph<roen::data_structure::MapNode>>();
     const auto closestAINode = getClosestMapNodeMaybe(aiCollider, pathfindingGraph);

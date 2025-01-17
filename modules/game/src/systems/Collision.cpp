@@ -1,7 +1,6 @@
 #include <systems/Collision.hpp>
 
-#include <components/BoxCollider.hpp>
-#include <components/CircleCollider.hpp>
+#include <components/Collider.hpp>
 #include <components/tags/CollisionMask.hpp>
 #include <events/Collision.hpp>
 
