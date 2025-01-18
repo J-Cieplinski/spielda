@@ -1,5 +1,7 @@
 #include <systems/WallBoundaries.hpp>
 
+#include <SpatialGrid.hpp>
+
 #include <components/Collider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Transform.hpp>
@@ -40,7 +42,8 @@ void WallBoundaries::rewindEntity(entt::entity entity, auto& view)
     auto& collider = view.template get<components::Collider>(entity);
     auto& transform = view.template get<components::Transform>(entity);
 
-    std::visit([](auto& col){
+    std::visit([entity, this](auto& col){
+        entityManager_.ctx().get<SpatialGrid>().updateEntityPosition(entity, col.position, col.previousPosition);
         col.position = col.previousPosition;
     }, collider);
 

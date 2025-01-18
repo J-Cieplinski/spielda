@@ -1,5 +1,7 @@
 #include <systems/Movement.hpp>
 
+#include <SpatialGrid.hpp>
+
 #include <components/Collider.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Sprite.hpp>
@@ -19,6 +21,8 @@ void Movement::update(double dt)
 {
     auto group = entityManager_.group<components::RigidBody>(entt::get<components::Transform, components::Sprite>);
     auto colliderView = entityManager_.view<components::Collider>();
+    auto& grid = entityManager_.ctx().get<SpatialGrid>();
+
 
     for(auto entity : group)
     {
@@ -45,6 +49,8 @@ void Movement::update(double dt)
                 col.previousPosition = col.position;
                 col.position.x += rigidBody.velocity.x * dt;
                 col.position.y += rigidBody.velocity.y * dt;
+
+                grid.updateEntityPosition(entity, col.previousPosition, col.position);
             }, collider);
         }
     }

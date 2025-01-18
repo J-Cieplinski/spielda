@@ -159,9 +159,9 @@ void GameScene::loadLevel(std::filesystem::path path)
     mapLoader.loadMap(path);
     entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
     auto mapSize = mapLoader.getMapSize();
-    auto& grid = entityManager_.ctx().emplace<SpatialGrid>(mapSize.x, mapSize.y, 16);
     auto tileSize = mapLoader.getTileSize();
     auto realMapSize = mapSize * tileSize;
+    auto& grid = entityManager_.ctx().emplace<SpatialGrid>(mapSize.x, mapSize.y, tileSize.x);
 
     systems_.get<system::Render>().preRenderMap(realMapSize.x, realMapSize.y);
 
