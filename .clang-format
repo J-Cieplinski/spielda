@@ -5,7 +5,7 @@
   AlignTrailingComments: 'true'
   AllowAllParametersOfDeclarationOnNextLine: 'false'
   AllowShortFunctionsOnASingleLine: 'None'
-  AlwaysBreakTemplateDeclarations: 'No'
+  BreakTemplateDeclarations: 'Yes'
   BreakBeforeBraces: 'Allman'
   BreakBeforeBinaryOperators: All
   BreakBeforeTernaryOperators: 'true'

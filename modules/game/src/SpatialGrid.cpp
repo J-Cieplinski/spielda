@@ -16,12 +16,12 @@ SpatialGrid::SpatialGrid(std::uint32_t mapWidth, std::uint32_t mapHeight, std::i
 
 void SpatialGrid::initGrid(const entt::registry& registry)
 {
-    registry.view<components::Collider>().each([this](entt::entity entity, const components::Collider& collider) 
-    {
-        std::visit([this, entity](const auto& col){
-            updateEntityPosition(entity, Vector2{-1, -1}, col.position);
-        }, collider);
-    });
+    registry.view<components::Collider>().each(
+        [this](entt::entity entity, const components::Collider& collider)
+        {
+            std::visit([this, entity](const auto& col)
+                       { updateEntityPosition(entity, Vector2{-1, -1}, col.position); }, collider);
+        });
 }
 
 std::vector<int> SpatialGrid::getNeighboringCells(const Vector2& position) const
@@ -40,7 +40,7 @@ std::vector<int> SpatialGrid::getNeighboringCells(const Vector2& position) const
             if (neighborX >= 0 && neighborX < mapWidth_ && neighborY >= 0 && neighborY < mapHeight_)
             {
                 auto neighborIndex = neighborY * mapWidth_ + neighborX;
-                if(grid_.contains(neighborIndex))
+                if (grid_.contains(neighborIndex))
                 {
                     neighbors.push_back(neighborY * mapWidth_ + neighborX);
                 }
@@ -51,52 +51,68 @@ std::vector<int> SpatialGrid::getNeighboringCells(const Vector2& position) const
     return neighbors;
 };
 
-std::optional<std::reference_wrapper<const std::list<entt::entity>>> SpatialGrid::at(std::uint32_t key) const
+std::optional<std::reference_wrapper<const std::list<entt::entity>>> SpatialGrid::at(
+    std::uint32_t key) const
 {
     auto it = grid_.find(key);
-    if(it != grid_.end())
+    if (it != grid_.end())
     {
         return std::cref(it->second);
     }
-    
+
     APP_WARN("No key {} present in SpatialGrid", key);
-    
+
     return std::nullopt;
 }
 
 std::optional<std::reference_wrapper<std::list<entt::entity>>> SpatialGrid::at(std::uint32_t key)
 {
     auto it = grid_.find(key);
-    if(it != grid_.end())
+    if (it != grid_.end())
     {
         return std::ref(it->second);
     }
-    
+
     APP_WARN("No key {} present in SpatialGrid", key);
-    
+
     return std::nullopt;
 }
 
-
-void SpatialGrid::updateEntityPosition(entt::entity entity, const Vector2 oldPosition, const Vector2 newPosition)
+void SpatialGrid::updateEntityPosition(entt::entity entity, const Vector2 oldPosition,
+                                       const Vector2 newPosition)
 {
     auto oldCellIndex = getCellIndex(oldPosition);
     auto newCellIndex = getCellIndex(newPosition);
 
-    if(oldCellIndex == newCellIndex)
+    if (oldCellIndex == newCellIndex)
     {
         return;
     }
 
-    if(auto oldCell = at(oldCellIndex))
+    if (auto oldCell = at(oldCellIndex))
     {
-        if(oldCell.has_value())
+        if (oldCell.has_value())
         {
             oldCell->get().remove(entity);
         }
     }
 
-    grid_[newCellIndex].push_back(entity);
+    grid_[newCellIndex].push_front(entity);
+}
+
+void SpatialGrid::removeEntity(entt::entity entity, const Vector2 position)
+{
+    auto cellIndex = getCellIndex(position);
+
+    std::erase(grid_[cellIndex], entity);
+}
+
+void SpatialGrid::removeEntities(const std::set<entt::entity>& entities)
+{
+    for (auto& [cellIndex, cell] : grid_)
+    {
+        std::erase_if(cell, [&entities](auto entity) { return entities.contains(entity); });
+    }
 }
 
 std::uint32_t SpatialGrid::getCellIndex(const Vector2& position) const
@@ -136,4 +152,4 @@ SpatialGrid::const_iterator SpatialGrid::cend() const
     return grid_.cend();
 }
 
-} // namespace spielda
+}  // namespace spielda

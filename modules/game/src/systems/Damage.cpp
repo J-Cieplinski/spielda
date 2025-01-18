@@ -1,5 +1,7 @@
 #include <systems/Damage.hpp>
 
+#include <SpatialGrid.hpp>
+
 #include <components/CharacterSheet.hpp>
 #include <components/Health.hpp>
 #include <components/Weapon.hpp>
@@ -23,6 +25,13 @@ Damage::Damage(entt::registry& entityManager, entt::dispatcher& eventDispatcher)
 
 void Damage::update()
 {
+    if (entitiesToDestroy_.empty())
+    {
+        return;
+    }
+
+    auto& grid = entityManager_.ctx().get<SpatialGrid>();
+    grid.removeEntities(entitiesToDestroy_);
     entityManager_.destroy(entitiesToDestroy_.begin(), entitiesToDestroy_.end());
     entitiesToDestroy_.clear();
 }
@@ -30,7 +39,7 @@ void Damage::update()
 void Damage::onCollision(events::Collision event)
 {
     auto [attacker, defender] = getCombatEntities(event);
-    if(attacker == entt::null || defender == entt::null)
+    if (attacker == entt::null || defender == entt::null)
     {
         return;
     }
@@ -38,7 +47,7 @@ void Damage::onCollision(events::Collision event)
     auto& attackWeapon = entityManager_.get<components::Weapon>(attacker);
     auto& attackerSheet = entityManager_.get<components::CharacterSheet>(attackWeapon.wielder);
 
-    if(!attackWeapon.attacking || attackWeapon.damagedEntities.contains(defender))
+    if (!attackWeapon.attacking || attackWeapon.damagedEntities.contains(defender))
     {
         return;
     }
@@ -50,8 +59,8 @@ void Damage::onCollision(events::Collision event)
     attackWeapon.damagedEntities.insert(defender);
 
     APP_INFO("Dealt {0} damage to entity {1}", damage, defender);
-    
-    if(defenderHp.currentHealth <= 0)
+
+    if (defenderHp.currentHealth <= 0)
     {
         APP_INFO("Entity {0} killed", defender);
         entitiesToDestroy_.insert(defender);
@@ -60,7 +69,7 @@ void Damage::onCollision(events::Collision event)
 
 Damage::CombatEntities Damage::getCombatEntities(events::Collision event)
 {
-    if(event.collisionType != CollisionType::WEAPON)
+    if (event.collisionType != CollisionType::WEAPON)
     {
         return {entt::null, entt::null};
     }
@@ -70,30 +79,35 @@ Damage::CombatEntities Damage::getCombatEntities(events::Collision event)
     const auto isFirstEntityArmed = weaponView.contains(event.firstCollider);
     const auto isSecondEntityArmed = weaponView.contains(event.secondCollider);
 
-    if(!(isFirstEntityArmed || isSecondEntityArmed))
+    if (!(isFirstEntityArmed || isSecondEntityArmed))
     {
         return {entt::null, entt::null};
     }
 
-    entt::entity attacker {entt::null};
-    entt::entity defender {entt::null};
+    entt::entity attacker{entt::null};
+    entt::entity defender{entt::null};
 
-    weaponView.each([&attacker, &event](const entt::entity entity, const components::Weapon& weapon) {
-        if(weapon.attacking && (entity == event.firstCollider || entity == event.secondCollider))
+    weaponView.each(
+        [&attacker, &event](const entt::entity entity, const components::Weapon& weapon)
         {
-            attacker = entity;
-        }
-    });
+            if (weapon.attacking
+                && (entity == event.firstCollider || entity == event.secondCollider))
+            {
+                attacker = entity;
+            }
+        });
 
     const auto healthView = entityManager_.view<components::Health>();
-    healthView.each([&defender, &event](const entt::entity entity, components::Health) {
-        if(entity == event.firstCollider || entity == event.secondCollider)
+    healthView.each(
+        [&defender, &event](const entt::entity entity, components::Health)
         {
-            defender = entity;
-        }
-    });
+            if (entity == event.firstCollider || entity == event.secondCollider)
+            {
+                defender = entity;
+            }
+        });
 
     return {attacker, defender};
 }
 
-} // namespace spielda::system
+}  // namespace spielda::system
