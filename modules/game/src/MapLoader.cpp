@@ -3,6 +3,7 @@
 #include <Typedefs.hpp>
 #include <Utilities.hpp>
 #include <components/BoxCollider.hpp>
+#include <components/MapTile.hpp>
 #include <components/Sprite.hpp>
 #include <components/Transform.hpp>
 #include <components/tags/CollisionMask.hpp>
@@ -30,6 +31,7 @@ void MapLoader::addComponents(Vector2 tilePosition, Vector2 tileSize, float rota
     const auto origin = Vector2Scale(size, -0.5f);
 
     const auto renderedPosition = position - origin;
+    entityManager_.emplace<components::MapTile>(tileEntity);
     entityManager_.emplace<components::Transform>(tileEntity, renderedPosition, renderedPosition, scale, rotation);
 
     entityManager_.emplace<components::Sprite>(tileEntity,

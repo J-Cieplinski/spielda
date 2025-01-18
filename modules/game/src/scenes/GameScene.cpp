@@ -148,6 +148,7 @@ void GameScene::revealed()
     entityManager_.ctx().get<TextureManager>().loadAsset("fireball", "assets/textures/fireball.png");
 
     loadLevel("assets/definitions/levels/dungeon.json");
+
 #ifdef PROFILE
     for(auto i : std::ranges::iota_view{1, 100})
     {
@@ -169,6 +170,10 @@ void GameScene::loadLevel(std::filesystem::path path)
     mapLoader.loadMap(path);
     entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
     auto mapSize = mapLoader.getMapSize();
+    auto tileSize = mapLoader.getTileSize();
+    auto realMapSize = mapSize * tileSize;
+
+    systems_.get<system::Render>().preRenderMap(realMapSize.x, realMapSize.y);
 
     APP_INFO("Loading level: {0}", path.string());
 
