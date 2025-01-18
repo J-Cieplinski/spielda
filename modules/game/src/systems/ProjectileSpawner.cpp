@@ -9,6 +9,8 @@
 #include <components/Transform.hpp>
 #include <components/tags/CollisionMask.hpp>
 
+#include <entt/entity/registry.hpp>
+
 namespace spielda::system
 {
 

@@ -2,6 +2,7 @@
 
 #include <components/AttachedEntities.hpp>
 #include <components/Dirty.hpp>
+#include <components/MapTile.hpp>
 #include <components/Weapon.hpp>
 #include <components/tags/Attachment.hpp>
 
@@ -15,19 +16,64 @@ namespace spielda::system
 
 Render::Render(entt::registry& entityManager, const Camera2D& camera)
     : IRenderSystem{entityManager, camera}
+    , mapPreRendered_{false}
 {
 }
+
+void Render::preRenderMap(int width, int height)
+{
+    checkForDirtyAndSort();
+
+    mapTexture_ = LoadRenderTexture(width, height);
+    auto mapTiles = entityManager_.view<components::Sprite, components::Transform, components::MapTile>();
+    mapTiles.use<components::Sprite>();
+    const auto& textureManager = entityManager_.ctx().get<TextureManager>();
+
+    BeginTextureMode(mapTexture_);
+    ClearBackground(BLANK);
+
+    for(const auto& [entity, sprite, transform] : mapTiles.each())
+    {
+        rlPushMatrix();
+        rlTranslatef(transform.position.x, transform.position.y, 0); //move entity to its destined draw position
+        rlScalef(transform.scale.x, transform.scale.y, 1);
+
+        rlPushMatrix();
+        rlRotatef(transform.rotation, 0, 0, 1); //rotate entity
+
+        rlTranslatef(sprite.origin.x, sprite.origin.y, 0);
+
+        DrawTextureRec(textureManager.getAsset(sprite.guid), sprite.srcRect, Vector2Zero(), WHITE);   //draw entity
+
+        rlPopMatrix();
+
+        rlPopMatrix();
+    }
+
+    EndTextureMode();
+
+    mapPreRendered_ = true;
+}
+
 
 void Render::update()
 {
     checkForDirtyAndSort();
 
-    auto renderAbleEntities = entityManager_.view<components::Sprite, components::Transform>(entt::exclude<tags::Attachment>);
+    auto renderAbleEntities = entityManager_.view<components::Sprite, components::Transform>(entt::exclude<tags::Attachment, components::MapTile>);
     renderAbleEntities.use<components::Sprite>();
     const auto& textureManager = entityManager_.ctx().get<TextureManager>();
     const auto attachedEntitiesView = entityManager_.view<components::AttachedEntities>();
 
     BeginMode2D(camera_);
+
+    if(mapPreRendered_)
+    {
+        DrawTextureRec(mapTexture_.texture,
+            Rectangle{ 0.f, 0.f, static_cast<float>(mapTexture_.texture.width), -static_cast<float>(mapTexture_.texture.height) },
+            Vector2{ 0, 0 },
+            WHITE);
+    }
 
     for(const auto& [entity, sprite, transform] : renderAbleEntities.each())
     {
