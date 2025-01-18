@@ -39,8 +39,15 @@ void CollisionPartitioned::update() const
     {
         for (auto entityA : entities)
         {
-            auto& entityACollider = colliderView.get<components::Collider>(entityA);
+            constexpr std::bitset<8> DECORATION_MASK{tags::MaskLayer::WALL};
             const auto& maskA = maskView.get<tags::CollisionMask>(entityA);
+
+            if((maskA.mask & DECORATION_MASK).any())
+            {
+                continue;
+            }
+
+            auto& entityACollider = colliderView.get<components::Collider>(entityA);
             // Get neighboring cells including the current cell
             auto neighbors = grid->getNeighboringCells(getColliderPosition(entityACollider));
             for (auto neighborIndex : neighbors)
