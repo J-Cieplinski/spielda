@@ -2,13 +2,13 @@
 
 #include <CoreConfig.hpp>
 #include <MapLoader.hpp>
-#include <Typedefs.hpp>
 #include <SpatialGrid.hpp>
+#include <Typedefs.hpp>
 
 #include <components/AI.hpp>
 #include <components/AttachedEntities.hpp>
-#include <components/Collider.hpp>
 #include <components/CharacterSheet.hpp>
+#include <components/Collider.hpp>
 #include <components/Dirty.hpp>
 #include <components/Health.hpp>
 #include <components/Player.hpp>
@@ -63,9 +63,8 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
 
     entityManager_.ctx().emplace<TextureManager>();
 
-    entityManager_.on_construct<components::Sprite>().connect<[&](entt::registry& reg, entt::entity e){
-        reg.emplace<components::Dirty>(e);
-    }>();
+    entityManager_.on_construct<components::Sprite>()
+        .connect<[&](entt::registry& reg, entt::entity e) { reg.emplace<components::Dirty>(e); }>();
 
     eventDisptacher_.sink<events::DebugSwitch>().connect<&GameScene::switchDebug>(this);
     SET_APP_LOG_LEVEL(LOG_LEVEL_INFO);
@@ -73,23 +72,23 @@ GameScene::GameScene(roen::manager::GameSceneManager& gameSceneManager)
 
 void GameScene::handleInput()
 {
-
 }
 
 void GameScene::render()
 {
-    float scale = std::min(static_cast<float>(GetScreenWidth()) / RENDER_WIDTH, static_cast<float>(GetScreenHeight()) / RENDER_HEIGHT);
+    float scale = std::min(static_cast<float>(GetScreenWidth()) / RENDER_WIDTH,
+                           static_cast<float>(GetScreenHeight()) / RENDER_HEIGHT);
 
     BeginTextureMode(renderTexture_);
     ClearBackground(RAYWHITE);
 
     systems_.get<system::Render>().update();
-    if(debugRender_)
+    if (debugRender_)
     {
         systems_.get<system::CollisionRender>().update();
         systems_.get<system::DebugRender>().update();
         systems_.get<system::AIDetectRadiusRender>().update();
-        if(systems_.hasSystem<system::GraphRender>())
+        if (systems_.hasSystem<system::GraphRender>())
         {
             systems_.get<system::GraphRender>().update();
         }
@@ -103,11 +102,15 @@ void GameScene::render()
     ClearBackground(BLACK);
 
     DrawTexturePro(renderTexture_.texture,
-                    Rectangle{ 0.f, 0.f, static_cast<float>(renderTexture_.texture.width), static_cast<float>(-(renderTexture_.texture.height)) },
-                    Rectangle{ (GetScreenWidth() - RENDER_WIDTH * scale) * 0.5f, (GetScreenHeight() - RENDER_HEIGHT * scale) * 0.5f, RENDER_WIDTH * scale, RENDER_HEIGHT * scale },
-                    Vector2{ 0, 0 },
-                    0.f,
-                    WHITE);
+                   Rectangle{0.f, 0.f, static_cast<float>(renderTexture_.texture.width),
+                             static_cast<float>(-(renderTexture_.texture.height))},
+                   Rectangle{
+                       (GetScreenWidth() - RENDER_WIDTH * scale) * 0.5f,
+                       (GetScreenHeight() - RENDER_HEIGHT * scale) * 0.5f,
+                       RENDER_WIDTH * scale,
+                       RENDER_HEIGHT * scale,
+                   },
+                   Vector2{0, 0}, 0.f, WHITE);
     EndDrawing();
 }
 
@@ -128,18 +131,18 @@ void GameScene::update()
 
 void GameScene::obscured()
 {
-
 }
 
 void GameScene::revealed()
 {
     APP_INFO("Entered GameScene");
-    entityManager_.ctx().get<TextureManager>().loadAsset("fireball", "assets/textures/fireball.png");
+    entityManager_.ctx().get<TextureManager>().loadAsset("fireball",
+                                                         "assets/textures/fireball.png");
 
     loadLevel("assets/definitions/levels/dungeon.json");
 
 #ifdef PROFILE
-    for(auto i : std::ranges::iota_view{1, 100})
+    for (auto i : std::ranges::iota_view{1, 100})
     {
         spawnDebugEntity();
     }
@@ -148,7 +151,6 @@ void GameScene::revealed()
 
 void GameScene::quit()
 {
-
 }
 
 void GameScene::loadLevel(std::filesystem::path path)
@@ -157,7 +159,8 @@ void GameScene::loadLevel(std::filesystem::path path)
 
     auto mapLoader = MapLoader(entityManager_);
     mapLoader.loadMap(path);
-    entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(mapLoader.getGraph());
+    entityManager_.ctx().emplace<roen::data_structure::Graph<roen::data_structure::MapNode>>(
+        mapLoader.getGraph());
     auto mapSize = mapLoader.getMapSize();
     auto tileSize = mapLoader.getTileSize();
     auto realMapSize = mapSize * tileSize;
@@ -168,7 +171,7 @@ void GameScene::loadLevel(std::filesystem::path path)
     APP_INFO("Loading level: {0}", path.string());
 
     std::ifstream file{path};
-    if(!file.is_open())
+    if (!file.is_open())
     {
         APP_CRITICAL("Failed to open level file: {0}", path.string());
         return;
@@ -186,85 +189,66 @@ void GameScene::loadHero(const nlohmann::json& level)
     constexpr std::uint32_t layer = 5;
     constexpr std::uint32_t layerOrder = 1;
 
-    constexpr Rectangle weaponSrcRect {
-            .x = 128.f,
-            .y = 128.f,
-            .width = 16.f,
-            .height = 16.f
-    };
+    constexpr Rectangle weaponSrcRect{.x = 128.f, .y = 128.f, .width = 16.f, .height = 16.f};
 
-    constexpr Vector2 weaponOrigin {
-            .x = -8,
-            .y = -16
-    };
+    constexpr Vector2 weaponOrigin{.x = -8, .y = -16};
 
-    constexpr Vector2 weaponPosition {
-            .x = 14,
-            .y = 13
-    };
+    constexpr Vector2 weaponPosition{.x = 14, .y = 13};
 
     auto weapon = entityManager_.create();
     auto hero = entityManager_.create();
 
-    components::BoxCollider weaponCollider {
-        .position = weaponPosition,
-        .previousPosition = weaponPosition,
-        .size = Vector2{14, 12},
-        .collisionType = CollisionType::NONE
-    };
+    components::BoxCollider weaponCollider{.position = weaponPosition,
+                                           .previousPosition = weaponPosition,
+                                           .size = Vector2{14, 12},
+                                           .collisionType = CollisionType::NONE};
 
     entityManager_.emplace<components::Weapon>(weapon, hero, 20u);
     entityManager_.emplace<components::Collider>(weapon, weaponCollider);
-    entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition, Vector2{1, 1}, 0.f);
-    entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, weaponOrigin, weaponSrcRect, layer + 1, layerOrder, roen::hashString("dungeon"), false);
-    entityManager_.emplace<tags::CollisionMask>(weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
+    entityManager_.emplace<components::Transform>(weapon, weaponPosition, weaponPosition,
+                                                  Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::Sprite>(weapon, Vector2{16, 16}, weaponOrigin, weaponSrcRect,
+                                               layer + 1, layerOrder, roen::hashString("dungeon"),
+                                               false);
+    entityManager_.emplace<tags::CollisionMask>(
+        weapon, tags::MaskLayer::PLAYER | tags::MaskLayer::DECORATION | tags::MaskLayer::WEAPON);
     entityManager_.emplace<tags::Attachment>(weapon);
 
     const auto player = level["player"];
 
-    const Vector2 spriteSize {
-        .x = player["sprite"]["size"],
-        .y = player["sprite"]["size"]
-    };
+    const Vector2 spriteSize{.x = player["sprite"]["size"], .y = player["sprite"]["size"]};
 
-    const Rectangle srcRect {
+    const Rectangle srcRect{
         .x = player["sprite"]["source"]["x"],
         .y = player["sprite"]["source"]["y"],
         .width = spriteSize.x,
-        .height = spriteSize.y
+        .height = spriteSize.y,
     };
 
-    const Vector2 absolutePosition {
-        .x = player["position"]["x"],
-        .y = player["position"]["y"]
-    };
+    const Vector2 absolutePosition{.x = player["position"]["x"], .y = player["position"]["y"]};
 
-    const Vector2 weaponColliderAttachOffset = {
-        .x = 7,
-        .y = 3 - spriteSize.y / 2
-    };
+    const Vector2 weaponColliderAttachOffset = {.x = 7, .y = 3 - spriteSize.y / 2};
 
-    components::Sprite heroSprite {
+    components::Sprite heroSprite{
         .size = spriteSize,
         .origin = Vector2Scale(spriteSize, -0.5f),
         .srcRect = srcRect,
         .layer = player["layer"],
         .zIndexInLayer = player["layerOrder"],
         .guid = roen::hashString(player["sprite"]["name"]),
-        .isFixed = false
+        .isFixed = false,
     };
 
     const Vector2 colliderPosition = absolutePosition;
 
-    components::CircleCollider playerCollider {
-        .position = absolutePosition,
-        .previousPosition = absolutePosition,
-        .radius = 6,
-        .collisionType = CollisionType::NONE
-    };
+    components::CircleCollider playerCollider{.position = absolutePosition,
+                                              .previousPosition = absolutePosition,
+                                              .radius = 6,
+                                              .collisionType = CollisionType::NONE};
 
     entityManager_.emplace<components::Sprite>(hero, heroSprite);
-    entityManager_.emplace<components::Transform>(hero, absolutePosition, absolutePosition, Vector2{1, 1}, 0.f);
+    entityManager_.emplace<components::Transform>(hero, absolutePosition, absolutePosition,
+                                                  Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::Collider>(hero, playerCollider);
     entityManager_.emplace<components::RigidBody>(hero, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Player>(hero);
@@ -272,30 +256,26 @@ void GameScene::loadHero(const nlohmann::json& level)
     entityManager_.emplace<components::CharacterSheet>(hero, 10, 10);
     entityManager_.emplace<components::AttachedEntities>(hero, std::set{weapon});
 
-    constexpr components::Spell spell {
+    constexpr components::Spell spell{
         .velocity = {60.f, 60.f},
         .size = {64.f, 64.f},
         .origin = {-32.f, -32.f},
-        .srcRect = {
-            .x = 0,
-            .y = 0,
-            .width = 64,
-            .height = 64
-        },
+        .srcRect = {.x = 0, .y = 0, .width = 64, .height = 64},
         .damage = 20,
         .spawnFrequency = 1.f,
-        .guid = roen::hashString("fireball")
+        .guid = roen::hashString("fireball"),
     };
 
     entityManager_.emplace<components::Spell>(hero, spell);
 
-    entityManager_.emplace<tags::CollisionMask>(hero, tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
+    entityManager_.emplace<tags::CollisionMask>(hero,
+                                                tags::MaskLayer::PLAYER | tags::MaskLayer::MOVING);
 }
 
 void GameScene::updateDeltaTime()
 {
-    constexpr float MIN_FPS {30};
-    constexpr float MAX_FRAMETIME{1/MIN_FPS};
+    constexpr float MIN_FPS{30};
+    constexpr float MAX_FRAMETIME{1 / MIN_FPS};
 
     deltaTime_ = std::min(GetFrameTime(), MAX_FRAMETIME);
 }
@@ -325,7 +305,7 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
 {
     debugRender_ = event.switchRender ? !debugRender_ : debugRender_;
 
-    if(event.switchAppLogging)
+    if (event.switchAppLogging)
     {
         if (GET_SDK_LOG_LEVEL() == LOG_LEVEL_OFF)
         {
@@ -337,7 +317,7 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
         }
     }
 
-    if(event.switchSdkLogging)
+    if (event.switchSdkLogging)
     {
         if (GET_APP_LOG_LEVEL() == LOG_LEVEL_OFF)
         {
@@ -353,39 +333,29 @@ void GameScene::switchDebug(const events::DebugSwitch& event)
 void GameScene::spawnDebugEntity()
 {
     auto debugEnt = entityManager_.create();
-    constexpr Rectangle srcRect {
-        .x = 0.f,
-        .y = 128.f,
-        .width = 16.f,
-        .height = 16.f
-    };
+    constexpr Rectangle srcRect{.x = 0.f, .y = 128.f, .width = 16.f, .height = 16.f};
     constexpr std::uint32_t layer = 5;
     constexpr std::uint32_t layerOrder = 1;
-    constexpr Vector2 position {
-        .x = 81,
-        .y = 128
-    };
-    constexpr Vector2 colliderPosition {
-        .x = 82,
-        .y = 130
-    };
+    constexpr Vector2 position{.x = 81, .y = 128};
+    constexpr Vector2 colliderPosition{.x = 82, .y = 130};
 
-    components::CircleCollider entityCollider {
-        .position = colliderPosition,
-        .previousPosition = colliderPosition,
-        .radius = 7,
-        .collisionType = CollisionType::NONE
-    };
+    components::CircleCollider entityCollider{.position = colliderPosition,
+                                              .previousPosition = colliderPosition,
+                                              .radius = 7,
+                                              .collisionType = CollisionType::NONE};
 
-    entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect, layer, layerOrder, roen::hashString("dungeon"), false);
+    entityManager_.emplace<components::Sprite>(debugEnt, Vector2{16, 16}, Vector2{0, 0}, srcRect,
+                                               layer, layerOrder, roen::hashString("dungeon"),
+                                               false);
     entityManager_.emplace<components::Collider>(debugEnt, entityCollider);
     entityManager_.emplace<components::Transform>(debugEnt, position, position, Vector2{1, 1}, 0.f);
     entityManager_.emplace<components::RigidBody>(debugEnt, Vector2{0, 0}, Vector2{1, 0});
     entityManager_.emplace<components::Health>(debugEnt, 100u, 100u);
     entityManager_.emplace<components::AI>(debugEnt, 80.f);
-    entityManager_.emplace<tags::CollisionMask>(debugEnt, tags::MaskLayer::ENEMY | tags::MaskLayer::MOVING);
+    entityManager_.emplace<tags::CollisionMask>(debugEnt,
+                                                tags::MaskLayer::ENEMY | tags::MaskLayer::MOVING);
 
     APP_INFO("Added debug entity {0}", debugEnt);
 }
 
-} // spielda::scenes
+}  // namespace spielda::scenes

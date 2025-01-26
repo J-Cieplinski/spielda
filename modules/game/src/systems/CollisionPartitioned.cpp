@@ -41,10 +41,10 @@ void CollisionPartitioned::update() const
     {
         for (auto entityA : entities)
         {
-            constexpr std::bitset<8> DECORATION_MASK{tags::MaskLayer::WALL};
+            constexpr std::bitset<8> WALL_MASK{tags::MaskLayer::WALL};
             const auto& maskA = maskView.get<tags::CollisionMask>(entityA);
 
-            if ((maskA.mask & DECORATION_MASK).any())
+            if ((maskA.mask & WALL_MASK).any())
             {
                 continue;
             }
