@@ -18,19 +18,19 @@ MeleeCombat::MeleeCombat(entt::registry& entityManager, entt::dispatcher& eventD
 
 void MeleeCombat::onAttack(events::Attack event)
 {
-    if(auto* attackerWeapon = entityManager_.try_get<components::Weapon>(event.attacker))
+    if (auto* attackerWeapon = entityManager_.try_get<components::Weapon>(event.attacker))
     {
-        if(attackerWeapon->attacking)
+        if (attackerWeapon->attacking)
         {
             return;
         }
-        
+
         attackerWeapon->attacking = true;
-        WeaponSwing swing {
+        WeaponSwing swing{
             .weapon = *attackerWeapon,
             .weaponEntity = event.attacker,
             .totalAnimationTime = 0.5f,
-            .currentAnimationTime = 0.f
+            .currentAnimationTime = 0.f,
         };
 
         swingsToAnimate_.emplace_back(swing);
@@ -39,15 +39,15 @@ void MeleeCombat::onAttack(events::Attack event)
 
 void MeleeCombat::update(double dt)
 {
-    std::vector<WeaponSwing> swingsToClear {};
+    std::vector<WeaponSwing> swingsToClear{};
     const auto view = entityManager_.view<components::Transform, components::Weapon>();
-    for(auto& swing : swingsToAnimate_)
+    for (auto& swing : swingsToAnimate_)
     {
         auto& weaponTransform = view.get<components::Transform>(swing.weaponEntity);
         weaponTransform.rotation = 90.f * (swing.currentAnimationTime / swing.totalAnimationTime);
 
         swing.currentAnimationTime += dt;
-        if(swing.totalAnimationTime <= swing.currentAnimationTime)
+        if (swing.totalAnimationTime <= swing.currentAnimationTime)
         {
             swingsToClear.push_back(swing);
 
@@ -58,13 +58,15 @@ void MeleeCombat::update(double dt)
         }
     }
 
-    std::erase_if(swingsToAnimate_, [&swingsToClear](WeaponSwing& swing){
-        auto it = std::ranges::find_if(swingsToClear, [&swing](WeaponSwing& swingToClear) {
-            return swingToClear.weaponEntity == swing.weaponEntity;
-        });
+    std::erase_if(swingsToAnimate_,
+                  [&swingsToClear](WeaponSwing& swing)
+                  {
+                      auto it = std::ranges::find_if(
+                          swingsToClear, [&swing](WeaponSwing& swingToClear)
+                          { return swingToClear.weaponEntity == swing.weaponEntity; });
 
-        return it != swingsToClear.end();
-    });
+                      return it != swingsToClear.end();
+                  });
 }
 
-} // spielda::system
+}  // namespace spielda::system

@@ -13,7 +13,8 @@ enum MaskLayer : std::uint64_t
     DECORATION = 1u << 2,
     WALL = 1u << 3,
     MOVING = 1u << 4,
-    WEAPON = 1u << 5
+    WEAPON = 1u << 5,
+    PROJECTILE = 1u << 6,
 };
 
 inline constexpr std::bitset<8> ZERO_BITSET("00000000");
@@ -26,6 +27,6 @@ struct CollisionMask
     std::bitset<8> mask;
 };
 
-} // spielda::tags
+}  // namespace spielda::tags
 
-#endif //SPIELDA_GAME_COMPONENTS_TAGS_COLLISIONMASK_HPP
+#endif  // SPIELDA_GAME_COMPONENTS_TAGS_COLLISIONMASK_HPP

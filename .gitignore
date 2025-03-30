@@ -2,6 +2,7 @@
 .vs/
 .idea/
 build/
+.cache/
 performance/
 cmake-build-*
 CMakeSettings.json

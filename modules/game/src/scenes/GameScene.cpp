@@ -36,6 +36,7 @@
 #include <systems/Mouse.hpp>
 #include <systems/Movement.hpp>
 #include <systems/ProjectileSpawner.hpp>
+#include <systems/RangedCombat.hpp>
 #include <systems/Render.hpp>
 #include <systems/WallBoundaries.hpp>
 #include <systems/WeaponFollow.hpp>
@@ -123,6 +124,7 @@ void GameScene::update()
     systems_.get<system::AIMove>().update();
     systems_.get<system::Movement>().update(deltaTime_);
     systems_.get<system::MeleeCombat>().update(deltaTime_);
+    systems_.get<system::RangedCombat>().update(deltaTime_);
     systems_.get<system::WeaponFollow>().update();
     systems_.get<system::CollisionPartitioned>().update();
     systems_.get<system::Damage>().update();
@@ -297,6 +299,7 @@ void GameScene::initSystems()
     systems_.add<system::Mouse>(entityManager_, eventDisptacher_);
     systems_.add<system::Movement>(entityManager_);
     systems_.add<system::ProjectileSpawner>(entityManager_, eventDisptacher_);
+    systems_.add<system::RangedCombat>(entityManager_, eventDisptacher_);
     systems_.add<system::Render>(entityManager_, camera_);
     systems_.add<system::WeaponFollow>(entityManager_);
 }

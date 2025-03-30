@@ -89,12 +89,11 @@ void SpatialGrid::updateEntityPosition(entt::entity entity, const Vector2 oldPos
         return;
     }
 
-    if (auto oldCell = at(oldCellIndex))
+    auto oldCell = at(oldCellIndex);
+
+    if (oldCell.has_value())
     {
-        if (oldCell.has_value())
-        {
-            oldCell->get().remove(entity);
-        }
+        oldCell->get().remove(entity);
     }
 
     grid_[newCellIndex].push_front(entity);

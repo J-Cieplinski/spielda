@@ -4,8 +4,6 @@
 
 #include <raylib.h>
 
-#include <stdexcept>
-
 namespace spielda::asset
 {
 
@@ -33,4 +31,3 @@ void TextureAsset::freeAsset()
 }
 
 } // spielda::asset
-

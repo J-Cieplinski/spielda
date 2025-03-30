@@ -128,7 +128,7 @@ void Keyboard::spawnDebugEntity()
 
     components::CircleCollider collider{
         .position = colliderPosition,
-        .previousPosition = colliderPosition,
+        .previousPosition = Vector2Zero(),
         .radius = 6,
         .collisionType = CollisionType::NONE,
     };

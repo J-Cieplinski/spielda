@@ -10,7 +10,7 @@
 namespace spielda
 {
 
-template<std::derived_from<roen::interfaces::IScene> NewScene>
+template <std::derived_from<roen::interfaces::IScene> NewScene>
 class SwitchSceneFunctor final : public roen::Functor
 {
 public:
@@ -21,10 +21,11 @@ public:
 
     ~SwitchSceneFunctor() = default;
 
-    void operator() () override
+    void operator()() override
     {
         gameSceneManager_.switchScene(std::make_unique<NewScene>(gameSceneManager_));
     }
+
 private:
     roen::manager::GameSceneManager& gameSceneManager_;
 };
@@ -37,10 +38,11 @@ inline Vector2 toRayVector(const Vector2& v)
 enum class CollisionType
 {
     WEAPON,
+    PROJECTILE,
     WALL,
     NONE
 };
 
-} // spielda
+}  // namespace spielda
 
-#endif //SPIELDA_UTILS_HPP
+#endif  // SPIELDA_UTILS_HPP

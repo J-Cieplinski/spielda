@@ -77,16 +77,33 @@ void CollisionPartitioned::update() const
                     }
 
                     // Check collision
+                    APP_INFO("Checking collision for {} and {}", entityA, entityB);
                     if (checkCollision(entityACollider, entityBCollider))
                     {
                         constexpr std::bitset<8> WEAPON_MASK{tags::MaskLayer::WEAPON};
+                        constexpr std::bitset<8> PROJECTILE_MASK{tags::MaskLayer::PROJECTILE};
                         const auto isAnyEntityAWeapon
                             = ((maskA.mask | maskB.mask) & WEAPON_MASK).any();
-                        const auto collisionType
-                            = isAnyEntityAWeapon ? CollisionType::WEAPON : CollisionType::WALL;
+                        const auto isAnyEntityAProjectile
+                            = ((maskA.mask | maskB.mask) & PROJECTILE_MASK).any();
+
+                        CollisionType collisionType;
+
+                        if (isAnyEntityAWeapon)
+                        {
+                            collisionType = CollisionType::WEAPON;
+                        }
+                        else if (isAnyEntityAProjectile)
+                        {
+                            collisionType = CollisionType::PROJECTILE;
+                        }
+                        else
+                        {
+                            collisionType = CollisionType::WALL;
+                        }
 
                         std::visit(
-                            [&collisionType](auto& colliderA, auto& colliderB)
+                            [collisionType](auto& colliderA, auto& colliderB)
                             {
                                 colliderA.collisionType = collisionType;
                                 colliderB.collisionType = collisionType;
@@ -98,6 +115,10 @@ void CollisionPartitioned::update() const
                             .secondCollider = entityB,
                             .collisionType = collisionType,
                         });
+                    }
+                    else
+                    {
+                        APP_INFO("No collision");
                     }
                 }
             }

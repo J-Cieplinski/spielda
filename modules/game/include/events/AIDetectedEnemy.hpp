@@ -14,6 +14,6 @@ struct AIDetectedEnemy
     entt::entity aiEntity;
 };
 
-} // spielda::events
+}  // namespace spielda::events
 
-#endif //SPIELDA_GAME_EVENTS_AIDETECTEDENEMY_HPP
+#endif  // SPIELDA_GAME_EVENTS_AIDETECTEDENEMY_HPP

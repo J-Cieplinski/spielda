@@ -22,28 +22,30 @@ AIDetect::AIDetect(entt::registry& entityManager, entt::dispatcher& dispatcher)
     : ISystem{entityManager}
     , eventDispatcher_{dispatcher}
 {
-
 }
 
 void AIDetect::update() const
 {
-    //TODO: temporary move to variant, need to be changed
+    // TODO: temporary move to variant, need to be changed
     const auto colliderView = entityManager_.view<components::Collider>();
     const auto player = entityManager_.view<components::Player>().front();
-    const auto playerCollider = std::get<components::CircleCollider>(colliderView.get<components::Collider>(player));
+    const auto playerCollider
+        = std::get<components::CircleCollider>(colliderView.get<components::Collider>(player));
 
     auto aiView = entityManager_.view<components::AI>();
 
-    for(auto ai : aiView)
+    for (auto ai : aiView)
     {
         const auto aiComponent = aiView.get<components::AI>(ai);
-        const auto aiCollider = std::get<components::CircleCollider>(colliderView.get<components::Collider>(ai));
+        const auto aiCollider
+            = std::get<components::CircleCollider>(colliderView.get<components::Collider>(ai));
 
-        if(CheckCollisionCircles(aiCollider.position, aiComponent.detectRadius, playerCollider.position, playerCollider.radius))
+        if (CheckCollisionCircles(aiCollider.position, aiComponent.detectRadius,
+                                  playerCollider.position, playerCollider.radius))
         {
-            eventDispatcher_.trigger(events::AIDetectedEnemy {
+            eventDispatcher_.enqueue(events::AIDetectedEnemy{
                 .detectedEntityPosition = playerCollider.position,
-                .aiEntity = ai
+                .aiEntity = ai,
             });
         }
         else
@@ -51,6 +53,8 @@ void AIDetect::update() const
             aiView.get<components::AI>(ai).state = components::AIState::IDLE;
         }
     }
+
+    eventDispatcher_.update();
 }
 
-} // spielda::system
+}  // namespace spielda::system
