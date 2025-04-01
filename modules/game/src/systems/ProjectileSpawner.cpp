@@ -53,15 +53,13 @@ void ProjectileSpawner::onAttack(events::Attack event)
 
     auto ownerSheet = entityManager_.get<components::CharacterSheet>(event.attacker);
 
-    spell.damage *= ownerSheet.intelligence;
-
-    spawnEntity(spell, sprite, transform, rigidBody, mask, currentTime);
+    spawnEntity(ownerSheet, spell, sprite, transform, rigidBody, mask, currentTime);
 
     lastSpawnTimePerEntity_[event.attacker] = currentTime;
 }
 
-void ProjectileSpawner::spawnEntity(components::Spell spell, components::Sprite sprite,
-                                    components::Transform transform,
+void ProjectileSpawner::spawnEntity(components::CharacterSheet ownerSheet, components::Spell spell,
+                                    components::Sprite sprite, components::Transform transform,
                                     components::RigidBody rigidBody,
                                     tags::CollisionMask collisionMask, double currentTime) const
 {
@@ -121,7 +119,8 @@ void ProjectileSpawner::spawnEntity(components::Spell spell, components::Sprite 
     entityManager_.emplace<components::Transform>(projectile, spellTransform);
     entityManager_.emplace<components::Sprite>(projectile, spellSprite);
     entityManager_.emplace<components::Collider>(projectile, spellCollider);
-    entityManager_.emplace<components::Projectile>(projectile, spell.damage);
+    entityManager_.emplace<components::Projectile>(projectile,
+                                                   spell.damage * ownerSheet.intelligence);
     entityManager_.emplace<tags::CollisionMask>(projectile, collisionMask);
 
     entityManager_.ctx().get<SpatialGrid>().updateEntityPosition(projectile, spellCollider.position,

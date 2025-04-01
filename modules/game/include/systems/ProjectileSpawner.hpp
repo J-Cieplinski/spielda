@@ -3,6 +3,7 @@
 
 #include <roen/include/interfaces/ISystem.hpp>
 
+#include <components/CharacterSheet.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Spell.hpp>
 #include <components/Sprite.hpp>
@@ -20,21 +21,17 @@ class ProjectileSpawner final : public roen::interfaces::ISystem
 {
 public:
     explicit ProjectileSpawner(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
+
 private:
     void onAttack(events::Attack event);
-    void spawnEntity(
-        components::Spell spell,
-        components::Sprite sprite,
-        components::Transform transform,
-        components::RigidBody rigidBody,
-        tags::CollisionMask collisionMask,
-        double currentTime) const;
+    void spawnEntity(components::CharacterSheet ownerSheet, components::Spell spell,
+                     components::Sprite sprite, components::Transform transform,
+                     components::RigidBody rigidBody, tags::CollisionMask collisionMask,
+                     double currentTime) const;
     entt::dispatcher& eventDispatcher_;
     std::unordered_map<entt::entity, double> lastSpawnTimePerEntity_;
 };
 
-} // spielda::system
+}  // namespace spielda::system
 
-
-
-#endif //SPIELDA_GAME_SYSTEMS_PROJECTILESPAWNER_HPP
+#endif  // SPIELDA_GAME_SYSTEMS_PROJECTILESPAWNER_HPP
