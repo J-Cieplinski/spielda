@@ -15,19 +15,21 @@ namespace spielda::system
 class Damage final : public roen::interfaces::ISystem
 {
 public:
-    using CombatEntities = std::pair<entt::entity, entt::entity>; //Attacker, defender
+    using CombatEntities = std::pair<entt::entity, entt::entity>;  // Attacker, defender
 
     explicit Damage(entt::registry& entityManager, entt::dispatcher& eventDispatcher);
     void update();
+
 private:
     void onCollision(events::Collision event);
     CombatEntities getCombatEntities(events::Collision event);
+    CombatEntities getMeleeAttacker(events::Collision event);
+    CombatEntities getRangedAttacker(events::Collision event);
 
     entt::dispatcher& eventDispatcher_;
     std::set<entt::entity> entitiesToDestroy_;
 };
 
-} // spielda::system
+}  // namespace spielda::system
 
-
-#endif //SPIELDA_GAME_SYSTEMS_DAMAGE_HPP
+#endif  // SPIELDA_GAME_SYSTEMS_DAMAGE_HPP

@@ -4,6 +4,8 @@
 
 #include <components/CharacterSheet.hpp>
 #include <components/Health.hpp>
+#include <components/Projectile.hpp>
+#include <components/Spell.hpp>
 #include <components/Weapon.hpp>
 
 #include <roen/include/log/Logger.hpp>
@@ -44,19 +46,31 @@ void Damage::onCollision(events::Collision event)
         return;
     }
 
-    auto& attackWeapon = entityManager_.get<components::Weapon>(attacker);
-    auto& attackerSheet = entityManager_.get<components::CharacterSheet>(attackWeapon.wielder);
+    std::int32_t damage{0};
 
-    if (!attackWeapon.attacking || attackWeapon.damagedEntities.contains(defender))
+    if (event.collisionType == CollisionType::WEAPON)
     {
-        return;
+        auto& attackWeapon = entityManager_.get<components::Weapon>(attacker);
+        auto& attackerSheet = entityManager_.get<components::CharacterSheet>(attackWeapon.wielder);
+
+        if (!attackWeapon.attacking || attackWeapon.damagedEntities.contains(defender))
+        {
+            return;
+        }
+
+        damage = attackWeapon.damage + attackerSheet.strength;
+        attackWeapon.damagedEntities.insert(defender);
+    }
+    else if (event.collisionType == CollisionType::PROJECTILE)
+    {
+        const auto& projectile = entityManager_.get<components::Projectile>(attacker);
+
+        damage = projectile.damage;
     }
 
     auto& defenderHp = entityManager_.get<components::Health>(defender);
 
-    const auto damage = attackWeapon.damage + attackerSheet.strength;
     defenderHp.currentHealth -= damage;
-    attackWeapon.damagedEntities.insert(defender);
 
     APP_INFO("Dealt {0} damage to entity {1}", damage, defender);
 
@@ -69,45 +83,73 @@ void Damage::onCollision(events::Collision event)
 
 Damage::CombatEntities Damage::getCombatEntities(events::Collision event)
 {
-    if (event.collisionType != CollisionType::WEAPON)
+    if (event.collisionType != CollisionType::WEAPON
+        && event.collisionType != CollisionType::PROJECTILE)
     {
         return {entt::null, entt::null};
     }
 
-    const auto weaponView = entityManager_.view<components::Weapon>();
+    auto entities = getMeleeAttacker(event);
 
-    const auto isFirstEntityArmed = weaponView.contains(event.firstCollider);
-    const auto isSecondEntityArmed = weaponView.contains(event.secondCollider);
-
-    if (!(isFirstEntityArmed || isSecondEntityArmed))
+    if (entities.first == entt::null)
     {
-        return {entt::null, entt::null};
-    }
+        entities = getRangedAttacker(event);
 
-    entt::entity attacker{entt::null};
-    entt::entity defender{entt::null};
-
-    weaponView.each(
-        [&attacker, &event](const entt::entity entity, const components::Weapon& weapon)
+        if (entities.first == entt::null)
         {
-            if (weapon.attacking
-                && (entity == event.firstCollider || entity == event.secondCollider))
-            {
-                attacker = entity;
-            }
-        });
+            return {entt::null, entt::null};
+        }
+    }
 
     const auto healthView = entityManager_.view<components::Health>();
     healthView.each(
-        [&defender, &event](const entt::entity entity, components::Health)
+        [&entities, &event](const entt::entity entity, components::Health)
         {
             if (entity == event.firstCollider || entity == event.secondCollider)
             {
-                defender = entity;
+                entities.second = entity;
             }
         });
 
-    return {attacker, defender};
+    return entities;
+}
+
+Damage::CombatEntities Damage::getMeleeAttacker(events::Collision event)
+{
+    const auto weaponView = entityManager_.view<components::Weapon>();
+
+    for (const auto& [entity, weapon] : weaponView.each())
+    {
+        if (weapon.attacking)
+        {
+            if (entity == event.firstCollider)
+            {
+                return {event.firstCollider, entt::null};
+            }
+            else if (entity == event.secondCollider)
+            {
+                return {event.secondCollider, entt::null};
+            }
+        }
+    }
+
+    return {entt::null, entt::null};
+}
+
+Damage::CombatEntities Damage::getRangedAttacker(events::Collision event)
+{
+    const auto projectileView = entityManager_.view<components::Projectile>();
+
+    if (auto it = projectileView.find(event.firstCollider); it != projectileView.end())
+    {
+        return {event.firstCollider, entt::null};
+    }
+    else if (auto it = projectileView.find(event.secondCollider); it != projectileView.end())
+    {
+        return {event.secondCollider, entt::null};
+    }
+
+    return {entt::null, entt::null};
 }
 
 }  // namespace spielda::system

@@ -14,6 +14,7 @@ target_sources(${PROJECT_NAME}
     ${GAME_INCLUDE_DIR}/components/GuiElement.hpp
     ${GAME_INCLUDE_DIR}/components/Health.hpp
     ${GAME_INCLUDE_DIR}/components/Player.hpp
+    ${GAME_INCLUDE_DIR}/components/Projectile.hpp
     ${GAME_INCLUDE_DIR}/components/RigidBody.hpp
     ${GAME_INCLUDE_DIR}/components/Spell.hpp
     ${GAME_INCLUDE_DIR}/components/Sprite.hpp

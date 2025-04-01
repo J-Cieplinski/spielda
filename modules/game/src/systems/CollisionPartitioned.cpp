@@ -77,7 +77,7 @@ void CollisionPartitioned::update() const
                     }
 
                     // Check collision
-                    APP_INFO("Checking collision for {} and {}", entityA, entityB);
+                    // APP_INFO("Checking collision for {} and {}", entityA, entityB);
                     if (checkCollision(entityACollider, entityBCollider))
                     {
                         constexpr std::bitset<8> WEAPON_MASK{tags::MaskLayer::WEAPON};
@@ -118,7 +118,7 @@ void CollisionPartitioned::update() const
                     }
                     else
                     {
-                        APP_INFO("No collision");
+                        // APP_INFO("No collision");
                     }
                 }
             }

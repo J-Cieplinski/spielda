@@ -3,7 +3,9 @@
 #include <SpatialGrid.hpp>
 
 #include <components/Animation.hpp>
+#include <components/CharacterSheet.hpp>
 #include <components/Collider.hpp>
+#include <components/Projectile.hpp>
 #include <components/RigidBody.hpp>
 #include <components/Spell.hpp>
 #include <components/Sprite.hpp>
@@ -48,6 +50,10 @@ void ProjectileSpawner::onAttack(events::Attack event)
             return;
         }
     }
+
+    auto ownerSheet = entityManager_.get<components::CharacterSheet>(event.attacker);
+
+    spell.damage *= ownerSheet.intelligence;
 
     spawnEntity(spell, sprite, transform, rigidBody, mask, currentTime);
 
@@ -115,6 +121,7 @@ void ProjectileSpawner::spawnEntity(components::Spell spell, components::Sprite 
     entityManager_.emplace<components::Transform>(projectile, spellTransform);
     entityManager_.emplace<components::Sprite>(projectile, spellSprite);
     entityManager_.emplace<components::Collider>(projectile, spellCollider);
+    entityManager_.emplace<components::Projectile>(projectile, spell.damage);
     entityManager_.emplace<tags::CollisionMask>(projectile, collisionMask);
 
     entityManager_.ctx().get<SpatialGrid>().updateEntityPosition(projectile, spellCollider.position,
